@@ -1,0 +1,280 @@
+/* ============================================================
+   INSTRUCTOR REGISTER — ITechSkillsHub
+   Card layout (mirrors StudentLogin) — white/light theme
+   Font: Sora only
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.reg-page, .reg-page *:not(img) {
+  font-family: 'Sora', sans-serif !important;
+}
+
+/* ── PAGE WRAPPER ── */
+.reg-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #f0f2f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+  animation: reg-fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes reg-fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── BACKGROUND ORBS ── */
+.reg-page::before,
+.reg-page::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+.reg-page::before {
+  width: 520px;
+  height: 520px;
+  background: rgba(59, 91, 219, 0.10);
+  filter: blur(90px);
+  top: -160px;
+  left: -100px;
+}
+.reg-page::after {
+  width: 380px;
+  height: 380px;
+  background: rgba(20, 28, 60, 0.07);
+  filter: blur(80px);
+  bottom: -80px;
+  right: -80px;
+}
+
+/* ── CARD ── */
+.reg-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 500px;
+  background: #ffffff;
+  border: 1px solid rgba(20, 28, 60, 0.08);
+  border-radius: 28px;
+  padding: 44px 44px 32px;
+  box-shadow:
+    0 24px 80px rgba(20, 28, 60, 0.10),
+    0 4px 16px rgba(20, 28, 60, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  animation: reg-cardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes reg-cardIn {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── LOTTIE ── */
+.reg-lottie-top {
+  width: 140px;
+  margin: 0 auto 16px;
+  opacity: 0.85;
+  animation: reg-float 4.5s ease-in-out infinite;
+}
+@keyframes reg-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* ── BRAND ── */
+.reg-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.reg-brand-logo,
+.reg-page img.reg-brand-logo {
+  width: 34px !important; height: 34px !important;
+  min-width: 34px !important; max-width: 34px !important;
+  object-fit: contain !important;
+  filter: none !important;
+}
+.reg-brand-text { display: flex; flex-direction: column; gap: 1px; }
+.reg-brand-name { font-size: 16px; font-weight: 700; color: #141c3c; letter-spacing: -0.01em; }
+.reg-brand-sub  { font-size: 11px; color: #9ca3af; font-weight: 400; }
+
+/* ── HEADING ── */
+.reg-header { margin-bottom: 22px; }
+.reg-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #141c3c;
+  margin: 0 0 5px;
+  letter-spacing: -0.02em;
+}
+.reg-header h2 em { font-style: normal; color: #3b5bdb; }
+.reg-header p {
+  font-size: 14px;
+  color: rgba(20, 28, 60, 0.45);
+  margin: 0;
+}
+
+/* ── ERROR ── */
+.reg-error {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  color: #dc2626; font-size: 13px;
+  margin-bottom: 16px;
+}
+
+/* ── FORM ── */
+.reg-form { display: flex; flex-direction: column; gap: 0; }
+
+/* ── FIELDS ── */
+.reg-field { margin-bottom: 15px; }
+.reg-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(20, 28, 60, 0.52);
+  margin-bottom: 7px;
+  letter-spacing: 0.02em;
+}
+
+.reg-input-wrap { position: relative; display: flex; align-items: center; }
+.reg-input-wrap > svg:first-child {
+  position: absolute; left: 13px;
+  color: #a0aec0; pointer-events: none; flex-shrink: 0;
+}
+.reg-input-wrap input {
+  width: 100%;
+  padding: 13px 15px 13px 40px;
+  background: rgba(20, 28, 60, 0.04);
+  border: 1px solid rgba(20, 28, 60, 0.10);
+  border-radius: 10px;
+  color: #141c3c;
+  font-size: 14px;
+  font-family: 'Sora', sans-serif;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.reg-input-wrap input::placeholder { color: rgba(20, 28, 60, 0.22); }
+.reg-input-wrap input:focus {
+  border-color: rgba(59, 91, 219, 0.55);
+  background: rgba(59, 91, 219, 0.03);
+  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.08);
+}
+.reg-input-error input {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08) !important;
+}
+.reg-field-err { font-size: 11.5px; color: #ef4444; margin-top: 4px; display: block; }
+
+.reg-eye {
+  position: absolute; right: 13px;
+  background: none; border: none; cursor: pointer;
+  color: rgba(20, 28, 60, 0.30);
+  padding: 0; display: flex; align-items: center;
+  transition: color 0.2s ease;
+}
+.reg-eye:hover { color: rgba(20, 28, 60, 0.65); }
+
+/* ── PASSWORD STRENGTH ── */
+.reg-pw-strength { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.reg-pw-bars { display: flex; gap: 4px; flex: 1; }
+.reg-pw-bar { flex: 1; height: 3px; border-radius: 2px; background: rgba(20,28,60,0.1); transition: background 0.3s; }
+.reg-pw-bar.str-weak   { background: #ef4444; }
+.reg-pw-bar.str-fair   { background: #f97316; }
+.reg-pw-bar.str-good   { background: #3b82f6; }
+.reg-pw-bar.str-strong { background: #22c55e; }
+.reg-pw-label { font-size: 11px; font-weight: 600; min-width: 36px; text-align: right; }
+.reg-pw-label.str-weak   { color: #ef4444; }
+.reg-pw-label.str-fair   { color: #f97316; }
+.reg-pw-label.str-good   { color: #3b82f6; }
+.reg-pw-label.str-strong { color: #22c55e; }
+
+/* ── TERMS ── */
+.reg-terms {
+  display: flex; align-items: flex-start; gap: 10px;
+  cursor: pointer; font-size: 12px;
+  color: rgba(20, 28, 60, 0.42); line-height: 1.6;
+  margin-bottom: 16px;
+}
+.reg-terms input[type="checkbox"] {
+  width: 14px; height: 14px;
+  margin-top: 2px; accent-color: #3b5bdb;
+  cursor: pointer; flex-shrink: 0;
+}
+.reg-terms a { color: #3b5bdb; text-decoration: none; font-weight: 500; }
+.reg-terms a:hover { text-decoration: underline; }
+
+/* ── SUBMIT ── */
+.reg-submit {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #141c3c 0%, #1e2a52 50%, #3b5bdb 100%);
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Sora', sans-serif;
+  cursor: pointer;
+  margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 20px rgba(59, 91, 219, 0.28);
+}
+.reg-submit:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(59, 91, 219, 0.32);
+}
+.reg-submit:active:not(:disabled) { transform: translateY(0); }
+.reg-submit:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── SPINNER ── */
+.reg-spinner { width: 16px; height: 16px; animation: reg-spin 0.8s linear infinite; flex-shrink: 0; }
+@keyframes reg-spin { to { transform: rotate(360deg); } }
+
+/* ── LOGIN LINK ── */
+.reg-login-link { font-size: 13px; color: rgba(20, 28, 60, 0.40); text-align: center; }
+.reg-login-link a { color: #3b5bdb; font-weight: 600; text-decoration: none; }
+.reg-login-link a:hover { text-decoration: underline; }
+
+/* ── FOOTER NOTE ── */
+.reg-footer-note {
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  font-size: 11px; color: rgba(20, 28, 60, 0.22); margin-top: 26px;
+}
+
+/* ── HIDE OLD TWO-COLUMN LEFT/RIGHT ── */
+.reg-left, .reg-right, .reg-right-bg, .reg-right-inner, .reg-tagline { display: none !important; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 540px) {
+  .reg-card {
+    padding: 32px 24px 26px;
+    border-radius: 20px;
+  }
+  .reg-lottie-top { width: 120px; }
+  .reg-header h2 { font-size: 24px; }
+}
+@media (max-width: 380px) {
+  .reg-card { padding: 28px 18px 22px; }
+  .reg-lottie-top { width: 100px; }
+}

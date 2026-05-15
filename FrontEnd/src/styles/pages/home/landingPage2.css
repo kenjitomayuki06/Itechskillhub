@@ -1,0 +1,302 @@
+/* ===== PROCESS SECTION ===== */
+
+/* ===== SCROLL ANIMATION KEYFRAMES ===== */
+@keyframes lp2-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes lp2-card-rise {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hidden state before animation */
+.process-label,
+.process-small-title,
+.process-subtitle {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: none;
+}
+
+.process-card {
+  opacity: 0;
+  transform: translateY(60px);
+}
+
+/* Triggered when section is visible */
+.process-section.lp2-visible .process-label {
+  animation: lp2-fade-up 0.6s ease forwards;
+  animation-delay: 0.1s;
+}
+
+.process-section.lp2-visible .process-small-title {
+  animation: lp2-fade-up 0.6s ease forwards;
+  animation-delay: 0.25s;
+}
+
+.process-section.lp2-visible .process-subtitle {
+  animation: lp2-fade-up 0.6s ease forwards;
+  animation-delay: 0.4s;
+}
+
+.process-section.lp2-visible .process-card:nth-child(1) {
+  animation: lp2-card-rise 0.7s ease 0.55s both;
+}
+
+.process-section.lp2-visible .process-card:nth-child(2) {
+  animation: lp2-card-rise 0.7s ease 0.7s both;
+}
+
+.process-section.lp2-visible .process-card:nth-child(3) {
+  animation: lp2-card-rise 0.7s ease 0.85s both;
+}
+
+/* Stop animation after it finishes so hover transform works */
+.process-section.lp2-visible .process-card:nth-child(1).anim-done,
+.process-section.lp2-visible .process-card:nth-child(2).anim-done,
+.process-section.lp2-visible .process-card:nth-child(3).anim-done {
+  animation: none;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.process-section {
+  position: relative;
+  z-index: 10;
+  padding: 110px 6%;
+  background: #ffffff;
+  text-align: center;
+}
+
+/* PROCESS LABEL */
+.process-label {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #7a7a7a;
+  margin-bottom: 8px;
+}
+
+/* HOW IT WORKS */
+.process-small-title {
+  font-size: 44px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 12px;
+}
+
+/* SUBTITLE */
+.process-subtitle {
+  font-size: 16px;
+  color: #555;
+  max-width: 720px;
+  margin: 0 auto 70px;
+  line-height: 1.6;
+}
+
+/* ===== CARDS ===== */
+.process-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+/* CARD SIZE */
+.process-card {
+  position: relative;
+  height: 480px;
+  padding: 36px;
+  border-radius: 6px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-align: left;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.process-card.anim-done {
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+}
+
+.process-card.anim-done:hover {
+  transform: scale(1.04);
+  box-shadow:
+    0 24px 50px rgba(35, 40, 71, 0.35),
+    0 0 0 2px rgba(35, 40, 71, 0.15),
+    0 0 40px rgba(35, 40, 71, 0.2);
+}
+
+/* ===== PURPLE FADE OVERLAY ===== */
+.process-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(35, 40, 71, 1) 0%,
+    rgba(35, 40, 71, 0.85) 30%,
+    rgba(35, 40, 71, 0.4) 60%,
+    rgba(35, 40, 71, 0) 100%
+  );
+}
+
+/* CONTENT ABOVE GRADIENT */
+.process-card * {
+  position: relative;
+  z-index: 1;
+}
+
+/* STEP LABEL */
+.step {
+  font-size: 13px;
+  opacity: 0.9;
+  margin-bottom: 6px;
+}
+
+/* CARD TITLE */
+.process-card h3 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 12px;
+  text-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* CARD DESCRIPTION */
+.process-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+  opacity: 0.95;
+  text-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* START / BEGIN / FINISH */
+.card-action {
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.9;
+  text-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* =========================
+   RESPONSIVE BREAKPOINTS
+   ========================= */
+
+@media (min-width: 1440px) {
+  .process-section { padding: 130px 8%; }
+  .process-small-title { font-size: 52px; }
+  .process-subtitle { font-size: 18px; max-width: 800px; }
+  .process-cards { gap: 32px; }
+  .process-card { height: 520px; padding: 40px; }
+  .process-card h3 { font-size: 32px; }
+  .process-card p { font-size: 15px; }
+}
+
+@media (max-width: 1439px) {
+  .process-section { padding: 110px 6%; }
+  .process-small-title { font-size: 44px; }
+  .process-cards { gap: 26px; }
+}
+
+@media (max-width: 1199px) {
+  .process-section { padding: 100px 5%; }
+  .process-small-title { font-size: 42px; }
+  .process-subtitle { font-size: 15px; margin-bottom: 60px; }
+  .process-cards { gap: 24px; }
+  .process-card { height: 460px; padding: 32px; }
+  .process-card h3 { font-size: 26px; }
+  .process-card p { font-size: 13px; }
+}
+
+@media (max-width: 1023px) {
+  .process-section { padding: 90px 5%; }
+  .process-small-title { font-size: 38px; }
+  .process-subtitle { font-size: 15px; margin-bottom: 50px; }
+  .process-cards { grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .process-card { height: 440px; padding: 30px; }
+  .process-card h3 { font-size: 24px; }
+  .process-card p { font-size: 13px; margin-bottom: 16px; }
+  .step { font-size: 12px; }
+  .card-action { font-size: 13px; }
+}
+
+@media (max-width: 767px) {
+  .process-section { padding: 80px 5%; }
+  .process-label { font-size: 11px; letter-spacing: 1.5px; }
+  .process-small-title { font-size: 34px; margin-bottom: 10px; }
+  .process-subtitle { font-size: 14px; margin-bottom: 45px; }
+  .process-cards { grid-template-columns: 1fr; gap: 20px; }
+  .process-card { height: 420px; padding: 28px; }
+  .process-card h3 { font-size: 22px; }
+  .process-card p { font-size: 13px; }
+}
+
+@media (max-width: 639px) {
+  .process-section { padding: 70px 5%; }
+  .process-small-title { font-size: 30px; }
+  .process-subtitle { font-size: 13px; margin-bottom: 40px; }
+  .process-card { height: 400px; padding: 26px; }
+  .process-card h3 { font-size: 20px; margin-bottom: 10px; }
+  .process-card p { font-size: 12px; margin-bottom: 14px; }
+}
+
+@media (max-width: 479px) {
+  .process-section { padding: 60px 4%; }
+  .process-label { font-size: 10px; letter-spacing: 1.2px; }
+  .process-small-title { font-size: 28px; margin-bottom: 8px; }
+  .process-subtitle { font-size: 13px; max-width: 100%; margin-bottom: 35px; }
+  .process-card { height: 380px; padding: 24px; border-radius: 5px; }
+  .step { font-size: 11px; margin-bottom: 5px; }
+  .process-card h3 { font-size: 19px; line-height: 1.3; margin-bottom: 9px; }
+  .process-card p { font-size: 12px; line-height: 1.55; margin-bottom: 12px; }
+  .card-action { font-size: 12px; }
+}
+
+@media (max-width: 374px) {
+  .process-section { padding: 50px 4%; }
+  .process-small-title { font-size: 26px; }
+  .process-subtitle { font-size: 12px; margin-bottom: 30px; }
+  .process-card { height: 360px; padding: 20px; }
+  .process-card h3 { font-size: 18px; }
+  .process-card p { font-size: 11px; line-height: 1.5; }
+  .card-action { font-size: 11px; }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .process-section { padding: 60px 5%; }
+  .process-small-title { font-size: 32px; }
+  .process-subtitle { margin-bottom: 35px; }
+  .process-cards { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .process-card { height: 320px; padding: 22px; }
+  .process-card h3 { font-size: 18px; }
+  .process-card p { font-size: 11px; margin-bottom: 10px; }
+}
+
+@media (min-width: 1920px) {
+  .process-section { padding: 140px 10%; }
+  .process-small-title { font-size: 56px; }
+  .process-subtitle { font-size: 19px; max-width: 900px; margin-bottom: 80px; }
+  .process-cards { gap: 36px; max-width: 1600px; margin: 0 auto; }
+  .process-card { height: 560px; padding: 44px; }
+  .process-card h3 { font-size: 34px; }
+  .process-card p { font-size: 16px; }
+  .card-action { font-size: 15px; }
+}

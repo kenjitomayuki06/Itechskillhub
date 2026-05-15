@@ -1,0 +1,208 @@
+/* ===============================
+   COURSE HERO (PARTICLE ONLY)
+================================ */
+
+.course-hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #262c4a; /* fallback */
+}
+
+/* ===============================
+   PARTICLE BACKGROUND
+================================ */
+
+.particle-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ===============================
+   CONTENT
+================================ */
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+
+  text-align: center;
+  color: #ffffff;
+
+  max-width: 900px;
+  width: 100%;
+  padding: 2rem;
+  margin: 0 auto; /* 🔥 Centers the content container */
+}
+
+/* ===============================
+   ENTRANCE ANIMATIONS
+================================ */
+
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* BADGE */
+.hero-badge {
+  display: inline-block;
+  padding: 0.5rem 1.2rem;
+  margin-bottom: 1.5rem;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+
+  animation: heroFadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.1s;
+}
+
+/* TITLE (SMALLER THAN BEFORE) */
+.hero-content h1 {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 1.2rem;
+
+  animation: heroFadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.25s;
+}
+
+/* DESCRIPTION */
+.hero-content p {
+  font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+  line-height: 1.6;
+
+  max-width: 650px;
+  margin: 0 auto 2rem;
+  opacity: 0.9;
+
+  animation: heroFadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.4s;
+}
+
+/* Button wrapper animation */
+.hero-btn {
+  animation: heroFadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.55s;
+
+  position: relative;
+  overflow: hidden;
+
+  padding: 0.8rem 2rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #ff7a18, #ff9f43);
+  color: #ffffff;
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 120%;
+  height: 100%;
+
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+
+  transition: left 0.6s ease;
+}
+
+.hero-btn:hover::before {
+  left: 120%;
+}
+
+.hero-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(255, 122, 24, 0.45);
+}
+
+.hero-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .hero-content {
+    padding: 1.8rem;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .course-hero {
+    min-height: 100svh;
+  }
+
+  .hero-content {
+    padding: 1.5rem;
+  }
+
+  .hero-badge {
+    font-size: 0.7rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(1.8rem, 7vw, 2.4rem);
+  }
+
+  .hero-content p {
+    font-size: 0.95rem;
+  }
+
+  .hero-btn {
+    font-size: 0.85rem;
+    padding: 0.75rem 1.8rem;
+  }
+}
+
+/* Small Phones */
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 1.7rem;
+  }
+
+  .hero-content p {
+    font-size: 0.9rem;
+  }
+}

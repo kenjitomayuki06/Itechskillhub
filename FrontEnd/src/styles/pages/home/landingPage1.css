@@ -1,0 +1,286 @@
+/* =========================
+   LANDING PAGE 1 – FULLY RESPONSIVE
+   ========================= */
+
+.landing {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background-color: #0f172a;
+  z-index: 1;
+
+  --scroll-progress: 0;
+}
+
+/* position: absolute so it stays inside .landing (which has overflow:hidden) */
+/* Parallax effect is handled via JS translateY in LandingPage1.jsx */
+.landing-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 140%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center top;
+  z-index: 0;
+  will-change: transform;
+}
+
+/* =========================
+   INNER FRAME
+   ========================= */
+
+.landing-inner {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+
+  width: calc(100% - 160px);
+  height: calc(100% - 160px);
+  margin: 80px auto;
+
+  padding: 65px 80px;
+  padding-top: 80px;
+  box-sizing: border-box;
+
+  border: 1px solid rgba(35, 40, 71, 0.12);
+  border-radius: 1px;
+}
+
+/* =========================
+   CONTENT
+   ========================= */
+
+.landing-content {
+  max-width: 520px;
+  color: #ffffff;
+
+  margin-top: 80px;
+
+  opacity: calc(1 - (var(--scroll-progress) * 1.2));
+  transform: translateY(calc(var(--scroll-progress) * -40px))
+    scale(calc(1 - (var(--scroll-progress) * 0.12)));
+
+  will-change: opacity, transform;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* =========================
+   ENTRANCE ANIMATIONS
+   ========================= */
+
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.landing-content h1 {
+  font-size: 64px;
+  line-height: 1.05;
+  font-weight: 700;
+  margin-bottom: 20px;
+
+  animation: heroFadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.1s;
+}
+
+.landing-content p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 28px;
+
+  animation: heroFadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.3s;
+}
+
+.landing-buttons {
+  animation: heroFadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.5s;
+}
+
+/* =========================
+   BUTTON
+   ========================= */
+
+.btn-google {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  padding: 10px 15px;
+  font-size: 13px;
+  font-weight: 600;
+
+  background: #ffffff;
+  color: #1f1f1f;
+  border: none;
+  border-radius: 6px;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+}
+
+.btn-google:hover {
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.btn-google:active {
+  transform: scale(0.96);
+}
+
+.btn-google svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* =========================
+   BOTTOM GRADIENT
+   — also absolute so it's clipped inside .landing
+   ========================= */
+
+.landing::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 420px;
+
+  background: linear-gradient(
+    to top,
+    rgba(20, 28, 60, 0.92) 25%,
+    rgba(20, 28, 60, 0.75) 45%,
+    rgba(20, 28, 60, 0.5) 65%,
+    rgba(20, 28, 60, 0.25) 82%,
+    rgba(20, 28, 60, 0.1) 92%,
+    rgba(20, 28, 60, 0) 100%
+  );
+
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+/* XL */
+@media (min-width: 1440px) {
+  .landing-content h1 {
+    font-size: 72px;
+  }
+
+  .landing-content p {
+    font-size: 16px;
+  }
+}
+
+/* LG */
+@media (max-width: 1439px) {
+  .landing-inner {
+    width: calc(100% - 140px);
+    height: calc(100% - 140px);
+    margin: 70px auto;
+    padding: 60px 70px;
+  }
+
+  .landing-content h1 {
+    font-size: 60px;
+  }
+}
+
+/* MD-LG */
+@media (max-width: 1199px) {
+  .landing-inner {
+    width: calc(100% - 120px);
+    height: calc(100% - 120px);
+    margin: 60px auto;
+    padding: 50px 60px;
+  }
+
+  .landing-content h1 {
+    font-size: 56px;
+  }
+}
+
+/* TABLET */
+@media (max-width: 1023px) {
+  .landing-inner {
+    width: calc(100% - 100px);
+    height: calc(100% - 100px);
+    margin: 50px auto;
+    padding: 40px 50px;
+  }
+
+  .landing-content {
+    max-width: 460px;
+  }
+
+  .landing-content h1 {
+    font-size: 48px;
+  }
+
+  .btn-google {
+    padding: 11px 22px;
+    font-size: 14px;
+  }
+}
+
+/* PHONES */
+@media (max-width: 767px) {
+  .landing-inner {
+    width: calc(100% - 60px);
+    height: calc(100% - 60px);
+    margin: 30px auto;
+    padding: 30px 35px;
+  }
+
+  .landing-content h1 {
+    font-size: 40px;
+  }
+
+  .btn-google {
+    width: 100%;
+  }
+
+  .landing::after {
+    height: 500px;
+  }
+}
+
+/* SMALL PHONES */
+@media (max-width: 479px) {
+  .landing-inner {
+    width: calc(100% - 30px);
+    height: calc(100% - 30px);
+    margin: 15px auto;
+    padding: 20px 25px;
+  }
+
+  .landing-content h1 {
+    font-size: 32px;
+  }
+
+  .btn-google {
+    width: 100%;
+  }
+}

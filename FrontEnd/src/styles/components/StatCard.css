@@ -1,0 +1,84 @@
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.stat-card-blue .stat-icon {
+  background: rgba(108, 92, 231, 0.1);
+  color: #6c5ce7;
+}
+
+.stat-card-green .stat-icon {
+  background: rgba(0, 184, 148, 0.1);
+  color: #00b894;
+}
+
+.stat-card-orange .stat-icon {
+  background: rgba(253, 121, 168, 0.1);
+  color: #fd79a8;
+}
+
+.stat-card-purple .stat-icon {
+  background: rgba(162, 155, 254, 0.1);
+  color: #a29bfe;
+}
+
+.stat-trend {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.stat-trend.positive {
+  color: #00b894;
+  background: rgba(0, 184, 148, 0.1);
+}
+
+.stat-trend.negative {
+  color: #ff7675;
+  background: rgba(255, 118, 117, 0.1);
+}
+
+.stat-card-body {
+  margin-top: 12px;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  color: #2d3436;
+}
+
+.stat-title {
+  font-size: 14px;
+  color: #636e72;
+  margin: 4px 0 0 0;
+  font-weight: 500;
+}

@@ -1,0 +1,525 @@
+/* =========================
+   LANDING PAGE 3 – WITH SCROLL ANIMATIONS
+   ========================= */
+
+/* ===== SCROLL ANIMATION KEYFRAMES ===== */
+@keyframes lp3-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes lp3-image-rise {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Hidden state before animation triggers */
+.lp3-title,
+.lp3-subtitle,
+.lp3-buttons,
+.lp3-image {
+  opacity: 0;
+}
+
+/* Triggered when section enters viewport */
+.lp3-visible .lp3-title {
+  animation: lp3-fade-up 0.65s ease forwards;
+  animation-delay: 0.1s;
+}
+
+.lp3-visible .lp3-subtitle {
+  animation: lp3-fade-up 0.65s ease forwards;
+  animation-delay: 0.25s;
+}
+
+.lp3-visible .lp3-buttons {
+  animation: lp3-fade-up 0.65s ease forwards;
+  animation-delay: 0.4s;
+}
+
+.lp3-visible .lp3-image {
+  animation: lp3-image-rise 0.8s ease forwards;
+  animation-delay: 0.55s;
+}
+
+/* =========================
+   LANDING PAGE 3 – FIXED VERSION
+   No animations, static content
+   ========================= */
+
+.lp3-section {
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+  padding: 140px 6% 80px;
+  text-align: center;
+  overflow: visible;
+}
+
+/* SUBTLE TOP DIVIDER */
+.lp3-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 82%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    #e5e7eb,
+    transparent
+  );
+}
+
+/* =========================
+   TITLE
+   ========================= */
+
+.lp3-title {
+  font-size: 44px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+/* SUBTITLE */
+.lp3-subtitle {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 34px;
+}
+
+/* =========================
+   BUTTONS WITH HOVER EFFECTS
+   ========================= */
+
+.lp3-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 80px;
+}
+
+.lp3-btn-primary,
+.lp3-btn-secondary {
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lp3-btn-primary {
+  background: #ff7a18;
+  color: #ffffff;
+  border: none;
+}
+
+.lp3-btn-primary:hover {
+  background: #e66910;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 122, 24, 0.3);
+}
+
+.lp3-btn-secondary {
+  background: #ffffff;
+  color: #111;
+  border: 1px solid #ddd;
+}
+
+.lp3-btn-secondary:hover {
+  background: #f9f9f9;
+  border-color: #111;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================
+   IMAGE
+   ========================= */
+
+.lp3-image {
+  position: relative;
+  width: 100%;
+  height: 650px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: block;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  border: 1.5px solid rgba(35, 40, 71, 0.25);
+}
+/* SUBTLE PURPLE-BLUE FADE (BOTTOM) */
+.lp3-image::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 450px;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(
+    to top,
+    rgba(35, 40, 71, 0.95) 0%,
+    rgba(35, 40, 71, 0.75) 40%,
+    rgba(35, 40, 71, 0.4) 70%,
+    rgba(35, 40, 71, 0) 100%
+  );
+}
+
+
+
+
+/* =========================
+   RESPONSIVE BREAKPOINTS
+   ========================= */
+
+/* Extra Large Screens (1440px+) */
+@media (min-width: 1440px) {
+  .lp3-section {    padding: 160px 8% 140px;
+  }
+
+  .lp3-title {
+    font-size: 52px;
+  }
+
+  .lp3-subtitle {
+    font-size: 17px;
+    margin-bottom: 40px;
+  }
+
+  .lp3-buttons {
+    margin-bottom: 90px;
+  }
+
+  .lp3-btn-primary,
+  .lp3-btn-secondary {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .lp3-image {
+    width: 1400px;
+    height: 750px;
+  }
+}
+
+/* Large Screens (1200px - 1439px) */
+@media (max-width: 1439px) {
+  .lp3-section {    padding: 140px 6% 80px;
+  }
+
+  .lp3-title {
+    font-size: 44px;
+  }
+
+  .lp3-image {
+    width: 100%;
+    max-width: 1200px;
+    height: 650px;
+  }
+}
+
+/* Medium-Large Screens (1024px - 1199px) */
+@media (max-width: 1199px) {
+  .lp3-section {    padding: 120px 5% 100px;
+  }
+
+  .lp3-title {
+    font-size: 42px;
+  }
+
+  .lp3-subtitle {
+    font-size: 15px;
+    margin-bottom: 30px;
+  }
+
+  .lp3-buttons {
+    margin-bottom: 70px;
+  }
+
+  .lp3-image {
+    width: 100%;
+    max-width: 1000px;
+    height: 580px;
+  }
+
+  .lp3-image::after {
+    height: 420px;
+    border-radius: 0 0 10px 10px;
+  }
+}
+
+/* Medium Screens (768px - 1023px) - Tablets */
+@media (max-width: 1023px) {
+  .lp3-section {    padding: 100px 5% 90px;
+  }
+
+  .lp3-title {
+    font-size: 38px;
+    margin-bottom: 14px;
+  }
+
+  .lp3-subtitle {
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .lp3-buttons {
+    gap: 12px;
+    margin-bottom: 60px;
+  }
+
+  .lp3-btn-primary,
+  .lp3-btn-secondary {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+
+  .lp3-image {
+    width: 100%;
+    max-width: 800px;
+    height: 500px;
+  }
+
+  .lp3-image::after {
+    height: 380px;
+    border-radius: 0 0 10px 10px;
+  }
+}
+
+/* Small-Medium Screens (640px - 767px) - Large Phones */
+@media (max-width: 767px) {
+  .lp3-section {    padding: 80px 5% 70px;
+  }
+
+  .lp3-title {
+    font-size: 34px;
+    margin-bottom: 12px;
+  }
+
+  .lp3-subtitle {
+    font-size: 14px;
+    margin-bottom: 26px;
+  }
+
+  .lp3-buttons {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 50px;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .lp3-btn-primary,
+  .lp3-btn-secondary {
+    width: 100%;
+    padding: 10px 20px;
+  }
+
+  .lp3-image {
+    width: 100%;
+    height: 420px;
+  }
+
+  .lp3-image::after {
+    height: 340px;
+    border-radius: 0 0 10px 10px;
+  }
+}
+
+/* Small Screens (480px - 639px) - Standard Phones */
+@media (max-width: 639px) {
+  .lp3-section {    padding: 70px 5% 60px;
+  }
+
+  .lp3-title {
+    font-size: 30px;
+  }
+
+  .lp3-subtitle {
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  .lp3-buttons {
+    margin-bottom: 45px;
+  }
+
+  .lp3-image {
+    height: 380px;
+  }
+
+  .lp3-image::after {
+    height: 320px;
+    border-radius: 0 0 10px 10px;
+  }
+}
+
+/* Extra Small Screens (375px - 479px) - Small Phones */
+@media (max-width: 479px) {
+  .lp3-section {    padding: 60px 4% 50px;
+  }
+
+  .lp3-title {
+    font-size: 28px;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .lp3-subtitle {
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+
+  .lp3-buttons {
+    gap: 10px;
+    margin-bottom: 40px;
+    max-width: 280px;
+  }
+
+  .lp3-btn-primary,
+  .lp3-btn-secondary {
+    padding: 10px 18px;
+    font-size: 12px;
+  }
+
+  .lp3-image {
+    height: 360px;
+    border-radius: 8px;
+  }
+
+  .lp3-image::after {
+    height: 300px;
+    border-radius: 0 0 8px 8px;
+  }
+}
+
+/* Very Small Screens (320px - 374px) - Smallest Phones */
+@media (max-width: 374px) {
+  .lp3-section {    padding: 50px 4% 45px;
+  }
+
+  .lp3-title {
+    font-size: 26px;
+    line-height: 1.3;
+  }
+
+  .lp3-subtitle {
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  .lp3-buttons {
+    gap: 9px;
+    margin-bottom: 35px;
+    max-width: 260px;
+  }
+
+  .lp3-btn-primary,
+  .lp3-btn-secondary {
+    padding: 9px 16px;
+    font-size: 12px;
+  }
+
+  .lp3-image {
+    height: 340px;
+    border-radius: 6px;
+  }
+
+  .lp3-image::after {
+    height: 280px;
+    border-radius: 0 0 6px 6px;
+  }
+}
+
+/* Landscape Mobile Orientation */
+@media (max-height: 600px) and (orientation: landscape) {
+  .lp3-section {    padding: 50px 5% 45px;
+  }
+
+  .lp3-title {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  .lp3-subtitle {
+    font-size: 12px;
+    margin-bottom: 18px;
+  }
+
+  .lp3-buttons {
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 35px;
+  }
+
+  .lp3-btn-primary,
+  .lp3-btn-secondary {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  .lp3-image {
+    height: 280px;
+  }
+
+  .lp3-image::after {
+    height: 240px;
+    border-radius: 0 0 10px 10px;
+  }
+}
+
+/* Very Wide Screens (2K and above) */
+@media (min-width: 1920px) {
+  .lp3-section {    padding: 180px 10% 160px;
+  }
+
+  .lp3-title {
+    font-size: 56px;
+  }
+
+  .lp3-subtitle {
+    font-size: 18px;
+    margin-bottom: 44px;
+  }
+
+  .lp3-buttons {
+    margin-bottom: 100px;
+  }
+
+  .lp3-btn-primary,
+  .lp3-btn-secondary {
+    padding: 13px 26px;
+    font-size: 15px;
+  }
+
+  .lp3-image {
+    width: 1600px;
+    height: 850px;
+  }
+
+  .lp3-image::after {
+    height: 550px;
+    border-radius: 0 0 10px 10px;
+  }
+}

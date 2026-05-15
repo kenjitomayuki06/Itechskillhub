@@ -1,0 +1,384 @@
+/* ============================================================
+   INSTRUCTOR LOGIN — ITechSkillsHub
+   Card layout (mirrors StudentLogin) — white/light theme
+   Font: Sora only
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.ins-page, .ins-page *:not(img) {
+  font-family: 'Sora', sans-serif !important;
+}
+
+/* ── PAGE WRAPPER ── */
+.ins-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #f0f2f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+  animation: ins-fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ins-fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── BACKGROUND ORBS ── */
+.ins-page::before,
+.ins-page::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+.ins-page::before {
+  width: 520px;
+  height: 520px;
+  background: rgba(59, 91, 219, 0.10);
+  filter: blur(90px);
+  top: -160px;
+  left: -100px;
+}
+.ins-page::after {
+  width: 380px;
+  height: 380px;
+  background: rgba(20, 28, 60, 0.07);
+  filter: blur(80px);
+  bottom: -80px;
+  right: -80px;
+}
+
+/* ── CARD ── */
+.ins-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 500px;
+  background: #ffffff;
+  border: 1px solid rgba(20, 28, 60, 0.08);
+  border-radius: 28px;
+  padding: 44px 44px 32px;
+  box-shadow:
+    0 24px 80px rgba(20, 28, 60, 0.10),
+    0 4px 16px rgba(20, 28, 60, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  animation: ins-cardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ins-cardIn {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── LOTTIE ── */
+.ins-lottie-wrap {
+  width: 160px;
+  margin: 0 auto 18px;
+  opacity: 0.85;
+  animation: ins-float 4.5s ease-in-out infinite;
+}
+@keyframes ins-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* ── BRAND ── */
+.ins-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ins-brand-logo { width: 34px; height: 34px; object-fit: contain; filter: none !important; }
+.ins-brand-text { display: flex; flex-direction: column; gap: 1px; }
+.ins-brand-name { font-size: 16px; font-weight: 700; color: #141c3c; letter-spacing: -0.01em; }
+.ins-brand-sub  { font-size: 11px; color: #9ca3af; font-weight: 400; }
+
+/* ── TABS ── */
+.ins-tabs {
+  position: relative;
+  display: flex;
+  background: rgba(20, 28, 60, 0.05);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 28px;
+}
+.ins-tab {
+  flex: 1;
+  padding: 10px;
+  background: none;
+  border: none;
+  color: rgba(20, 28, 60, 0.38);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 9px;
+  position: relative; z-index: 1;
+  transition: color 0.25s ease;
+  font-family: 'Sora', sans-serif;
+}
+.ins-tab.active { color: #141c3c; }
+.ins-tab-indicator {
+  position: absolute;
+  top: 4px; bottom: 4px;
+  width: calc(50% - 4px);
+  background: #ffffff;
+  border-radius: 9px;
+  border: 1px solid rgba(20, 28, 60, 0.08);
+  box-shadow: 0 2px 8px rgba(20, 28, 60, 0.08);
+  transition: left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ins-tab-indicator.left  { left: 4px; }
+.ins-tab-indicator.right { left: calc(50%); }
+
+/* ── HEADING ── */
+.ins-header { margin-bottom: 22px; }
+.ins-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #141c3c;
+  margin: 0 0 5px;
+  letter-spacing: -0.02em;
+}
+.ins-header h2 em { font-style: normal; color: #3b5bdb; }
+.ins-header p {
+  font-size: 14px;
+  color: rgba(20, 28, 60, 0.45);
+  margin: 0;
+}
+
+/* ── ERROR ── */
+.ins-error {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  color: #dc2626; font-size: 13px;
+  margin-bottom: 16px;
+}
+
+/* ── FORM ── */
+.ins-form { display: flex; flex-direction: column; gap: 0; }
+
+/* ── FIELDS ── */
+.ins-field { margin-bottom: 15px; }
+.ins-field-header { display: flex; justify-content: space-between; align-items: center; }
+.ins-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(20, 28, 60, 0.52);
+  margin-bottom: 7px;
+  letter-spacing: 0.02em;
+}
+
+.ins-input-wrap { position: relative; display: flex; align-items: center; }
+.ins-input-wrap > svg:first-child {
+  position: absolute; left: 13px;
+  color: #a0aec0; pointer-events: none; flex-shrink: 0;
+}
+.ins-input-wrap input {
+  width: 100%;
+  padding: 13px 15px 13px 40px;
+  background: rgba(20, 28, 60, 0.04);
+  border: 1px solid rgba(20, 28, 60, 0.10);
+  border-radius: 10px;
+  color: #141c3c;
+  font-size: 14px;
+  font-family: 'Sora', sans-serif;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.ins-input-wrap input::placeholder { color: rgba(20, 28, 60, 0.22); }
+.ins-input-wrap input:focus {
+  border-color: rgba(59, 91, 219, 0.55);
+  background: rgba(59, 91, 219, 0.03);
+  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.08);
+}
+
+.ins-eye {
+  position: absolute; right: 13px;
+  background: none; border: none; cursor: pointer;
+  color: rgba(20, 28, 60, 0.30);
+  padding: 0; display: flex; align-items: center;
+  transition: color 0.2s ease;
+}
+.ins-eye:hover { color: rgba(20, 28, 60, 0.65); }
+
+/* ── FORGOT ── */
+.ins-forgot-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 12px; color: #3b5bdb; font-weight: 500;
+  transition: opacity 0.2s;
+  font-family: 'Sora', sans-serif;
+}
+.ins-forgot-btn:hover { opacity: 0.75; }
+
+/* ── PASSWORD STRENGTH ── */
+.ins-pw-strength { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.ins-pw-bars { display: flex; gap: 4px; flex: 1; }
+.ins-pw-bar { flex: 1; height: 3px; border-radius: 2px; background: rgba(20,28,60,0.1); transition: background 0.3s; }
+.ins-pw-bar.str-weak   { background: #ef4444; }
+.ins-pw-bar.str-fair   { background: #f97316; }
+.ins-pw-bar.str-good   { background: #3b82f6; }
+.ins-pw-bar.str-strong { background: #22c55e; }
+.ins-pw-label { font-size: 11px; font-weight: 600; min-width: 36px; text-align: right; }
+.ins-pw-label.str-weak   { color: #ef4444; }
+.ins-pw-label.str-fair   { color: #f97316; }
+.ins-pw-label.str-good   { color: #3b82f6; }
+.ins-pw-label.str-strong { color: #22c55e; }
+
+/* ── REMEMBER ROW ── */
+.ins-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.ins-remember {
+  display: flex; align-items: center; gap: 7px;
+  cursor: pointer; font-size: 13px;
+  color: rgba(20, 28, 60, 0.48);
+}
+.ins-remember input[type="checkbox"] {
+  width: 14px; height: 14px;
+  accent-color: #3b5bdb; cursor: pointer;
+}
+
+/* ── TERMS ── */
+.ins-terms {
+  display: flex; align-items: flex-start; gap: 10px;
+  cursor: pointer; font-size: 12px;
+  color: rgba(20, 28, 60, 0.45); line-height: 1.6;
+  margin-bottom: 16px;
+}
+.ins-terms input[type="checkbox"] {
+  width: 14px; height: 14px;
+  margin-top: 2px; accent-color: #3b5bdb;
+  cursor: pointer; flex-shrink: 0;
+}
+.ins-terms a { color: #3b5bdb; text-decoration: none; font-weight: 500; }
+.ins-terms a:hover { text-decoration: underline; }
+
+/* ── SUBMIT ── */
+.ins-submit {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #141c3c 0%, #1e2a52 50%, #3b5bdb 100%);
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Sora', sans-serif;
+  cursor: pointer;
+  margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 20px rgba(59, 91, 219, 0.28);
+}
+.ins-submit:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(59, 91, 219, 0.32);
+}
+.ins-submit:active:not(:disabled) { transform: translateY(0); }
+.ins-submit:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── SPINNER ── */
+.ins-spinner { width: 16px; height: 16px; animation: ins-spin 0.8s linear infinite; flex-shrink: 0; }
+@keyframes ins-spin { to { transform: rotate(360deg); } }
+
+/* ── DIVIDER ── */
+.ins-divider {
+  text-align: center;
+  position: relative;
+  margin-bottom: 14px;
+}
+.ins-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: 1px;
+  background: rgba(20, 28, 60, 0.08);
+}
+.ins-divider span {
+  position: relative;
+  background: #ffffff;
+  padding: 0 12px;
+  font-size: 12px;
+  color: rgba(20, 28, 60, 0.32);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+/* ── GOOGLE ── */
+.ins-google-btn {
+  width: 100%;
+  padding: 13px;
+  background: rgba(20, 28, 60, 0.03);
+  border: 1px solid rgba(20, 28, 60, 0.10);
+  border-radius: 10px;
+  color: #141c3c;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Sora', sans-serif;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-bottom: 20px;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+.ins-google-btn:hover:not(:disabled) {
+  background: rgba(20, 28, 60, 0.06);
+  border-color: rgba(59, 91, 219, 0.25);
+  transform: translateY(-1px);
+}
+.ins-google-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── SWITCH ── */
+.ins-switch {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(20, 28, 60, 0.40);
+  margin: 0;
+}
+.ins-switch span { color: #3b5bdb; cursor: pointer; font-weight: 600; }
+.ins-switch span:hover { opacity: 0.8; }
+
+/* ── FOOTER NOTE ── */
+.ins-footer-note {
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  font-size: 11px; color: rgba(20, 28, 60, 0.22); margin-top: 26px;
+}
+
+/* ── HIDE OLD TWO-COLUMN LEFT/RIGHT ── */
+.ins-left, .ins-right, .ins-right-bg, .ins-right-inner, .ins-tagline { display: none !important; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 540px) {
+  .ins-card {
+    padding: 32px 24px 26px;
+    border-radius: 20px;
+  }
+  .ins-lottie-wrap { width: 130px; }
+  .ins-header h2 { font-size: 24px; }
+}
+@media (max-width: 380px) {
+  .ins-card { padding: 28px 18px 22px; }
+  .ins-lottie-wrap { width: 110px; }
+}

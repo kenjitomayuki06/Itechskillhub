@@ -1,0 +1,120 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* ================================
+     BRAND COLORS
+  ================================ */
+  --color-primary:        #5B4A9E;   /* main purple — buttons, accents */
+  --color-primary-light:  #7B6BBD;   /* hover states, softer accents */
+  --color-primary-dark:   #262c4a;   /* deep navy — sidebar, backgrounds */
+  --color-accent:         #ff7a18;   /* orange — highlights, badges */
+  --color-accent-hover:   #e86a10;   /* orange hover */
+
+  /* ================================
+     NAVBAR / DASHBOARD BG
+  ================================ */
+  --color-nav-bg:         #1e2340;   /* solid navbar background */
+  --color-sidebar-bg:     #1a1f35;   /* sidebar background */
+
+  /* ================================
+     SEMANTIC COLORS
+  ================================ */
+  --color-success:        #10b981;   /* green — success, active */
+  --color-success-alt:    #27ae60;   /* green alt */
+  --color-info:           #3b82f6;   /* blue — info, links */
+  --color-info-dark:      #2563eb;   /* blue darker */
+  --color-warning:        #f59e0b;   /* yellow — warnings */
+  --color-danger:         #e74c3c;   /* red — errors, delete */
+  --color-danger-light:   #ff6b6b;   /* red lighter */
+
+  /* ================================
+     TEXT COLORS
+  ================================ */
+  --text-primary:         #1f2937;   /* main body text */
+  --text-secondary:       #6b7280;   /* subtitles, labels */
+  --text-muted:           #9ca3af;   /* placeholders, hints */
+  --text-dark:            #2d3436;   /* headings */
+  --text-white:           #ffffff;
+
+  /* ================================
+     BACKGROUND / SURFACE
+  ================================ */
+  --bg-page:              #ffffff;
+  --bg-subtle:            #f9fafb;   /* light page bg */
+  --bg-card:              #f3f4f6;   /* card backgrounds */
+  --bg-input:             #fafafa;   /* input fields */
+
+  /* ================================
+     BORDERS
+  ================================ */
+  --border-light:         #e5e7eb;
+  --border-mid:           #d1d5db;
+  --border-dark:          #dde1ef;
+
+  /* ================================
+     BORDER RADIUS
+  ================================ */
+  --radius-sm:            8px;
+  --radius-md:            12px;
+  --radius-lg:            16px;
+  --radius-xl:            20px;
+  --radius-full:          50%;
+
+  /* ================================
+     FONT SIZES
+  ================================ */
+  --text-xs:              11px;
+  --text-sm:              13px;
+  --text-base:            14px;
+  --text-md:              15px;
+  --text-lg:              16px;
+  --text-xl:              18px;
+  --text-2xl:             20px;
+  --text-3xl:             24px;
+  --text-4xl:             28px;
+  --text-5xl:             32px;
+
+  /* ================================
+     FONT WEIGHTS
+  ================================ */
+  --font-normal:          400;
+  --font-medium:          500;
+  --font-semibold:        600;
+  --font-bold:            700;
+  --font-extrabold:       800;
+
+  /* ================================
+     TRANSITIONS
+  ================================ */
+  --transition-fast:      all 0.2s ease;
+  --transition-base:      all 0.3s ease;
+  --transition-smooth:    all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  background: var(--bg-page);
+  min-height: 100vh;
+  font-family: 'Sora', sans-serif;
+  overflow-y: auto;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  height: auto;
+}
+
+.page-content {
+  isolation: isolate;
+}
+
+/* Covers LP1's fixed background for LP2, LP3 and Footer */
+.home-cover {
+  position: relative;
+  z-index: 1;
+  background-color: #ffffff;
+}
