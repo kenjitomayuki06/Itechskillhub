@@ -32,7 +32,8 @@ export async function getUserbyEmailPassController(req, res) {
         user: {  // <--- THIS IS THE "RESPONSE KEY". It must be "user"
         id: userData.user_id,          
         email: userData.email_address, 
-        role: userData.role            
+        role: userData.role,    
+        fullname: userData.full_name            
     }
 });
 

@@ -4,6 +4,7 @@ import loginRouter from "./routes/loginRoute.js";
 import cors from "cors";
 import registerRouter from "./routes/accountRoute.js";
 import courseRouter from "./routes/courseRoute.js";
+import assignmentRouter from "./routes/assignmentRoute.js";
 
 
 
@@ -24,6 +25,7 @@ const app = express();
     app.use("/api/auth", loginRouter);
     app.use("/api", registerRouter);
     app.use("/api/courses", courseRouter);
+    app.use("/api", assignmentRouter);
 
 
 
