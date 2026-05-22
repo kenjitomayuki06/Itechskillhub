@@ -16,9 +16,10 @@ const coursesData = [
     rating: "0",
     modules: "4 Modules",
     lessons: "16 Lessons",
-    badge: "Bestseller",
+    badge: "TESDA Certified",
+    badgeType: "certified",
     free: true,
-    route: "/course/css-ncii", // Added route property
+    route: "/course/css-ncii",
   },
   {
     id: 2,
@@ -32,8 +33,10 @@ const coursesData = [
     rating: "0",
     modules: "3 Modules",
     lessons: "8 Lessons",
+    badge: "Hands-On",
+    badgeType: "handson",
     free: true,
-    route: "/course/pc-hardware", // Added route property (for future use)
+    route: "/course/pc-hardware",
   },
   {
     id: 3,
@@ -47,9 +50,10 @@ const coursesData = [
     rating: "0",
     modules: "3 Modules",
     lessons: "6 Lessons",
-    badge: "New",
+    badge: "In Demand",
+    badgeType: "indemand",
     free: true,
-    route: "/course/network-setup", // Added route property
+    route: "/course/network-setup",
   },
   {
     id: 4,
@@ -63,8 +67,10 @@ const coursesData = [
     rating: "0",
     modules: "3 Modules",
     lessons: "6 Lessons",
+    badge: "Quick Start",
+    badgeType: "quickstart",
     free: true,
-    route: "/course/os-installation", // Added route property (for future use)
+    route: "/course/os-installation",
   },
 ];
 

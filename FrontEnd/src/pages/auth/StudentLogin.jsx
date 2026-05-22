@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../../styles/pages/auth/studentLogin.css'
+import toast from "react-hot-toast";
+import '../../styles/pages/auth/studentLogin.css';
 import Logo from "../../assets/Logo1.svg";
 import Lottie from "lottie-react";
 import techAnim from "../../assets/tech.json";
@@ -9,6 +10,7 @@ import { loginWithEmail, registerUser } from "../../services/authService";
 export default function StudentLogin() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -18,52 +20,82 @@ export default function StudentLogin() {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    console.log("Attempting login...");
-    try {
-      // This calls your authService.js
-      const user = await loginWithEmail({ email, password });
-     if (user) {
-     sessionStorage.setItem("studentLoggedIn", "true");
 
-     // CHANGE THESE TWO LINES:
-     sessionStorage.setItem("userName", user.displayName || "instructor"); 
-     sessionStorage.setItem("userEmail", email); 
-      // If this is for an instructor, make sure you navigate to the right place:
-      navigate("/"); 
+    if (!email.trim() || !password) {
+      toast.error("Please enter your email and password.");
+      return;
     }
+
+    setIsLoading(true);
+    const toastId = toast.loading("Signing in...");
+
+    try {
+      const user = await loginWithEmail({ email, password });
+
+      if (user) {
+        toast.success("Welcome back! Redirecting...", { id: toastId });
+
+        // Redirect based on role returned from backend
+        const role = user.role || "student";
+        if (role === "admin") {
+          navigate("/admin/dashboard");
+        } else if (role === "instructor") {
+          navigate("/instructor/dashboard");
+        } else {
+          navigate("/student/dashboard");
+        }
+      }
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "Login failed. Please try again.", { id: toastId });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSignUp = async (e) => {
-  e.preventDefault();
-  
-  if (password !== confirmPassword) {
-    alert("Passwords do not match!");
-    return;
-  }
+    e.preventDefault();
 
-  console.log("Attempting registration...");
-  try {
-    const user = await registerUser({ 
-      name: fullName, 
-      email, 
-      password, 
-      role: 'student' // Default to student for now, can add toggle later
-    });
-
-    if (user) {
-     // ADD/UPDATE THESE LINES:
-      sessionStorage.setItem("userName", fullName); 
-      sessionStorage.setItem("userEmail", email);
-  
-      alert("Registration successful!");
-      setIsSignUp(false);
+    if (!fullName.trim()) {
+      toast.error("Please enter your full name.");
+      return;
     }
-  } catch (err) {
-    alert(err.message || "Registration failed");
-  }
+    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+
+    setIsLoading(true);
+    const toastId = toast.loading("Creating your account...");
+
+    try {
+      const user = await registerUser({
+        name: fullName,
+        email,
+        password,
+        role: 'student',
+      });
+
+      if (user) {
+        toast.success("Account created! You can now sign in.", { id: toastId });
+        setIsSignUp(false);
+        setEmail("");
+        setPassword("");
+        setFullName("");
+        setConfirmPassword("");
+      }
+    } catch (err) {
+      toast.error(err.message || "Registration failed. Please try again.", { id: toastId });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -114,9 +146,12 @@ export default function StudentLogin() {
 
             <div className="auth-field">
               <label>Email address</label>
-              <input type="email" placeholder="name@email.com" 
+              <input
+                type="email"
+                placeholder="name@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
             </div>
 
@@ -128,11 +163,13 @@ export default function StudentLogin() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
                 />
                 <button
                   className="eye-btn"
                   onClick={() => setShowPassword(!showPassword)}
                   type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -151,11 +188,17 @@ export default function StudentLogin() {
               <span className="auth-forgot">Forgot password?</span>
             </div>
 
-            <button className="auth-submit"onClick={handleSignIn}>Sign In</button>
+            <button
+              className="auth-submit"
+              onClick={handleSignIn}
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing in..." : "Sign In"}
+            </button>
 
             <div className="auth-divider"><span>or continue with</span></div>
 
-            <button className="auth-google">
+            <button className="auth-google" type="button" disabled={isLoading}>
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
                 <path d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84c-.21 1.13-.84 2.08-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.87 2.7-6.62z" fill="#4285F4"/>
                 <path d="M9 18c2.43 0 4.47-.81 5.96-2.18l-2.9-2.26c-.81.54-1.84.86-3.06.86-2.34 0-4.32-1.58-5.03-3.71H.96v2.33C2.44 15.98 5.48 18 9 18z" fill="#34A853"/>
@@ -181,21 +224,23 @@ export default function StudentLogin() {
 
             <div className="auth-field">
               <label>Full Name</label>
-              <input 
-               type="text" 
-               placeholder="Juan dela Cruz" 
-               value={fullName} 
-               onChange={(e) => setFullName(e.target.value)} 
+              <input
+                type="text"
+                placeholder="Juan dela Cruz"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                disabled={isLoading}
               />
             </div>
 
             <div className="auth-field">
               <label>Email address</label>
-              <input 
-                type="email" 
-                placeholder="name@email.com" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
+              <input
+                type="email"
+                placeholder="name@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
             </div>
 
@@ -207,11 +252,13 @@ export default function StudentLogin() {
                   placeholder="Create a strong password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
                 />
                 <button
                   className="eye-btn"
                   onClick={() => setShowPassword(!showPassword)}
                   type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -225,10 +272,11 @@ export default function StudentLogin() {
             <div className="auth-field">
               <label>Confirm Password</label>
               <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Create a strong password"
-                  value={confirmPassword} // Add this
-                  onChange={(e) => setConfirmPassword(e.target.value)} // Add this
+                type={showPassword ? "text" : "password"}
+                placeholder="Repeat your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
 
@@ -237,8 +285,12 @@ export default function StudentLogin() {
               <span>Terms of Service</span> and <span>Privacy Policy</span>.
             </p>
 
-            <button className="auth-submit" onClick={handleSignUp}>
-                Create Account
+            <button
+              className="auth-submit"
+              onClick={handleSignUp}
+              disabled={isLoading}
+            >
+              {isLoading ? "Creating Account..." : "Create Account"}
             </button>
 
             <p className="auth-switch">

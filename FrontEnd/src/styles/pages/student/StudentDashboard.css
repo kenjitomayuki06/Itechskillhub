@@ -1,0 +1,591 @@
+/* ================================================================
+   StudentDashboard.css — ITechSkillsHub
+   Styles for the Student Dashboard page
+================================================================ */
+
+.student-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 4px 0 32px;
+}
+
+/* ── Welcome Banner ── */
+.student-welcome-banner {
+  background: linear-gradient(135deg, #1a1f35 0%, #2d1f6e 60%, #1a1f35 100%);
+  border-radius: 16px;
+  padding: 32px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.student-welcome-banner::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(91, 74, 158, 0.35) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.welcome-greeting {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 500;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.welcome-name {
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.welcome-sub {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.welcome-sub strong {
+  color: #ff7a18;
+  font-weight: 700;
+}
+
+.welcome-stats-mini {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.mini-stat {
+  text-align: center;
+}
+
+.mini-stat-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.mini-stat-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+.mini-stat-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Stats Grid ── */
+.student-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1100px) {
+  .student-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .student-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.student-stat-card {
+  background: #fff;
+  border: 1px solid #e8e4f8;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.student-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(91, 74, 158, 0.1);
+}
+
+.sstat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.student-stat-blue .sstat-icon {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.student-stat-green .sstat-icon {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.student-stat-purple .sstat-icon {
+  background: rgba(91, 74, 158, 0.1);
+  color: #5b4a9e;
+}
+
+.student-stat-orange .sstat-icon {
+  background: rgba(255, 122, 24, 0.1);
+  color: #ff7a18;
+}
+
+.sstat-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1a1f35;
+  line-height: 1;
+}
+
+.sstat-label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+/* ── Main Grid Layout ── */
+.student-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .student-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.student-left-col,
+.student-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Card Base ── */
+.student-card {
+  background: #fff;
+  border: 1px solid #e8e4f8;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.student-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.student-card-header h2 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1f35;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.student-card-header h2 svg {
+  color: #5b4a9e;
+}
+
+.student-card-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: #5b4a9e;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  font-family: inherit;
+}
+
+.student-card-link:hover {
+  text-decoration: underline;
+}
+
+.student-card-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f5f3ff;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* ── Course Items ── */
+.courses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.course-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid #f0eeff;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.course-item:hover {
+  background: #faf8ff;
+  box-shadow: 0 4px 12px rgba(91, 74, 158, 0.08);
+  transform: translateY(-1px);
+}
+
+.course-item-completed {
+  background: rgba(16, 185, 129, 0.03);
+  border-color: rgba(16, 185, 129, 0.15);
+}
+
+.course-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.course-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.course-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.course-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1a1f35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.course-badge-done {
+  font-size: 10px;
+  font-weight: 700;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.course-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.course-category {
+  font-size: 11px;
+  color: #5b4a9e;
+  font-weight: 600;
+  background: rgba(91, 74, 158, 0.08);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.course-activity {
+  font-size: 11px;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.course-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.course-progress-bar {
+  flex: 1;
+  height: 5px;
+  background: #f0eeff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.course-progress-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.course-progress-text {
+  font-size: 11px;
+  color: #9ca3af;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.course-continue-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.course-continue-btn:hover {
+  transform: scale(1.08);
+  opacity: 0.9;
+}
+
+/* ── Deadlines ── */
+.deadlines-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.deadline-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+}
+
+.deadline-urgent {
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.15);
+}
+
+.deadline-soon {
+  background: rgba(245, 158, 11, 0.05);
+  border-color: rgba(245, 158, 11, 0.15);
+}
+
+.deadline-normal {
+  background: #faf9ff;
+  border-color: #f0eeff;
+}
+
+.deadline-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.deadline-urgent .deadline-dot {
+  background: #ef4444;
+}
+
+.deadline-soon .deadline-dot {
+  background: #f59e0b;
+}
+
+.deadline-normal .deadline-dot {
+  background: #5b4a9e;
+}
+
+.deadline-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.deadline-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1f35;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deadline-course {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.deadline-due {
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.deadline-urgent .deadline-due {
+  color: #ef4444;
+}
+
+.deadline-soon .deadline-due {
+  color: #d97706;
+}
+
+.deadline-normal .deadline-due {
+  color: #6b7280;
+}
+
+/* ── Activity Feed ── */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f3ff;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-emoji {
+  font-size: 16px;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.activity-message {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.5;
+  margin-bottom: 3px;
+}
+
+.activity-time {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+/* ── Games Promo Card ── */
+.student-card-promo {
+  background: linear-gradient(135deg, #1a1f35 0%, #2d1f6e 100%);
+  border-color: transparent;
+}
+
+.promo-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.promo-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.promo-content h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.promo-content p {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.55;
+}
+
+.promo-btn {
+  width: 100%;
+  padding: 11px 20px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+
+.promo-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Mobile Responsive ── */
+@media (max-width: 768px) {
+  .student-welcome-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+  }
+
+  .welcome-stats-mini {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .student-card {
+    padding: 18px;
+  }
+}

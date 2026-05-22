@@ -1,14 +1,14 @@
-  import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
   import {
     Plus, Clock, CheckCircle, Eye, Download,
     Filter, BookOpen, X, AlertCircle
   } from 'lucide-react';
   import DataTable from '../../components/common/DataTable';
   import Modal from '../../components/common/Modal';
-  import { getToken, getUser } from '../../services/authService';
+  import { getToken, getUser, apiFetch } from '../../services/authService';
+import toast from 'react-hot-toast';
   import '../../styles/instructor/InstructorAssignments.css';
 
-  const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
   export default function InstructorAssignments() {
     const [selectedFilter, setSelectedFilter] = useState('all');
@@ -43,15 +43,7 @@
       setLoading(true);
       setError(null);
       try {
-        const token = getToken();
-        const res = await fetch(`${BASE_URL}/api/assignments`, {
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Failed to fetch assignments.');
+        const data = await apiFetch('/api/assignments');
         // Support both array response and { assignments: [...] } shape
         const list = Array.isArray(data) ? data : (data.assignments ?? []);
         setAssignments(list);
@@ -86,14 +78,9 @@
     const handleCreateAssignment = async () => {
       if (!newAssignment.title || !newAssignment.course || !newAssignment.dueDate) return;
       try {
-        const token = getToken();
         const user = getUser();
-        const res = await fetch(`${BASE_URL}/api/assignments`, {
+        await apiFetch('/api/assignments', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
           body: JSON.stringify({
             assignment: newAssignment.title,
             module_id: newAssignment.course,
@@ -103,8 +90,6 @@
             role: 'instructor'
           }),
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Failed to create assignment.');
 
         // ✅ Re-fetch so new assignment appears in the list immediately
         await fetchAssignments();
@@ -112,7 +97,7 @@
         setIsCreateModalOpen(false);
       } catch (err) {
         console.error('handleCreateAssignment error:', err);
-        alert('Error creating assignment: ' + err.message);
+        toast.error('Error creating assignment: ' + err.message);
       }
     };
 

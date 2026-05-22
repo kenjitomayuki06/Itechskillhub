@@ -1,23 +1,21 @@
 /* ============================================================
    authService.js — ITechSkillsHub
-   Centralized auth functions — API-ready for Node.js backend
+   Centralized authentication functions — API-ready for Node.js backend
 
-   PARA SA BACKEND TEAMMATE:
-   Palitan lang yung BASE_URL ng actual server URL ninyo.
-   Endpoints needed:
-     POST /api/auth/login        → { email, password } → { token, user }
-     POST /api/auth/register     → { name, email, password, role } → { token, user }
-     POST /api/auth/google       → { tokenId } → { token, user }
-     POST /api/auth/forgot-password → { email } → { message }
-     GET  /api/auth/me           → headers: Authorization: Bearer <token> → { user }
+   Backend Endpoints Required:
+     POST /api/auth/login             → { email, password }          → { token, user }
+     POST /api/auth/register          → { name, email, password, role } → { token, user }
+     POST /api/auth/google            → { tokenId }                  → { token, user }
+     POST /api/auth/forgot-password   → { email }                    → { message }
+     GET  /api/auth/me                → Authorization: Bearer <token> → { user }
 
-   PARA SA ADMIN ACCOUNT:
-   Hindi nagre-register ang admin sa frontend.
-   Ang admin account ay ini-assign ng backend dev direkta
-   sa database gamit ang seed script. Example:
-     email:    "admin@itechskillshub.com"
-     password: (bcrypt hashed)
-     role:     "admin"
+   Admin Account Setup:
+     Admin accounts are seeded directly in the database by the backend team.
+     They are NOT created through this registration flow.
+     Example seed:
+       email:    "admin@itechskillshub.com"
+       password: (bcrypt hashed)
+       role:     "admin"
    ============================================================ */
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -38,7 +36,7 @@ export const removeUser = () => localStorage.removeItem('user');
 export const isAuthenticated = () => !!getToken();
 
 /* ── Generic fetch wrapper ── */
-async function apiFetch(endpoint, options = {}) {
+export async function apiFetch(endpoint, options = {}) {
   const token = getToken();
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     headers: {
@@ -56,23 +54,18 @@ async function apiFetch(endpoint, options = {}) {
 
 /* ── Login with Email + Password ── */
 export const loginWithEmail = async (credentials) => {
-  // Use the apiFetch wrapper to hit the new endpoint
   const data = await apiFetch('/api/auth/login', {
     method: 'POST',
     body: JSON.stringify({
       email: credentials.email,
-      password: credentials.password
+      password: credentials.password,
     }),
   });
 
-  // Log the data to see it in your console
-  console.log("Login Success:", data);
-
-  if (data.token) localStorage.setItem('authToken', data.token);
-  if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
-  return data.user; 
+  if (data.token) setToken(data.token);
+  if (data.user)  setUser(data.user);
+  return data.user;
 };
-
 
 /* ── Register (instructors and students only) ── */
 export async function registerUser({ name, email, password, role = 'instructor' }) {
