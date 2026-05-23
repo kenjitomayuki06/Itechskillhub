@@ -1,0 +1,197 @@
+/* ============================================================
+   SkeletonLoader.css — shimmer loading placeholders
+   ============================================================ */
+
+/* ── Shimmer base ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-card)         0%,
+    var(--border-mid)      40%,
+    var(--bg-card)         80%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ── Stat card skeleton ── */
+.stat-card-skeleton {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.sks-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ── Stats grid skeleton ── */
+.stats-grid-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* ── Chart skeleton ── */
+.chart-skeleton {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  height: 100%;
+}
+
+.chart-skeleton-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.chart-skeleton-bar-wrap {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.chart-skeleton-bar-wrap .skeleton-shimmer {
+  width: 100%;
+}
+
+/* ── Table skeleton ── */
+.table-skeleton-wrap {
+  padding: 8px 0;
+}
+
+.table-skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.table-skeleton-row:last-child {
+  border-bottom: none;
+}
+
+/* ── Course item skeleton ── */
+.course-item-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.course-item-skeleton:last-child {
+  border-bottom: none;
+}
+
+.cis-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Activity item skeleton ── */
+.activity-item-skeleton {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.activity-item-skeleton:last-child {
+  border-bottom: none;
+}
+
+.ais-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Full dashboard skeleton wrappers ── */
+.dashboard-skeleton {
+  padding: 0;
+}
+
+.dsk-header {
+  margin-bottom: 24px;
+}
+
+.dsk-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.dsk-chart-card {
+  min-height: 300px;
+}
+
+.dsk-activity-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.dsk-welcome {
+  background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08), rgba(var(--color-primary-rgb), 0.03));
+  border: 1px solid rgba(var(--color-primary-rgb), 0.12);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.dsk-welcome-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.dsk-welcome-stat {
+  text-align: center;
+}
+
+.dsk-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dsk-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .dsk-charts-row,
+  .dsk-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dsk-welcome {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

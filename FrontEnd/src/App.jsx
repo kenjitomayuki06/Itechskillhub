@@ -1,5 +1,6 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -56,18 +57,18 @@ import NotFound from "./pages/NotFound";
 function App() {
   const location = useLocation();
 
-  const hideLayout =
-    location.pathname === "/auth" ||
-    location.pathname.startsWith("/admin") ||
-    location.pathname.startsWith("/instructor") ||
-    location.pathname.startsWith("/student");
+  // Routes that use their own full-screen layout (no shared Navbar/Footer)
+  const HIDE_LAYOUT_PREFIXES = ['/auth', '/admin', '/instructor', '/student'];
+  const hideLayout = HIDE_LAYOUT_PREFIXES.some(prefix =>
+    location.pathname === prefix || location.pathname.startsWith(prefix + '/')
+  );
 
   return (
     <>
       {!hideLayout && <Navbar />}
 
       <Routes>
-        {/* HOME */}
+        {/* HOME — public */}
         <Route
           path="/"
           element={
@@ -81,18 +82,18 @@ function App() {
           }
         />
 
+        {/* ABOUT — public */}
+        <Route path="/about" element={<About />} />
+
         {/* STUDENT AUTH */}
         <Route path="/auth" element={<StudentLogin />} />
 
-        {/* COURSES */}
+        {/* COURSES — public (login wall only on interactive actions inside) */}
         <Route path="/course/*" element={<Course />} />
 
-        {/* ABOUT */}
-        <Route path="/about" element={<About />} />
-
-        {/* RESOURCES */}
+        {/* RESOURCES — public */}
         <Route path="/games" element={<Games />} />
-        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog"  element={<Blog />} />
 
         {/* ADMIN LOGIN */}
         <Route path="/admin/login" element={<AdminLogin />} />
@@ -102,20 +103,23 @@ function App() {
           path="/admin"
           element={
             <ProtectedRoute role="admin">
-              <DashboardLayout userRole="admin" />
+              <ErrorBoundary>
+                <DashboardLayout userRole="admin" />
+              </ErrorBoundary>
             </ProtectedRoute>
           }
         >
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="users" element={<AdminUsers />} />
-          <Route path="courses" element={<AdminCourses />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard"   element={<AdminDashboard />} />
+          <Route path="users"       element={<AdminUsers />} />
+          <Route path="courses"     element={<AdminCourses />} />
           <Route path="assignments" element={<AdminAssignments />} />
-          <Route path="analytics" element={<AdminAnalytics />} />
-          <Route path="settings" element={<AdminSettings />} />
+          <Route path="analytics"   element={<AdminAnalytics />} />
+          <Route path="settings"    element={<AdminSettings />} />
         </Route>
 
         {/* INSTRUCTOR AUTH */}
-        <Route path="/instructor/login" element={<InstructorLogin />} />
+        <Route path="/instructor/login"    element={<InstructorLogin />} />
         <Route path="/instructor/register" element={<InstructorRegister />} />
 
         {/* INSTRUCTOR DASHBOARD ROUTES — protected */}
@@ -123,15 +127,18 @@ function App() {
           path="/instructor"
           element={
             <ProtectedRoute role="instructor">
-              <DashboardLayout userRole="instructor" />
+              <ErrorBoundary>
+                <DashboardLayout userRole="instructor" />
+              </ErrorBoundary>
             </ProtectedRoute>
           }
         >
-          <Route path="dashboard" element={<InstructorDashboard />} />
-          <Route path="courses" element={<InstructorMyCourses />} />
-          <Route path="students" element={<InstructorStudents />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard"   element={<InstructorDashboard />} />
+          <Route path="courses"     element={<InstructorMyCourses />} />
+          <Route path="students"    element={<InstructorStudents />} />
           <Route path="assignments" element={<InstructorAssignments />} />
-          <Route path="reports" element={<InstructorReports />} />
+          <Route path="reports"     element={<InstructorReports />} />
         </Route>
 
         {/* STUDENT DASHBOARD ROUTES — protected */}
@@ -139,10 +146,13 @@ function App() {
           path="/student"
           element={
             <ProtectedRoute role="student">
-              <DashboardLayout userRole="student" />
+              <ErrorBoundary>
+                <DashboardLayout userRole="student" />
+              </ErrorBoundary>
             </ProtectedRoute>
           }
         >
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard"     element={<StudentDashboard />} />
           <Route path="courses"       element={<StudentCourses />} />
           <Route path="assignments"   element={<StudentAssignments />} />

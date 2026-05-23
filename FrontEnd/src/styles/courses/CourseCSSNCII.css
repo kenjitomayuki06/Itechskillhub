@@ -1,6 +1,6 @@
 /* ============================================
    COURSE DETAIL — ITECHSKILLSHUB
-   System palette: Navy #1e2340 | Purple #5B4A9E | Orange #ff7a18
+   System palette: Navy var(--color-nav-bg) | Purple var(--color-primary) | Orange var(--color-accent)
    Font: Sora
 ============================================ */
 
@@ -8,19 +8,19 @@
   --lms-bg:           #0d1020;
   --lms-surface:      #131829;
   --lms-surface-2:    #1a2035;
-  --lms-nav:          #1e2340;
-  --lms-purple:       #5B4A9E;
-  --lms-purple-l:     #7B6BBD;
-  --lms-purple-dim:   rgba(91,74,158,0.15);
-  --lms-purple-bdr:   rgba(91,74,158,0.35);
-  --lms-orange:       #ff7a18;
+  --lms-nav:          var(--color-nav-bg);
+  --lms-purple:       var(--color-primary);
+  --lms-purple-l:     var(--color-primary-light);
+  --lms-purple-dim:   rgba(var(--color-primary-rgb), 0.15);
+  --lms-purple-bdr:   rgba(var(--color-primary-rgb), 0.35);
+  --lms-orange:       var(--color-accent);
   --lms-orange-dim:   rgba(255,122,24,0.14);
   --lms-orange-bdr:   rgba(255,122,24,0.35);
-  --lms-green:        #10b981;
+  --lms-green:        var(--color-success);
   --lms-green-dim:    rgba(16,185,129,0.12);
-  --lms-blue:         #3b82f6;
-  --lms-border:       rgba(91,74,158,0.18);
-  --lms-border-h:     rgba(91,74,158,0.4);
+  --lms-blue:         var(--color-info);
+  --lms-border:       rgba(var(--color-primary-rgb), 0.18);
+  --lms-border-h:     rgba(var(--color-primary-rgb), 0.4);
   --lms-t1:           #f0f4ff;
   --lms-t2:           #94a3b8;
   --lms-t3:           #475569;
@@ -29,9 +29,9 @@
   --lms-radius-sm:    8px;
   --lms-ease:         0.22s cubic-bezier(.4,0,.2,1);
 
-  --status-pending:   #f59e0b;
-  --status-submitted: #3b82f6;
-  --status-graded:    #10b981;
+  --status-pending:   var(--color-warning);
+  --status-submitted: var(--color-info);
+  --status-graded:    var(--color-success);
 }
 
 * { box-sizing: border-box; }
@@ -156,7 +156,7 @@
   border-radius: var(--lms-radius);
   padding: 1.5rem;
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .crs-prog-card-top {
@@ -171,7 +171,7 @@
 
 .crs-prog-track {
   width: 100%; height: 6px;
-  background: #e5e7eb;
+  background: var(--border-light);
   border-radius: 100px;
   margin-bottom: 1.25rem;
   overflow: hidden;
@@ -190,8 +190,8 @@
   margin-bottom: 1.25rem;
 }
 .crs-prog-item {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
   border-radius: var(--lms-radius-sm);
   padding: 10px 12px;
   text-align: center;
@@ -204,7 +204,7 @@
 }
 .crs-prog-lbl {
   font-size: 11px;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-top: 2px;
   display: block;
 }
@@ -227,7 +227,7 @@
   cursor: pointer;
   transition: background var(--lms-ease);
 }
-.crs-rate-btn:hover { background: #e86a10; }
+.crs-rate-btn:hover { background: var(--color-accent-hover); }
 
 /* ── BODY ── */
 .crs-body {
@@ -968,4 +968,67 @@
   .crs-hero-inner { padding: 0 1rem; }
   .crs-body       { padding: 0 1rem 3rem; }
   .crs-hero-stats { flex-direction: column; }
+}
+/* ── Login Wall Modal ── */
+.crs-login-wall {
+  text-align: center;
+  max-width: 360px;
+  padding: 36px 32px;
+}
+
+.crs-login-wall-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.crs-login-wall h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+.crs-login-wall p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.crs-login-wall-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.crs-login-wall-primary {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.crs-login-wall-primary:hover {
+  background: var(--color-primary-light);
+}
+
+.crs-login-wall-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  padding: 11px 0;
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.crs-login-wall-secondary:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
 }

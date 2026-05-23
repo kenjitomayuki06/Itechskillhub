@@ -7,21 +7,10 @@ const Navbar = () => {
   const [scrolled, setScrolled]               = useState(false);
   const [showResources, setShowResources]     = useState(false);
   const [menuOpen, setMenuOpen]               = useState(false);
-  const [showStudentToast, setShowStudentToast] = useState(false);
   const location  = useLocation();
   const navigate  = useNavigate();
 
-  // Check if student just logged in
-  useEffect(() => {
-    if (sessionStorage.getItem("studentLoggedIn") === "true") {
-      setShowStudentToast(true);
-      // Remove flag so toast only shows once
-      sessionStorage.removeItem("studentLoggedIn");
-      // Auto-hide after 4 seconds
-      const timer = setTimeout(() => setShowStudentToast(false), 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [location]);
+  // (student toast removed — studentLoggedIn flag was never set by StudentLogin)
 
   const isHome    = location.pathname === "/";
   const isAbout   = location.pathname === "/about";
@@ -66,15 +55,6 @@ const Navbar = () => {
 
   return (
     <nav className={`navbar ${isTransparent ? `navbar-transparent ${pageClass}` : 'navbar-solid'}`}>
-
-      {/* STUDENT LOGIN TOAST */}
-      {showStudentToast && (
-        <div className="student-toast">
-          <span className="student-toast-icon">✓</span>
-          You're logged in as a Student
-          <button className="student-toast-close" onClick={() => setShowStudentToast(false)}>×</button>
-        </div>
-      )}
 
       {/* LEFT — LOGO */}
       <div className="navbar-left">

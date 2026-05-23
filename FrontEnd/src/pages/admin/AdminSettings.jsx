@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Save, Bell, Globe, Palette, Shield, Database, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { apiFetch } from '../../services/authService';
 import '../../styles/admin/AdminSettings.css';
 
 export default function AdminSettings() {
@@ -37,11 +38,16 @@ export default function AdminSettings() {
     setIsSaving(true);
     const toastId = toast.loading('Saving settings...');
     try {
-      // Simulate API call — replace with real API when backend is ready
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // TODO (backend): PUT /api/admin/settings
+      // Body: full settings object (see state above)
+      // Returns: { message: 'Settings saved successfully' }
+      await apiFetch('/api/admin/settings', {
+        method: 'PUT',
+        body: JSON.stringify(settings),
+      });
       toast.success('Settings saved successfully!', { id: toastId });
-    } catch {
-      toast.error('Failed to save settings. Please try again.', { id: toastId });
+    } catch (err) {
+      toast.error(err.message || 'Failed to save settings. Please try again.', { id: toastId });
     } finally {
       setIsSaving(false);
     }

@@ -5,7 +5,7 @@ import {
   BookOpen, Award, TrendingUp, Clock,
   CheckCircle, AlertCircle, Shield
 } from 'lucide-react';
-import { getUser, setUser, apiFetch } from '../../services/authService';
+import { getUser, setUser, apiFetch, getToken } from '../../services/authService';
 import toast from 'react-hot-toast';
 import '../../styles/pages/student/StudentProfile.css';
 
@@ -79,16 +79,24 @@ export default function StudentProfile() {
     setSaveError('');
     setSaveSuccess('');
     try {
-      const token = getToken();
-      // Replace this block with a real PATCH /api/auth/me call when backend is ready
-      await new Promise((r) => setTimeout(r, 900));
-      const updated = {
-        ...currentUser,
-        ...form,
-        ...(avatarPreview ? { avatar: avatarPreview } : {}),
-      };
-      setUser(updated);
-      setCurrentUser(updated);
+      // TODO (backend): needs PATCH /api/auth/me
+      // Body: { name, email, phone, address, bio, birthday }
+      // Returns: updated user object
+      const updated = await apiFetch('/api/auth/me', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          name:     form.name,
+          email:    form.email,
+          phone:    form.phone,
+          address:  form.address,
+          bio:      form.bio,
+          birthday: form.birthday,
+          ...(avatarPreview ? { avatar: avatarPreview } : {}),
+        }),
+      });
+      const merged = { ...currentUser, ...form, ...(avatarPreview ? { avatar: avatarPreview } : {}), ...updated };
+      setUser(merged);
+      setCurrentUser(merged);
       setSaveSuccess('Profile updated successfully!');
       setIsEditing(false);
       setAvatarPreview(null);
@@ -123,8 +131,16 @@ export default function StudentProfile() {
     if (pwForm.newPw !== pwForm.confirm) { setPwError('Passwords do not match.'); return; }
     setPwSaving(true);
     try {
-      // Replace with real PATCH /api/auth/change-password call when backend is ready
-      await new Promise((r) => setTimeout(r, 900));
+      // TODO (backend): needs PATCH /api/auth/change-password
+      // Body: { currentPassword, newPassword }
+      // Returns: { message: 'Password changed successfully' }
+      await apiFetch('/api/auth/change-password', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          currentPassword: pwForm.current,
+          newPassword:     pwForm.newPw,
+        }),
+      });
       setPwSuccess('Password changed successfully!');
       setPwForm({ current: '', newPw: '', confirm: '' });
     } catch (err) {

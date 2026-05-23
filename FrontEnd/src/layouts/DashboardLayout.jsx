@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { logout } from '../services/authService';
 import {
   Home, Users, BookOpen, FileText, BarChart3,
   Settings, LogOut, Bell, Menu, X, User, Search,
@@ -32,6 +33,8 @@ const BREADCRUMB_LABELS = {
   profile:     'My Profile',
   notifications: 'Notifications',
   quiz:        'Quizzes & Assessments',
+  progress:      'My Progress',
+  certificates:  'My Certificates',
 };
 
 function buildBreadcrumbs(pathname) {
@@ -199,7 +202,11 @@ export default function DashboardLayout({ userRole = 'admin' }) {
   const [mobileOpen, setMobileOpen]           = useState(false);
   const [isMobile, setIsMobile]               = useState(false);
 
-  const [darkMode, setDarkMode]                           = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) return saved === 'true';
+    return false;
+  });
   const [showSearch, setShowSearch]                       = useState(false);
   const [searchQuery, setSearchQuery]                     = useState('');
   const [showNotifications, setShowNotifications]         = useState(false);
@@ -214,6 +221,11 @@ export default function DashboardLayout({ userRole = 'admin' }) {
   ]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentUser, setCurrentUser] = useState(null);
+
+  /* ── apply saved dark mode on mount ── */
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark-mode', darkMode);
+  }, []);
 
   /* ── load logged-in user from localStorage ── */
   useEffect(() => {
@@ -313,8 +325,7 @@ export default function DashboardLayout({ userRole = 'admin' }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('authToken');
+    logout(); // clears authToken + user from localStorage via authService
     toast.success('Logged out successfully.');
     if (userRole === 'instructor') {
       navigate('/instructor/login');
@@ -329,8 +340,12 @@ export default function DashboardLayout({ userRole = 'admin' }) {
     setExpandedMenus(prev => ({ ...prev, [label]: !prev[label] }));
 
   const toggleDarkMode = () => {
-    setDarkMode(p => !p);
-    document.documentElement.classList.toggle('dark-mode');
+    setDarkMode(p => {
+      const next = !p;
+      localStorage.setItem('darkMode', String(next));
+      document.documentElement.classList.toggle('dark-mode', next);
+      return next;
+    });
   };
 
   const formatTime = (d) => d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
@@ -383,57 +398,103 @@ export default function DashboardLayout({ userRole = 'admin' }) {
               {searchQuery.trim() === '' ? (
                 <div className="search-category">
                   <h4>Quick Actions</h4>
-                  <div
-                    className="search-item"
-                    onClick={() => { navigate(`/${userRole}/dashboard`); setShowSearch(false); }}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    <Home size={16} aria-hidden="true" />
-                    <span>Go to Dashboard</span>
+                  <div className="search-item" onClick={() => { navigate(`/${userRole}/dashboard`); setShowSearch(false); }} role="button" tabIndex={0}>
+                    <Home size={16} aria-hidden="true" /><span>Go to Dashboard</span>
                   </div>
                   {userRole === 'admin' && (
-                    <div
-                      className="search-item"
-                      onClick={() => { navigate('/admin/courses'); setShowSearch(false); }}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      <BookOpen size={16} aria-hidden="true" />
-                      <span>Manage Courses</span>
+                    <div className="search-item" onClick={() => { navigate('/admin/courses'); setShowSearch(false); }} role="button" tabIndex={0}>
+                      <BookOpen size={16} aria-hidden="true" /><span>Manage Courses</span>
                     </div>
                   )}
                   {userRole === 'admin' && (
-                    <div
-                      className="search-item"
-                      onClick={() => { navigate('/admin/users'); setShowSearch(false); }}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      <Users size={16} aria-hidden="true" />
-                      <span>Manage Users</span>
+                    <div className="search-item" onClick={() => { navigate('/admin/users'); setShowSearch(false); }} role="button" tabIndex={0}>
+                      <Users size={16} aria-hidden="true" /><span>Manage Users</span>
                     </div>
                   )}
-                  {(userRole === 'instructor') && (
-                    <div
-                      className="search-item"
-                      onClick={() => { navigate('/instructor/assignments'); setShowSearch(false); }}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      <FileText size={16} aria-hidden="true" />
-                      <span>View Assignments</span>
+                  {userRole === 'instructor' && (
+                    <div className="search-item" onClick={() => { navigate('/instructor/assignments'); setShowSearch(false); }} role="button" tabIndex={0}>
+                      <FileText size={16} aria-hidden="true" /><span>View Assignments</span>
+                    </div>
+                  )}
+                  {userRole === 'student' && (
+                    <div className="search-item" onClick={() => { navigate('/student/courses'); setShowSearch(false); }} role="button" tabIndex={0}>
+                      <BookOpen size={16} aria-hidden="true" /><span>My Courses</span>
                     </div>
                   )}
                 </div>
-              ) : (
-                <div className="search-category">
-                  <h4>No results for "{searchQuery}"</h4>
-                  <p style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '8px 0' }}>
-                    Try searching for a student name, course, or assignment.
-                  </p>
-                </div>
-              )}
+              ) : (() => {
+                // ── Mock searchable index — replace with real API: GET /api/search?q=query ──
+                const SEARCH_INDEX = [
+                  // Pages
+                  { type: 'page', label: 'Dashboard',     path: `/${userRole}/dashboard`,      icon: Home,         roles: ['admin','instructor','student'] },
+                  { type: 'page', label: 'Courses',        path: '/admin/courses',              icon: BookOpen,     roles: ['admin'] },
+                  { type: 'page', label: 'Users',          path: '/admin/users',                icon: Users,        roles: ['admin'] },
+                  { type: 'page', label: 'Analytics',      path: '/admin/analytics',            icon: BarChart3,    roles: ['admin'] },
+                  { type: 'page', label: 'Settings',       path: '/admin/settings',             icon: Settings,     roles: ['admin'] },
+                  { type: 'page', label: 'Assignments',    path: '/admin/assignments',          icon: FileText,     roles: ['admin'] },
+                  { type: 'page', label: 'My Courses',     path: '/instructor/courses',         icon: BookOpen,     roles: ['instructor'] },
+                  { type: 'page', label: 'Students',       path: '/instructor/students',        icon: Users,        roles: ['instructor'] },
+                  { type: 'page', label: 'Assignments',    path: '/instructor/assignments',     icon: FileText,     roles: ['instructor'] },
+                  { type: 'page', label: 'Reports',        path: '/instructor/reports',         icon: BarChart3,    roles: ['instructor'] },
+                  { type: 'page', label: 'My Courses',     path: '/student/courses',            icon: BookOpen,     roles: ['student'] },
+                  { type: 'page', label: 'Assignments',    path: '/student/assignments',        icon: FileText,     roles: ['student'] },
+                  { type: 'page', label: 'Quizzes',        path: '/student/quiz',               icon: ClipboardList,roles: ['student'] },
+                  { type: 'page', label: 'Progress',       path: '/student/progress',           icon: GraduationCap,roles: ['student'] },
+                  { type: 'page', label: 'Certificates',   path: '/student/certificates',       icon: Award,        roles: ['student'] },
+                  { type: 'page', label: 'Notifications',  path: '/student/notifications',      icon: Bell,         roles: ['student'] },
+                  { type: 'page', label: 'My Profile',     path: '/student/profile',            icon: User,         roles: ['student'] },
+                  // Courses
+                  { type: 'course', label: 'CSS NC II — Computer Systems Servicing', path: '/course/css-ncii',      icon: BookOpen, roles: ['admin','instructor','student'] },
+                  { type: 'course', label: 'PC Hardware Assembly & Troubleshooting', path: '/course/pc-hardware',   icon: BookOpen, roles: ['admin','instructor','student'] },
+                  { type: 'course', label: 'Network Systems Cabling (NSC)',          path: '/course/network-setup', icon: BookOpen, roles: ['admin','instructor','student'] },
+                  { type: 'course', label: 'OS Installation & Configuration (OSIC)', path: '/course/osic',          icon: BookOpen, roles: ['admin','instructor','student'] },
+                ];
+
+                const q = searchQuery.toLowerCase().trim();
+                const results = SEARCH_INDEX.filter(item =>
+                  item.roles.includes(userRole) &&
+                  item.label.toLowerCase().includes(q)
+                );
+
+                const pages   = results.filter(r => r.type === 'page');
+                const courses = results.filter(r => r.type === 'course');
+
+                if (results.length === 0) return (
+                  <div className="search-category">
+                    <h4 style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>
+                      No results for "{searchQuery}"
+                    </h4>
+                    <p style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '8px 0' }}>
+                      Try searching for a page name or course title.
+                    </p>
+                  </div>
+                );
+
+                return (
+                  <>
+                    {pages.length > 0 && (
+                      <div className="search-category">
+                        <h4>Pages</h4>
+                        {pages.map((item, i) => (
+                          <div key={i} className="search-item" onClick={() => { navigate(item.path); setShowSearch(false); setSearchQuery(''); }} role="button" tabIndex={0}>
+                            <item.icon size={16} aria-hidden="true" /><span>{item.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {courses.length > 0 && (
+                      <div className="search-category">
+                        <h4>Courses</h4>
+                        {courses.map((item, i) => (
+                          <div key={i} className="search-item" onClick={() => { navigate(item.path); setShowSearch(false); setSearchQuery(''); }} role="button" tabIndex={0}>
+                            <item.icon size={16} aria-hidden="true" /><span>{item.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>
@@ -657,7 +718,12 @@ export default function DashboardLayout({ userRole = 'admin' }) {
                     <button
                       className="profile-menu-item"
                       role="menuitem"
-                      onClick={() => toast('Profile page coming soon!', { icon: '👤' })}
+                      onClick={() => {
+                        setShowProfileMenu(false);
+                        if (userRole === 'student') navigate('/student/profile');
+                        else if (userRole === 'instructor') toast('Instructor profile page coming soon!', { icon: '👤' });
+                        else if (userRole === 'admin') navigate('/admin/settings');
+                      }}
                     >
                       <User size={18} aria-hidden="true" /><span>My Profile</span>
                     </button>

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { isAuthenticated } from '../../services/authService';
 import '../../styles/courses/CourseCSSNCII.css';
 
 /* ── Icon set ── */
@@ -78,6 +80,8 @@ const CourseTemplate = ({
   breadcrumbLabel,
   badgeLabel = 'TESDA NC II',
 }) => {
+  const navigate = useNavigate();
+  const [showLoginWall, setShowLoginWall] = useState(false);
   const [modules, setModules]             = useState(courseLessons.modules);
   const [currentLesson, setCurrentLesson] = useState(courseLessons.modules[0].lessons[0]);
   const [expandedModules, setExpandedModules] = useState([1]);
@@ -92,6 +96,16 @@ const CourseTemplate = ({
   const [hoverRating, setHoverRating]     = useState(0);
   const [ratingComment, setRatingComment] = useState('');
   const [hasRated, setHasRated]           = useState(false);
+
+  /* ── Auth gate — shows login wall for actions that require login ── */
+  const requireLogin = (action) => {
+    if (!isAuthenticated()) {
+      setShowLoginWall(true);
+      return false;
+    }
+    action?.();
+    return true;
+  };
 
   /* ── Computed ── */
   const allLessons    = modules.flatMap(m => m.lessons);
@@ -198,7 +212,7 @@ const CourseTemplate = ({
                   <span className="crs-prog-lbl">Certificate</span>
                 </div>
               </div>
-              <button className="crs-rate-btn" onClick={() => !hasRated && setShowRateModal(true)}>
+              <button className="crs-rate-btn" onClick={() => !hasRated && requireLogin(() => setShowRateModal(true))}>
                 <StarIcon on /> {hasRated ? 'Course Rated!' : 'Rate this Course'}
               </button>
             </div>
@@ -259,7 +273,7 @@ const CourseTemplate = ({
               <div className="crs-actions">
                 {currentLesson.completed
                   ? <button className="crs-btn-done"><CheckIcon s={15} /> Completed</button>
-                  : <button className="crs-btn-complete" onClick={() => markDone(currentLesson.id)}>
+                  : <button className="crs-btn-complete" onClick={() => requireLogin(() => markDone(currentLesson.id))}>
                       <CheckIcon s={15} /> Mark as Complete
                     </button>
                 }
@@ -298,7 +312,7 @@ const CourseTemplate = ({
                           {a.feedback && <p>{a.feedback}</p>}
                         </div>
                       )}
-                      <button className="crs-assign-btn" onClick={() => openAssign(a)}>
+                      <button className="crs-assign-btn" onClick={() => requireLogin(() => openAssign(a))}>
                         {a.status === 'pending' ? <><ArrowR /> Submit Assignment</> : 'View Submission'}
                       </button>
                     </div>
@@ -586,6 +600,35 @@ const CourseTemplate = ({
               />
               <button className="crs-modal-submit" onClick={submitRate} disabled={!userRating}>
                 Submit Rating
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Login Wall Modal — shown when guest tries an action requiring login ── */}
+      {showLoginWall && (
+        <div className="crs-overlay" onClick={() => setShowLoginWall(false)}>
+          <div className="crs-modal crs-login-wall" onClick={e => e.stopPropagation()}>
+            <button className="crs-modal-x" onClick={() => setShowLoginWall(false)}>✕</button>
+            <div className="crs-login-wall-icon">🔒</div>
+            <h3>Login required</h3>
+            <p>
+              Create a free account or sign in to track your progress,
+              submit assignments, and earn your TESDA certificate.
+            </p>
+            <div className="crs-login-wall-btns">
+              <button
+                className="crs-login-wall-primary"
+                onClick={() => navigate('/auth')}
+              >
+                Sign in / Sign up
+              </button>
+              <button
+                className="crs-login-wall-secondary"
+                onClick={() => setShowLoginWall(false)}
+              >
+                Continue browsing
               </button>
             </div>
           </div>

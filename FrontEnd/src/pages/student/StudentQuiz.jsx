@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { apiFetch, getUser } from '../../services/authService';
 import {
   BookOpen, Clock, CheckCircle, XCircle, AlertCircle,
   ChevronRight, ChevronLeft, RotateCcw, Trophy,
@@ -679,17 +680,37 @@ export default function StudentQuiz() {
     setQuizResult(null);
   }
 
-  function handleFinish(result) {
+  async function handleFinish(result) {
     setQuizResult(result);
-    // Update attempts & bestScore in list
+    // Update local state immediately so UI reflects the result
     setQuizzes(prev => prev.map(q => {
       if (q.id !== activeQuiz.id) return q;
       const newAttempts = q.attempts + 1;
-      const newBest = q.bestScore === null ? result.score : Math.max(q.bestScore, result.score);
-      const newStatus = result.score >= q.passingScore ? 'completed'
+      const newBest     = q.bestScore === null ? result.score : Math.max(q.bestScore, result.score);
+      const newStatus   = result.score >= q.passingScore ? 'completed'
         : newAttempts >= q.maxAttempts ? 'completed' : 'available';
       return { ...q, attempts: newAttempts, bestScore: newBest, status: newStatus };
     }));
+    // Persist to backend
+    try {
+      const user = getUser();
+      // TODO (backend): POST /api/quizzes/submit
+      // Body: { quizId, userId, score, timeTaken, answers: [...] }
+      // Returns: { success: true }
+      await apiFetch('/api/quizzes/submit', {
+        method: 'POST',
+        body: JSON.stringify({
+          quizId:    activeQuiz.id,
+          userId:    user?.id,
+          score:     result.score,
+          timeTaken: result.timeTaken,
+          answers:   result.answers,
+        }),
+      });
+    } catch (err) {
+      // Non-blocking — local state already updated, just log the error
+      console.warn('Quiz score save failed (backend may not have this route yet):', err.message);
+    }
   }
 
   function handleRetry() {

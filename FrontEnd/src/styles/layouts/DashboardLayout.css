@@ -1,15 +1,6 @@
 /* Premium Dashboard Layout - Cleaned Version */
-:root {
-  --primary-gradient: linear-gradient(160deg, #1a1f38 0%, #262c4a 25%, #2f3660 55%, #3d4878 75%, #4a527a 100%);
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.18);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
-  --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  --sidebar-header-height: 80px;
-  --top-nav-height: 70px;
-}
+/* Note: --primary-gradient, --glass-bg, --glass-border, --shadow-*, --transition-smooth
+   are defined globally in index.css :root — do not re-declare here. */
 
 * {
   box-sizing: border-box;

@@ -35,6 +35,20 @@ export const removeUser = () => localStorage.removeItem('user');
 
 export const isAuthenticated = () => !!getToken();
 
+/* ── Normalize user object from backend ──
+   Backend returns { fullname, email_address, ... }
+   Frontend expects  { name, email, role, id }
+   This function maps backend fields → frontend fields consistently.
+── */
+function normalizeUser(user) {
+  if (!user) return null;
+  return {
+    ...user,
+    name:  user.name  || user.fullname  || '',
+    email: user.email || user.email_address || '',
+  };
+}
+
 /* ── Generic fetch wrapper ── */
 export async function apiFetch(endpoint, options = {}) {
   const token = getToken();
@@ -57,25 +71,29 @@ export const loginWithEmail = async (credentials) => {
   const data = await apiFetch('/api/auth/login', {
     method: 'POST',
     body: JSON.stringify({
-      email: credentials.email,
+      email:    credentials.email,
       password: credentials.password,
     }),
   });
 
+  const user = normalizeUser(data.user);
   if (data.token) setToken(data.token);
-  if (data.user)  setUser(data.user);
-  return data.user;
+  if (user)       setUser(user);
+  return user;
 };
 
 /* ── Register (instructors and students only) ── */
-export async function registerUser({ name, email, password, role = 'instructor' }) {
+export async function registerUser({ name, email, password, role = 'student' }) {
   const data = await apiFetch('/api/auth/register', {
     method: 'POST',
     body: JSON.stringify({ name, email, password, role }),
   });
-  setToken(data.token);
-  setUser(data.user);
-  return data.user;
+
+  const user = normalizeUser(data.user);
+  // token may not exist yet if backend doesn't return one after register
+  if (data.token) setToken(data.token);
+  if (user)       setUser(user);
+  return user;
 }
 
 /* ── Google OAuth ── */
@@ -84,9 +102,10 @@ export async function loginWithGoogle(googleTokenId) {
     method: 'POST',
     body: JSON.stringify({ tokenId: googleTokenId }),
   });
-  setToken(data.token);
-  setUser(data.user);
-  return data.user;
+  const user = normalizeUser(data.user);
+  if (data.token) setToken(data.token);
+  if (user)       setUser(user);
+  return user;
 }
 
 /* ── Forgot Password ── */
