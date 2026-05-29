@@ -1,18 +1,18 @@
-    import { pool } from '../../config/db.js';
+import { pool } from '../../config/db.js';
 
-    export async function getUserbyEmailPass(email_address, password_hash) {
-        try {
-            // Updated to use your actual database column names
-            // Inside getUserbyEmailPass.js, change the query to match your database schema
-            const [rows] = await pool.query(
-                `SELECT * FROM users WHERE email_address = ? AND password_hash = ?`, 
-                [email_address, password_hash]
-            );
+// 1. Remove password_hash from the function arguments
+export async function getUserbyEmailPass(email_address) {
+    try {
+        // 2. Remove "AND password_hash = ?" from your SQL string entirely
+        const [rows] = await pool.query(
+            `SELECT * FROM users WHERE email_address = ?`, 
+            [email_address]
+        );
 
-    // CHANGE THIS: Return only the first item (rows[0]) instead of the whole list
-    return rows.length > 0 ? rows[0] : null;
-        } catch (error) {
-            console.error("Error executing login query:", error);
-            throw error;
-        }
+        // 3. Return the first user found or null if nothing matches
+        return rows.length > 0 ? rows[0] : null;
+    } catch (error) {
+        console.error("Error executing login query:", error);
+        throw error;
     }
+}

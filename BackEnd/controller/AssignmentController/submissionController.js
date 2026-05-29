@@ -44,4 +44,4 @@ export const getSubmissionsController = async (req, res) => {
             error: "Internal Server Error" 
         });
     }
-}
+};

@@ -2,10 +2,12 @@ import { pool } from "../../config/db.js";
 
 export async function getSubmissionsQuery({ search, page, limit }) {
     try {
-        const offset = (page - 1) * limit;
-        let queryParams = [];
+        const pageNum = Math.max(1, parseInt(page) || 1);
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
+        const offset = (pageNum - 1) * limitNum;
         
-
+        const queryParams = [];
+        
         let sql = `
             SELECT 
                 a.assignment_id, 
@@ -19,35 +21,32 @@ export async function getSubmissionsQuery({ search, page, limit }) {
             LEFT JOIN modules m ON a.module_id = m.module_id
         `;
 
-        // Handle Search Logic
         if (search) {
-            sql += ` WHERE u.full_name LIKE ? OR a.assignment LIKE ? `;
+            sql += ` WHERE u.full_name LIKE ? OR a.assignment LIKE ? OR m.module_name LIKE ? `;
             const searchTerm = `%${search}%`;
-            queryParams.push(searchTerm, searchTerm);
+            queryParams.push(searchTerm, searchTerm, searchTerm);
         }
 
-        // Add Ordering and Pagination
         sql += ` ORDER BY a.created_at DESC LIMIT ? OFFSET ?`;
-        queryParams.push(parseInt(limit), parseInt(offset));
+        queryParams.push(limitNum, offset);
 
-        // Execute main query
         const [rows] = await pool.execute(sql, queryParams);
 
-        // Get Total Count for Pagination (The "1 to 5 of 6" text in image_9fc318.png)
-        let countSql = `SELECT COUNT(*) as total FROM assignment`;
+        let countSql = `SELECT COUNT(*) as total FROM assignment a`;
         if (search) {
-            countSql += ` a JOIN users u ON a.user_id = u.user_id WHERE u.full_name LIKE ? OR a.assignment LIKE ?`;
+            countSql += ` LEFT JOIN users u ON a.user_id = u.user_id LEFT JOIN modules m ON a.module_id = m.module_id WHERE u.full_name LIKE ? OR a.assignment LIKE ? OR m.module_name LIKE ?`;
         }
-        const [countResult] = await pool.execute(countSql, search ? [`%${search}%`, `%${search}%`] : []);
+        const countParams = search ? [`%${search}%`, `%${search}%`, `%${search}%`] : [];
+        const [countResult] = await pool.execute(countSql, countParams);
         const total = countResult[0].total;
 
         return {
             submissions: rows,
             pagination: {
                 total,
-                page: parseInt(page),
-                limit: parseInt(limit),
-                totalPages: Math.ceil(total / limit)
+                page: pageNum,
+                limit: limitNum,
+                totalPages: Math.ceil(total / limitNum)
             }
         };
 
