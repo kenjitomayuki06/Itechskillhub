@@ -1,7 +1,26 @@
 import express from "express";
+
 const router = express.Router();
 
-router.use(logger);
+// 1. Defined Data Array
+const users = [{ name: "Alice" }, { name: "Bob" }, { name: "Charlie" }];
+
+// 2. Defined Middleware Functions (Clean & clear for Express to see)
+function logger(req, res, next) {
+    console.log(req.originalUrl);
+    next();
+}
+
+// 3. Apply your logger safely 
+router.use(logger); 
+
+// 4. URL Param Interceptor Middleware
+router.param("id", (req, res, next, id) => {
+    req.user = users[id];
+    next();
+});
+
+// --- ROUTES ---
 
 router.get("/", (req, res) => {   
     console.log(req.query.name);
@@ -36,17 +55,5 @@ router
         res.send(`Delete User With ID ${req.params.id}`);
     });
 
-const users = [{ name: "Alice" }, { name: "Bob" }, { name: "Charlie" }];
-
-router.param("id", (req, res, next, id) => {
-    req.user = users[id];
-    next();
-});
-
-function logger(req, res, next) {
-    console.log(req.originalUrl);
-    next();
-}
-
-// Export the router using ESM syntax
+// Export using modern ESM syntax
 export default router;

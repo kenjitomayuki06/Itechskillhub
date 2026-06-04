@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import { getUserbyEmailPass } from "../../database/loginQuery/getUserbyEmailPass.js";
 import jwt from 'jsonwebtoken';
 
@@ -5,11 +6,25 @@ export async function getUserbyEmailPassController(req, res) {
     try {
         // 1. Get credentials from body
         const { email, password } = req.body; 
+        console.log("Password typed in frontend:", password);
+        const userData = await getUserbyEmailPass(email);
 
-        // 2. Call your database query
-        const userData = await getUserbyEmailPass(email, password);
+        console.log("COMPLETE DATABASE USER PAYLOAD:", userData);
 
         if (!userData) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password"
+            });
+        }
+
+        // 4. Check if the password matches the hashed password in your database
+        // Replace 'userData.password_hash' with whatever your database password column is named!
+        console.log("Password typed in frontend:", password);
+        console.log("Hash fetched from database:", userData.passwordhashed);
+        const isPasswordValid = await bcrypt.compare(password, userData.password_hash);
+
+        if (!isPasswordValid) {
             return res.status(401).json({
                 success: false,
                 message: "Invalid email or password"
@@ -33,7 +48,7 @@ export async function getUserbyEmailPassController(req, res) {
         id: userData.user_id,          
         email: userData.email_address, 
         role: userData.role,    
-        fullname: userData.full_name            
+        fullname: userData.fullname            
     }
 });
 
