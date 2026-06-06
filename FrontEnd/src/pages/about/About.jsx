@@ -32,27 +32,27 @@ const About = () => {
   const [ctaRef, ctaVisible] = useVisible();
 
   const stats = [
-    { value: "4", label: "CSS NC II Modules" },
-    { value: "3",  label: "User Roles" },
-    { value: "TESDA",  label: "Aligned Curriculum" },
-    { value: "LMS",    label: "Web-Based Platform" },
+    { value: "4",     label: "CSS NC III Modules" },
+    { value: "3",     label: "User Roles" },
+    { value: "TESDA", label: "Aligned Curriculum" },
+    { value: "CSS",   label: "NC III Training Platform" },
   ];
 
   const reasons = [
-    { icon: Award,          title: "TESDA Registered",    desc: "Fully accredited by TESDA as an official Training Institution — your certification is recognized nationwide." },
-    { icon: Laptop,         title: "Hands-On Training",   desc: "Real lab environments, actual hardware, and practical assessments that prepare you for the job — not just the exam." },
-    { icon: GraduationCap,  title: "Industry Instructors", desc: "Learn from certified professionals with years of real-world experience in computer systems and IT infrastructure." },
-    { icon: Route,          title: "Clear Career Path",   desc: "From beginner to TESDA-certified technician — our structured curriculum gets you job-ready in the shortest time." },
-    { icon: Users,          title: "Supportive Community", desc: "Join a growing community of Filipino IT professionals, alumni, and mentors who help each other grow." },
-    { icon: ShieldCheck,    title: "Quality Assured",     desc: "Our training modules are regularly updated to meet current industry standards and TESDA competency requirements." },
+    { icon: Award,         title: "TESDA-Aligned Content",    desc: "Training materials are aligned with TESDA's CSS NC III competency standards to help you prepare for the official assessment." },
+    { icon: Laptop,        title: "Hands-On Practice",        desc: "Work through practical exercises and review materials that simulate real-world scenarios covered in the NC III assessment." },
+    { icon: GraduationCap, title: "Structured Modules",       desc: "Learn through organized modules designed to guide you step-by-step through all CSS NC III competencies." },
+    { icon: Route,         title: "Clear Learning Path",      desc: "From beginner to assessment-ready — our structured curriculum helps you build knowledge and confidence at your own pace." },
+    { icon: Users,         title: "Built for IT Students",    desc: "Designed specifically for IT students, computer engineering students, and anyone preparing to take the CSS NC III assessment." },
+    { icon: ShieldCheck,   title: "Quality Training Content", desc: "Training modules are carefully developed to cover the key competencies and skills required for the CSS NC III assessment." },
   ];
 
   const team = [
-    { name: "Ilyanna Rose P. Castillo",  role: "Quality Assurance",    desc: "Ensures the platform meets quality standards through testing and validation of features.", initials: "IC" },
-    { name: "Almar L. Crisostomo",       role: "Backend Developer",    desc: "Handles server-side logic, database architecture, and API development of the LMS.",        initials: "AC" },
-    { name: "Angel Rose C. Durana",      role: "Frontend Developer",   desc: "Builds and implements the user interface and client-side features of the platform.",         initials: "AD" },
-    { name: "Keisha Mae C. Padua",       role: "Project Manager",      desc: "Leads project planning, coordinates the team, and ensures timely delivery of milestones.",   initials: "KP" },
-    { name: "Jose Nelson L. Salino Jr.", role: "UI/UX Designer",       desc: "Designs the overall look, feel, and user experience of the ITechSkillsHub platform.",        initials: "JS" },
+    { name: "Ilyanna Rose P. Castillo",  role: "Quality Assurance",  desc: "Ensures the platform meets quality standards through testing and validation of features.", initials: "IC" },
+    { name: "Almar L. Crisostomo",       role: "Backend Developer",  desc: "Handles server-side logic, database architecture, and API development of the platform.",   initials: "AC" },
+    { name: "Angel Rose C. Durana",      role: "Frontend Developer", desc: "Builds and implements the user interface and client-side features of the platform.",        initials: "AD" },
+    { name: "Keisha Mae C. Padua",       role: "Project Manager",    desc: "Leads project planning, coordinates the team, and ensures timely delivery of milestones.",  initials: "KP" },
+    { name: "Jose Nelson L. Salino Jr.", role: "UI/UX Designer",     desc: "Designs the overall look, feel, and user experience of the ITechSkillsHub platform.",       initials: "JS" },
   ];
 
   return (
@@ -67,11 +67,8 @@ const About = () => {
             Empowering Filipinos <br /> through tech education
           </h1>
           <p className="about-hero-sub">
-            ITechSkillsHub is a web-based Learning Management System (LMS) designed to deliver TESDA-aligned Computer Systems Servicing training — built as a capstone project by Filipino IT students.
+            ITechSkillsHub is a CSS NC III review and training platform designed to help students prepare for the TESDA CSS NC III assessment — built as a capstone project by Filipino IT students.
           </p>
-          <button className="about-hero-btn" onClick={() => navigate("/course")}>
-            Explore Our Courses
-          </button>
         </div>
       </section>
 
@@ -81,12 +78,12 @@ const About = () => {
           <div className="about-mv-card about-mv-mission">
             <div className="about-mv-icon"><Target size={28} /></div>
             <h3>Our Mission</h3>
-            <p>To develop a functional and accessible web-based LMS that delivers TESDA-aligned CSS NC II training — giving students a structured path to certification through modern technology.</p>
+            <p>To develop a functional and accessible training and review system that helps students build the knowledge and skills needed to confidently take the TESDA CSS NC III assessment.</p>
           </div>
           <div className="about-mv-card about-mv-vision">
             <div className="about-mv-icon"><Eye size={28} /></div>
             <h3>Our Vision</h3>
-            <p>To create a platform that demonstrates how technology can modernize TESDA-aligned education — making quality IT training more organized, accessible, and effective for Filipino learners.</p>
+            <p>To create a web-based system that demonstrates how technology can modernize training preparation — making quality CSS NC III review materials more organized, accessible, and effective for Filipino learners.</p>
           </div>
         </div>
       </section>
@@ -106,8 +103,8 @@ const About = () => {
       {/* ===== WHY CHOOSE US ===== */}
       <section ref={whyRef} className={`about-why ${whyVisible ? "about-visible" : ""}`}>
         <p className="about-section-label">Why ITechSkillsHub</p>
-        <h2 className="about-section-title">Built for Filipino IT professionals</h2>
-        <p className="about-section-sub">Everything we do is designed to get you certified, job-ready, and confident.</p>
+        <h2 className="about-section-title">Built for Filipino IT students</h2>
+        <p className="about-section-sub">Everything we do is designed to help you prepare, practice, and pass your CSS NC III assessment.</p>
         <div className="about-why-grid">
           {reasons.map((r, i) => (
             <div className="about-why-card" key={i} style={{ animationDelay: `${0.1 + i * 0.1}s` }}>
@@ -141,7 +138,7 @@ const About = () => {
         <div className="about-cta-inner">
           <img src={logo} alt="ITechSkillsHub" className="about-cta-logo" />
           <h2>Explore the platform</h2>
-          <p>Browse our CSS NC II modules and see what ITechSkillsHub has to offer.</p>
+          <p>Browse our CSS NC III modules and see what ITechSkillsHub has to offer.</p>
           <div className="about-cta-btns">
             <button className="about-cta-primary" onClick={() => navigate("/auth")}>Get Started</button>
             <button className="about-cta-secondary" onClick={() => navigate("/course")}>Browse Courses</button>

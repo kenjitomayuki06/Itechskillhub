@@ -11,7 +11,6 @@ const Course = () => {
   return (
     <>
       <Routes>
-        {/* Main course page with hero and course list */}
         <Route path="/" element={
           <>
             <CourseHero />
@@ -19,8 +18,6 @@ const Course = () => {
             <Courses2 />
           </>
         } />
-        
-        {/* Individual course pages */}
         <Route path="/css-ncii" element={<CourseCSSNCII />} />
         <Route path="/pc-hardware" element={<PChardwareAT />} />
         <Route path="/network-setup" element={<NSC />} />

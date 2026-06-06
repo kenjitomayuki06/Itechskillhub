@@ -58,7 +58,7 @@ function App() {
   const location = useLocation();
 
   // Routes that use their own full-screen layout (no shared Navbar/Footer)
-  const HIDE_LAYOUT_PREFIXES = ['/auth', '/admin', '/instructor', '/student'];
+  const HIDE_LAYOUT_PREFIXES = ['/auth', '/admin', '/instructor', '/student', '/sys_admin_ItechSkillsHubphpAccess2026_v2'];
   const hideLayout = HIDE_LAYOUT_PREFIXES.some(prefix =>
     location.pathname === prefix || location.pathname.startsWith(prefix + '/')
   );
@@ -95,8 +95,9 @@ function App() {
         <Route path="/games" element={<Games />} />
         <Route path="/blog"  element={<Blog />} />
 
-        {/* ADMIN LOGIN */}
-        <Route path="/admin/login" element={<AdminLogin />} />
+        {/* ADMIN LOGIN - SECRET URL */}
+        <Route path="/sys_admin_ItechSkillsHubphpAccess2026_v2" element={<AdminLogin />} />
+        <Route path="/admin/login" element={<NotFound />} />
 
         {/* ADMIN DASHBOARD ROUTES — protected */}
         <Route

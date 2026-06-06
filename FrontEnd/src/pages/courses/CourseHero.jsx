@@ -13,7 +13,7 @@ const CourseHero = () => {
 
   const handleBrowse = () => {
     // If already on /course, smooth scroll down to course list
-    const courseList = document.querySelector(".courses-section");
+    const courseList = document.querySelector(".lms-courses-section");
     if (courseList) {
       courseList.scrollIntoView({ behavior: "smooth" });
     } else {
@@ -31,7 +31,7 @@ const CourseHero = () => {
 
       {/* CONTENT */}
       <div className="hero-content" key={animKey}>
-        <span className="hero-badge">TESDA-Aligned Programs</span>
+        <span className="hero-badge">CSS NC III Review & Training</span>
 
         <h1>
           Computer Systems <br />
@@ -40,9 +40,7 @@ const CourseHero = () => {
         </h1>
 
         <p>
-          Master the skills employers demand with our comprehensive,
-          nationally-recognized CSS training programs. Start your tech
-          career journey today.
+          Build the skills and knowledge you need to confidently prepare for your CSS NC III assessment. Start your training journey today.
         </p>
 
         <button className="hero-btn" onClick={handleBrowse}>

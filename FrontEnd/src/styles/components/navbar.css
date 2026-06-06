@@ -31,11 +31,7 @@
 
 /* Games page — matches the Games hero dark techy BG exactly */
 .navbar-transparent.navbar-games {
-  background-color: #0a0e1a;
-  background-image:
-    linear-gradient(rgba(255,122,24,0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,122,24,0.07) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-color: #1e2340;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   border-bottom: 1px solid rgba(255,122,24,0.25);
@@ -43,16 +39,6 @@
 }
 
 /* Subtle top orange accent line */
-.navbar-transparent.navbar-games::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,122,24,0.6) 30%, rgba(255,122,24,0.8) 50%, rgba(255,122,24,0.6) 70%, transparent 100%);
-  pointer-events: none;
-}
 
 .navbar-solid {
   background: #1e2340;
