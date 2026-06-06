@@ -20,13 +20,7 @@
 
 /* ── Hero — Pixel Style ── */
 .games-hero {
-  background-color: #0a0e1a;
-  background-image:
-    linear-gradient(rgba(255,122,24,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,122,24,0.05) 1px, transparent 1px),
-    linear-gradient(rgba(99,162,241,0.04) 2px, transparent 2px),
-    linear-gradient(90deg, rgba(99,162,241,0.04) 2px, transparent 2px);
-  background-size: 16px 16px, 16px 16px, 80px 80px, 80px 80px;
+  background-color: #1e2340;
   padding: 80px 20px 72px;
   text-align: center;
   position: relative;
@@ -135,7 +129,7 @@
 .games-tabs {
   display: inline-flex;
   align-items: center;
-  background: #0a0e1a;
+  background: #1e2340;
   border-radius: 0;
   border: 2px solid rgba(255,122,24,0.4);
   padding: 4px;
@@ -2046,8 +2040,8 @@
   flex-shrink: 0;
   width: 52px;
   height: 52px;
-  background: #0a0e1a;
-  border: 2px solid rgba(255,122,24,0.45);
+  background: #1e2340;
+  border: 2px solid transparent;
   border-radius: 0;
   color: #ff7a18;
   cursor: pointer;

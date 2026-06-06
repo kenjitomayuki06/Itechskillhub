@@ -14,7 +14,6 @@ const LandingPage2 = () => {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          // Last card animates at 0.85s delay + 0.7s duration = ~1.6s total
           setTimeout(() => setAnimDone(true), 1600);
         }
       },
@@ -47,7 +46,7 @@ const LandingPage2 = () => {
       <p className="process-small-title">How it works</p>
 
       <p className="process-subtitle">
-        Three steps to your CSS certification and career readiness
+        Three steps to prepare for your CSS NC III assessment
       </p>
 
       <div className="process-cards">
@@ -58,13 +57,11 @@ const LandingPage2 = () => {
         >
           <span className="step">Step</span>
           <h3>
-            Sign up and <br /> choose your path
+            Sign up and <br /> choose your modules
           </h3>
           <p>
-            Create your account and select the CSS course that fits your goals
-            and schedule.
+            Create your account and select the CSS NC III modules that fit your learning pace.
           </p>
-          <span className="card-action">Start</span>
         </div>
 
         {/* CARD 2 */}
@@ -74,13 +71,11 @@ const LandingPage2 = () => {
         >
           <span className="step">Step</span>
           <h3>
-            Learn through <br /> hands-on training
+            Learn through <br /> practice and review
           </h3>
           <p>
-            Work through modules with real labs, video lessons, and guidance from
-            certified instructors.
+            Work through practice exercises, video lessons, and reviewer materials to prepare for your assessment.
           </p>
-          <span className="card-action">Begin</span>
         </div>
 
         {/* CARD 3 */}
@@ -90,13 +85,11 @@ const LandingPage2 = () => {
         >
           <span className="step">Step</span>
           <h3>
-            Earn your TESDA <br /> certification
+            Complete training and <br /> take your NC III assessment
           </h3>
           <p>
-            Complete assessments and receive your credential recognized across
-            the industry.
+            Finish your training modules and feel confident and ready to take your official CSS NC III assessment.
           </p>
-          <span className="card-action">Finish</span>
         </div>
       </div>
     </section>

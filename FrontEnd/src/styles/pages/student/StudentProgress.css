@@ -1,0 +1,405 @@
+/* ================================================================
+   StudentProgress.css — ITechSkillsHub
+   Styles for the Student Progress page
+================================================================ */
+
+.sp-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 4px 0 32px;
+}
+
+/* ── Header ── */
+.sp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.sp-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin-bottom: 4px;
+}
+
+.sp-subtitle {
+  font-size: 13.5px;
+  color: #94a3b8;
+}
+
+/* ── Stats Grid ── */
+.sp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.sp-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 1px 6px rgba(91, 74, 158, 0.07);
+  border: 1px solid #f0eef9;
+}
+
+.sp-stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sp-stat-val {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.sp-stat-lbl {
+  font-size: 11.5px;
+  color: #94a3b8;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+.sp-stat-purple { color: #5B4A9E; }
+.sp-stat-purple .sp-stat-icon { background: #ede9fe; color: #5B4A9E; }
+
+.sp-stat-blue { color: #3b82f6; }
+.sp-stat-blue .sp-stat-icon { background: #eff6ff; color: #3b82f6; }
+
+.sp-stat-orange { color: #f59e0b; }
+.sp-stat-orange .sp-stat-icon { background: #fffbeb; color: #f59e0b; }
+
+.sp-stat-green { color: #10b981; }
+.sp-stat-green .sp-stat-icon { background: #f0fdf4; color: #10b981; }
+
+/* ── Main Grid ── */
+.sp-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Card ── */
+.sp-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #f0eef9;
+  box-shadow: 0 2px 10px rgba(91, 74, 158, 0.06);
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.sp-card:last-child {
+  margin-bottom: 0;
+}
+
+.sp-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.sp-card-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 0;
+}
+
+/* ── Overall Progress ── */
+.sp-overall-wrap {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.sp-overall-ring-wrap {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  flex-shrink: 0;
+}
+
+.sp-ring {
+  width: 110px;
+  height: 110px;
+  transform: rotate(-90deg);
+}
+
+.sp-ring-bg {
+  fill: none;
+  stroke: #f0eef9;
+  stroke-width: 10;
+}
+
+.sp-ring-fill {
+  fill: none;
+  stroke: #5B4A9E;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.6s ease;
+}
+
+.sp-ring-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  line-height: 1;
+}
+
+.sp-ring-pct {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e1b4b;
+}
+
+.sp-ring-sub {
+  display: block;
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 3px;
+}
+
+.sp-course-bars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sp-course-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sp-course-bar-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.sp-course-bar-name {
+  flex: 1;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sp-course-bar-pct {
+  font-weight: 700;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.sp-bar {
+  height: 6px;
+  background: #f0eef9;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.sp-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* ── Chart Toggle ── */
+.sp-chart-toggle {
+  display: flex;
+  background: #f0eef9;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+}
+
+.sp-toggle-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.sp-toggle-active {
+  background: #fff;
+  color: #5B4A9E;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(91, 74, 158, 0.12);
+}
+
+/* ── Course Breakdown ── */
+.sp-breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sp-breakdown-item {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #f0eef9;
+}
+
+.sp-breakdown-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sp-breakdown-header:hover {
+  background: #faf9ff;
+}
+
+.sp-breakdown-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.sp-breakdown-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sp-breakdown-name {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1e1b4b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 5px;
+}
+
+.sp-breakdown-bar {
+  height: 5px;
+  background: #f0eef9;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.sp-breakdown-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.sp-breakdown-pct {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.sp-breakdown-details {
+  background: #faf9ff;
+  border-top: 1px solid #f0eef9;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sp-detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.sp-detail-row span:last-child {
+  font-weight: 600;
+  color: #1e1b4b;
+}
+
+/* ── Grades ── */
+.sp-grades-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sp-grade-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #faf9ff;
+  border-radius: 10px;
+  border: 1px solid #f0eef9;
+}
+
+.sp-grade-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sp-grade-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e1b4b;
+}
+
+.sp-grade-course {
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
+.sp-grade-score {
+  font-size: 18px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.sp-grade-total {
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .sp-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sp-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

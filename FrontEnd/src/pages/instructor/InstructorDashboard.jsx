@@ -1,6 +1,7 @@
 import { BookOpen, Users, FileText, TrendingUp } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import StatCard from '../../components/common/StatCard';
+import { getUser } from '../../services/authService';
 import '../../styles/instructor/InstructorDashboard.css';
 
 const instructorStats = {
@@ -25,8 +26,9 @@ const instructorStats = {
 };
 
 export default function InstructorDashboard() {
-  const userName = sessionStorage.getItem("userName") || "Instructor";
-  const userEmail = sessionStorage.getItem("userEmail") || "instructor@email.com";
+  const currentUser = getUser();
+  const userName  = currentUser?.name  || 'Instructor';
+  const userEmail = currentUser?.email || '';
   
   return (
     

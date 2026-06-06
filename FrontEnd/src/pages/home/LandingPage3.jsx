@@ -47,15 +47,6 @@ const LandingPage3 = () => {
       </p>
 
       <div className="lp3-buttons">
-        {/* INSTRUCTOR ENTRY */}
-        <button
-          className="lp3-btn-primary"
-          onClick={() => navigate("/instructor/login")}
-        >
-          Instructor Access
-        </button>
-
-        {/* PUBLIC / READ-ONLY */}
         <button
           className="lp3-btn-secondary"
           onClick={() => navigate("/course")}

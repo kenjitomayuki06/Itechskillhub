@@ -1,16 +1,16 @@
-  import { useState, useEffect } from 'react';
-  import {
+import { useState, useEffect } from 'react';
+import {
     Plus, Clock, CheckCircle, Eye, Download,
     Filter, BookOpen, X, AlertCircle
   } from 'lucide-react';
-  import DataTable from '../../components/common/DataTable';
-  import Modal from '../../components/common/Modal';
-  import { getToken, getUser } from '../../services/authService';
-  import '../../styles/instructor/InstructorAssignments.css';
+import DataTable from '../../components/common/DataTable';
+import Modal from '../../components/common/Modal';
+import { getToken, getUser, apiFetch } from '../../services/authService';
+import toast from 'react-hot-toast';
+import '../../styles/instructor/InstructorAssignments.css';
 
-  const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-  export default function InstructorAssignments() {
+export default function InstructorAssignments() {
     const [selectedFilter, setSelectedFilter] = useState('all');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -34,25 +34,19 @@
     { id: 8, name: 'Preventive Maintenance' }
   ];
 
-    // ─── Fetch assignments from backend on mount ───
+    // ─── Fetch assignments and submissions from backend on mount ───
     useEffect(() => {
       fetchAssignments();
+      fetchSubmissions();
     }, []);
 
     const fetchAssignments = async () => {
       setLoading(true);
       setError(null);
       try {
-        const token = getToken();
-        const res = await fetch(`${BASE_URL}/api/assignments`, {
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Failed to fetch assignments.');
-        // Support both array response and { assignments: [...] } shape
+        // TODO (backend): GET /api/assignments
+        // Returns: { assignments: [ { id, title, assignment, module_id, dueDate, status, submissions, totalStudents, graded, pending } ] }
+        const data = await apiFetch('/api/assignments');
         const list = Array.isArray(data) ? data : (data.assignments ?? []);
         setAssignments(list);
       } catch (err) {
@@ -60,6 +54,19 @@
         setError(err.message);
       } finally {
         setLoading(false);
+      }
+    };
+
+    const fetchSubmissions = async () => {
+      try {
+        // TODO (backend): GET /api/submissions
+        // Returns: { data: [ { id, studentName, assignment, course, submittedAt, status, score, feedback } ] }
+        const data = await apiFetch('/api/submissions');
+        const list = Array.isArray(data) ? data : (data.data ?? []);
+        setRecentSubmissions(list);
+      } catch (err) {
+        console.error('fetchSubmissions error:', err);
+        // non-blocking — submissions table just stays empty
       }
     };
 
@@ -71,48 +78,60 @@
       setIsModalOpen(true);
     };
 
-    const handleSubmitGrade = () => {
+    const handleSubmitGrade = async () => {
       if (!scoreInput || scoreInput < 0 || scoreInput > 100) return;
-      setRecentSubmissions((prev) =>
-        prev.map((s) =>
-          s.id === selectedSubmission.id
-            ? { ...s, status: 'graded', score: Number(scoreInput), feedback: feedbackInput }
-            : s
-        )
-      );
-      setIsModalOpen(false);
+      try {
+        // TODO (backend): PATCH /api/assignments/:id/grade
+        // Body: { score: Number, feedback: String }
+        // Returns: { success: true }
+        await apiFetch(`/api/assignments/${selectedSubmission.id}/grade`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            score:    Number(scoreInput),
+            feedback: feedbackInput,
+          }),
+        });
+        setRecentSubmissions((prev) =>
+          prev.map((s) =>
+            s.id === selectedSubmission.id
+              ? { ...s, status: 'graded', score: Number(scoreInput), feedback: feedbackInput }
+              : s
+          )
+        );
+        toast.success('Grade submitted successfully!');
+        setIsModalOpen(false);
+      } catch (err) {
+        toast.error(err.message || 'Failed to submit grade.');
+      }
     };
 
     const handleCreateAssignment = async () => {
       if (!newAssignment.title || !newAssignment.course || !newAssignment.dueDate) return;
       try {
-        const token = getToken();
         const user = getUser();
-        const res = await fetch(`${BASE_URL}/api/assignments`, {
+        // TODO (backend): POST /api/assignments
+        // Body: { assignment, module_id, user_id, dueDate, description, role: 'instructor' }
+        // Returns: { success: true, data: { id, ... } }
+        await apiFetch('/api/assignments', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
           body: JSON.stringify({
-            assignment: newAssignment.title,
-            module_id: newAssignment.course,
-            user_id: user?.id ?? user?.user_id,
-            dueDate: newAssignment.dueDate,
+            assignment:  newAssignment.title,
+            module_id:   newAssignment.course,
+            user_id:     user?.id ?? user?.user_id,
+            dueDate:     newAssignment.dueDate,
             description: newAssignment.description,
-            role: 'instructor'
+            role:        'instructor',
           }),
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Failed to create assignment.');
 
-        // ✅ Re-fetch so new assignment appears in the list immediately
+        // Re-fetch so new assignment appears in the list immediately
         await fetchAssignments();
+        await fetchSubmissions();
         setNewAssignment({ title: '', course: '', dueDate: '', description: '' });
         setIsCreateModalOpen(false);
       } catch (err) {
         console.error('handleCreateAssignment error:', err);
-        alert('Error creating assignment: ' + err.message);
+        toast.error('Error creating assignment: ' + err.message);
       }
     };
 

@@ -14,7 +14,7 @@ const app = express();
 
 // Configure CORS options to restrict access to our vite frontend
 const corsOptions = {
-    origin: 'https://localhost:5173',
+    origin: 'http://localhost:5173',
     method: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -31,8 +31,6 @@ const loginLimiter = rateLimit({
     }
 })
 
-//Admin 
-    app.use("/api", adminRouter);
 
 
 // Middleware
@@ -45,6 +43,10 @@ const loginLimiter = rateLimit({
     // View Engine
     app.set("view engine", "ejs");
 
+     //Admin 
+    app.use("/api", adminRouter);
+
+    
     // Routes
     app.use("/users", userRouter);
     app.use("/api/auth", loginRouter);
@@ -53,6 +55,8 @@ const loginLimiter = rateLimit({
     app.use("/api", assignmentRouter);
     app.use("/api", certificateRouter);
 
+    
+   
 
 
 export default app;

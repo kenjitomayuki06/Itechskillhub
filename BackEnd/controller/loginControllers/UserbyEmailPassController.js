@@ -20,9 +20,14 @@ export async function getUserbyEmailPassController(req, res) {
 
         // 4. Check if the password matches the hashed password in your database
         // Replace 'userData.password_hash' with whatever your database password column is named!
+        const databaseHash = userData.password_hash || userData.passwordhashed; 
+
         console.log("Password typed in frontend:", password);
-        console.log("Hash fetched from database:", userData.passwordhashed);
-        const isPasswordValid = await bcrypt.compare(password, userData.password_hash);
+
+        const cleanDatabaseHash = userData.password_hash;
+        console.log("Hash fetched from database:", cleanDatabaseHash);
+
+        const isPasswordValid = await bcrypt.compare(password, cleanDatabaseHash);
 
         if (!isPasswordValid) {
             return res.status(401).json({

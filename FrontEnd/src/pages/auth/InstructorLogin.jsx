@@ -101,9 +101,6 @@ const InstructorLogin = () => {
           password: formData.password,
         });
 
-        sessionStorage.setItem("userName", user.fullname || user.id);
-        sessionStorage.setItem("userEmail", user.email);
-
         if (user.role === 'instructor') {
           navigate('/instructor/dashboard');
         } else {

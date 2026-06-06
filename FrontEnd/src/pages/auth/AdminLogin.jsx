@@ -50,10 +50,6 @@ const AdminLogin = () => {
         password: signIn.password,
       });
 
-      sessionStorage.setItem("userName", user.fullname || user.id);
-      sessionStorage.setItem("userEmail", user.email);
-
-
       if (user.role !== 'admin') {
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');

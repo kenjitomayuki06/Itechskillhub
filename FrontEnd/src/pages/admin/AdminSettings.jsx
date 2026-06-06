@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { Save, Bell, Mail, Lock, Globe, Palette, Shield, Database, Upload } from 'lucide-react';
-import '../../styles/admin/AdminSettings.css'
+import { Save, Bell, Globe, Palette, Shield, Database, Upload } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { apiFetch } from '../../services/authService';
+import '../../styles/admin/AdminSettings.css';
 
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('general');
+  const [isSaving, setIsSaving] = useState(false);
   const [settings, setSettings] = useState({
     siteName: 'ITechSkillsHub',
     siteEmail: 'admin@itechskillshub.edu',
@@ -31,16 +34,31 @@ export default function AdminSettings() {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = () => {
-    alert('Settings saved successfully!');
+  const handleSave = async () => {
+    setIsSaving(true);
+    const toastId = toast.loading('Saving settings...');
+    try {
+      // TODO (backend): PUT /api/admin/settings
+      // Body: full settings object (see state above)
+      // Returns: { message: 'Settings saved successfully' }
+      await apiFetch('/api/admin/settings', {
+        method: 'PUT',
+        body: JSON.stringify(settings),
+      });
+      toast.success('Settings saved successfully!', { id: toastId });
+    } catch (err) {
+      toast.error(err.message || 'Failed to save settings. Please try again.', { id: toastId });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const tabs = [
-    { id: 'general', label: 'General', icon: Globe },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'security', label: 'Security', icon: Shield },
-    { id: 'appearance', label: 'Appearance', icon: Palette },
-    { id: 'advanced', label: 'Advanced', icon: Database },
+    { id: 'general',       label: 'General',       icon: Globe     },
+    { id: 'notifications', label: 'Notifications', icon: Bell      },
+    { id: 'security',      label: 'Security',      icon: Shield    },
+    { id: 'appearance',    label: 'Appearance',    icon: Palette   },
+    { id: 'advanced',      label: 'Advanced',      icon: Database  },
   ];
 
   return (
@@ -51,9 +69,13 @@ export default function AdminSettings() {
           <h1>Settings</h1>
           <p>Manage your platform configuration and preferences</p>
         </div>
-        <button className="btn-save-settings" onClick={handleSave}>
+        <button
+          className="btn-save-settings"
+          onClick={handleSave}
+          disabled={isSaving}
+        >
           <Save size={20} />
-          Save Changes
+          {isSaving ? 'Saving...' : 'Save Changes'}
         </button>
       </div>
 
@@ -73,6 +95,7 @@ export default function AdminSettings() {
 
       {/* Settings Content */}
       <div className="settings-content">
+
         {/* General Settings */}
         {activeTab === 'general' && (
           <div className="settings-section">
@@ -131,7 +154,7 @@ export default function AdminSettings() {
 
             <div className="settings-group">
               <h3>Registration Settings</h3>
-              
+
               <div className="setting-toggle">
                 <div className="toggle-info">
                   <strong>Enable Registration</strong>
@@ -192,65 +215,27 @@ export default function AdminSettings() {
             </div>
 
             <div className="settings-group">
-              <div className="setting-toggle">
-                <div className="toggle-info">
-                  <strong>Email Notifications</strong>
-                  <span>Receive important updates via email</span>
+              {[
+                { key: 'emailNotifications', label: 'Email Notifications',  desc: 'Receive important updates via email'       },
+                { key: 'pushNotifications',  label: 'Push Notifications',   desc: 'Browser push notifications'                },
+                { key: 'weeklyReports',      label: 'Weekly Reports',       desc: 'Receive weekly analytics summary'          },
+                { key: 'monthlyReports',     label: 'Monthly Reports',      desc: 'Comprehensive monthly insights'            },
+              ].map(({ key, label, desc }) => (
+                <div key={key} className="setting-toggle">
+                  <div className="toggle-info">
+                    <strong>{label}</strong>
+                    <span>{desc}</span>
+                  </div>
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      checked={settings[key]}
+                      onChange={() => handleToggle(key)}
+                    />
+                    <span className="toggle-slider"></span>
+                  </label>
                 </div>
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={settings.emailNotifications}
-                    onChange={() => handleToggle('emailNotifications')}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-
-              <div className="setting-toggle">
-                <div className="toggle-info">
-                  <strong>Push Notifications</strong>
-                  <span>Browser push notifications</span>
-                </div>
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={settings.pushNotifications}
-                    onChange={() => handleToggle('pushNotifications')}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-
-              <div className="setting-toggle">
-                <div className="toggle-info">
-                  <strong>Weekly Reports</strong>
-                  <span>Receive weekly analytics summary</span>
-                </div>
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={settings.weeklyReports}
-                    onChange={() => handleToggle('weeklyReports')}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-
-              <div className="setting-toggle">
-                <div className="toggle-info">
-                  <strong>Monthly Reports</strong>
-                  <span>Comprehensive monthly insights</span>
-                </div>
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={settings.monthlyReports}
-                    onChange={() => handleToggle('monthlyReports')}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
+              ))}
             </div>
           </div>
         )}
@@ -348,7 +333,7 @@ export default function AdminSettings() {
               <div className="setting-item">
                 <label>Primary Color</label>
                 <div className="color-picker">
-                  <input type="color" value="#5B4A9E" />
+                  <input type="color" defaultValue="#5B4A9E" />
                   <span className="color-value">#5B4A9E</span>
                 </div>
               </div>
@@ -356,7 +341,7 @@ export default function AdminSettings() {
               <div className="setting-item">
                 <label>Secondary Color</label>
                 <div className="color-picker">
-                  <input type="color" value="#7B6BBD" />
+                  <input type="color" defaultValue="#7B6BBD" />
                   <span className="color-value">#7B6BBD</span>
                 </div>
               </div>
@@ -394,9 +379,24 @@ export default function AdminSettings() {
               <div className="danger-zone">
                 <h3>⚠️ Danger Zone</h3>
                 <p>These actions are irreversible. Proceed with caution.</p>
-                <button className="btn-danger">Clear All Cache</button>
-                <button className="btn-danger">Reset All Settings</button>
-                <button className="btn-danger">Delete All Logs</button>
+                <button
+                  className="btn-danger"
+                  onClick={() => toast.error('Clear cache feature is not yet available in this version.')}
+                >
+                  Clear All Cache
+                </button>
+                <button
+                  className="btn-danger"
+                  onClick={() => toast.error('Reset settings feature is not yet available in this version.')}
+                >
+                  Reset All Settings
+                </button>
+                <button
+                  className="btn-danger"
+                  onClick={() => toast.error('Delete logs feature is not yet available in this version.')}
+                >
+                  Delete All Logs
+                </button>
               </div>
             </div>
           </div>

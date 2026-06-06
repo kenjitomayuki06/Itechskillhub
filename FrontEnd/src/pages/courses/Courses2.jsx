@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "../../styles/courses/Courses2.css";
 
 const Courses2 = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     const cards = document.querySelectorAll('.feature-card, .support-card');
 
@@ -107,7 +110,7 @@ const Courses2 = () => {
             </div>
 
             <div className="support-cta">
-              <button className="quiz-btn">
+              <button className="quiz-btn" onClick={() => navigate('/games')}>
                 Practice with Quizzes
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>

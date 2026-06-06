@@ -7,21 +7,8 @@ const Navbar = () => {
   const [scrolled, setScrolled]               = useState(false);
   const [showResources, setShowResources]     = useState(false);
   const [menuOpen, setMenuOpen]               = useState(false);
-  const [showStudentToast, setShowStudentToast] = useState(false);
   const location  = useLocation();
   const navigate  = useNavigate();
-
-  // Check if student just logged in
-  useEffect(() => {
-    if (sessionStorage.getItem("studentLoggedIn") === "true") {
-      setShowStudentToast(true);
-      // Remove flag so toast only shows once
-      sessionStorage.removeItem("studentLoggedIn");
-      // Auto-hide after 4 seconds
-      const timer = setTimeout(() => setShowStudentToast(false), 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [location]);
 
   const isHome    = location.pathname === "/";
   const isAbout   = location.pathname === "/about";
@@ -59,22 +46,17 @@ const Navbar = () => {
     else navigate("/");
   };
 
+  const goAbout = () => {
+    if (isAbout) window.scrollTo({ top: 0, behavior: 'smooth' });
+    else navigate("/about");
+  };
+
   const isTransparent = (isHome || isAbout || isCourse || isBlog || isGames) && !scrolled && !menuOpen;
 
-  // Which page-specific bg class to apply when transparent
   const pageClass = isGames ? 'navbar-games' : isAbout ? 'navbar-about' : isBlog ? 'navbar-blog' : isCourse ? 'navbar-course' : 'navbar-home';
 
   return (
     <nav className={`navbar ${isTransparent ? `navbar-transparent ${pageClass}` : 'navbar-solid'}`}>
-
-      {/* STUDENT LOGIN TOAST */}
-      {showStudentToast && (
-        <div className="student-toast">
-          <span className="student-toast-icon">✓</span>
-          You're logged in as a Student
-          <button className="student-toast-close" onClick={() => setShowStudentToast(false)}>×</button>
-        </div>
-      )}
 
       {/* LEFT — LOGO */}
       <div className="navbar-left">
@@ -91,7 +73,11 @@ const Navbar = () => {
           onClick={goHome}
         >Home</button>
 
-        <Link to="/about" className={isAbout ? 'nav-active' : ''}>About</Link>
+        <button
+          className={`nav-link-btn ${isAbout ? 'nav-active' : ''}`}
+          onClick={goAbout}
+        >About</button>
+
         <Link to="/course" className={isCourse ? 'nav-active' : ''}>Courses</Link>
 
         {/* Resources Dropdown */}
@@ -138,8 +124,8 @@ const Navbar = () => {
 
       {/* RIGHT — LOGIN + HAMBURGER */}
       <div className="navbar-right">
-        <button className="login-btn" onClick={() => navigate("/admin/login")}>
-          Admin Login
+        <button className="login-btn" onClick={() => navigate("/instructor/login")}>
+          Instructor Login
         </button>
         <button
           className={`hamburger ${menuOpen ? 'hamburger-open' : ''}`}
@@ -154,11 +140,11 @@ const Navbar = () => {
       {menuOpen && (
         <div className="mobile-menu">
           <button className={`mobile-link ${isHome ? 'mobile-active' : ''}`} onClick={goHome}>Home</button>
-          <Link to="/about"  className={`mobile-link ${isAbout   ? 'mobile-active' : ''}`}>About</Link>
+          <button className={`mobile-link ${isAbout ? 'mobile-active' : ''}`} onClick={goAbout}>About</button>
           <Link to="/course" className={`mobile-link ${isCourse  ? 'mobile-active' : ''}`}>Courses</Link>
           <Link to="/games"  className={`mobile-link ${isGames   ? 'mobile-active' : ''}`}>Games</Link>
           <Link to="/blog"   className={`mobile-link ${isBlog    ? 'mobile-active' : ''}`}>Blog</Link>
-          <button className="mobile-login" onClick={() => navigate("/admin/login")}>Admin Login</button>
+          <button className="mobile-login" onClick={() => navigate("/instructor/login")}>Instructor Login</button>
         </div>
       )}
 

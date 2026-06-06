@@ -9,6 +9,7 @@
      BRAND COLORS
   ================================ */
   --color-primary:        #5B4A9E;   /* main purple — buttons, accents */
+  --color-primary-rgb:    91, 74, 158; /* for rgba() usage */
   --color-primary-light:  #7B6BBD;   /* hover states, softer accents */
   --color-primary-dark:   #262c4a;   /* deep navy — sidebar, backgrounds */
   --color-accent:         #ff7a18;   /* orange — highlights, badges */
@@ -34,19 +35,19 @@
   /* ================================
      TEXT COLORS
   ================================ */
-  --text-primary:         #1f2937;   /* main body text */
-  --text-secondary:       #6b7280;   /* subtitles, labels */
-  --text-muted:           #9ca3af;   /* placeholders, hints */
-  --text-dark:            #2d3436;   /* headings */
+  --text-primary:         #1f2937;
+  --text-secondary:       #6b7280;
+  --text-muted:           #9ca3af;
+  --text-dark:            #2d3436;
   --text-white:           #ffffff;
 
   /* ================================
      BACKGROUND / SURFACE
   ================================ */
   --bg-page:              #ffffff;
-  --bg-subtle:            #f9fafb;   /* light page bg */
-  --bg-card:              #f3f4f6;   /* card backgrounds */
-  --bg-input:             #fafafa;   /* input fields */
+  --bg-subtle:            #f9fafb;
+  --bg-card:              #f3f4f6;
+  --bg-input:             #fafafa;
 
   /* ================================
      BORDERS
@@ -93,6 +94,22 @@
   --transition-fast:      all 0.2s ease;
   --transition-base:      all 0.3s ease;
   --transition-smooth:    all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ================================
+     SHADOWS
+  ================================ */
+  --shadow-sm:            0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-md:            0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg:            0 8px 32px rgba(0, 0, 0, 0.15);
+
+  /* ================================
+     DASHBOARD / SIDEBAR
+  ================================ */
+  --primary-gradient:     linear-gradient(160deg, #1a1f38 0%, #262c4a 25%, #2f3660 55%, #3d4878 75%, #4a527a 100%);
+  --glass-bg:             rgba(255, 255, 255, 0.08);
+  --glass-border:         rgba(255, 255, 255, 0.18);
+  --sidebar-header-height: 80px;
+  --top-nav-height:       70px;
 }
 
 body {
