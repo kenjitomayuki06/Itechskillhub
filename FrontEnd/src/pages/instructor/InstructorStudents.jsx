@@ -28,6 +28,14 @@ const mockStudents = [
 const courses = ['All Courses', 'CSS NC II', 'PC Hardware', 'Network Setup', 'OS Installation'];
 const statuses = ['All Status', 'active', 'at-risk', 'completed'];
 
+const grades = ['All Grades', 'A', 'B', 'C', 'D', 'F'];
+const submissionStatuses = [
+  {value: 'All', label: 'All Submissions'}, 
+  {value: 'Complete', label: 'Complete'},
+  {value: 'Incomplete', label: 'Incomplete'},
+  {value: 'Missing', label: 'No Submissions (0/X)'}
+];
+
 const gradeColor = (grade) => {
   if (grade.startsWith('A')) return 'grade-a';
   if (grade.startsWith('B')) return 'grade-b';
@@ -44,17 +52,32 @@ const avatarColors = [
 export default function InstructorStudents() {
   const [selectedCourse, setSelectedCourse] = useState('All Courses');
   const [selectedStatus, setSelectedStatus] = useState('All Status');
+
+  const [selectedGrade, setSelectedGrade] = useState('All Grades');
+  const [selectedSubmissionStatus, setSelectedSubmissionStatus] = useState('All');
+
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen]         = useState(false);
+  
 
   /* ─── Filtered data ── */
   const filtered = useMemo(() => {
     return mockStudents.filter(s => {
       const matchCourse = selectedCourse === 'All Courses' || s.course === selectedCourse;
       const matchStatus = selectedStatus === 'All Status'  || s.status === selectedStatus;
-      return matchCourse && matchStatus;
+      const matchGrade = selectedGrade === 'All Grades' || s.grade.startsWith(selectedGrade);
+      
+      let matchSubmission = true;
+      if (selectedSubmissionStatus === 'Missing') {
+        matchSubmission = s.submissions === 0;
+      }else if (selectedSubmissionStatus === 'Incomplete'){
+        matchSubmission = s.submissions > 0 && s.submissions < s.totalAssignments;
+      }else if (selectedSubmissionStatus === 'Complete'){
+        matchSubmission = s.submissions === s.totalAssignments;
+      }
+      return matchCourse && matchStatus && matchGrade && matchSubmission;
     });
-  }, [selectedCourse, selectedStatus]);
+  }, [selectedCourse, selectedStatus, selectedGrade, selectedSubmissionStatus]);
 
   /* ─── Summary stats ── */
   const totalStudents   = mockStudents.length;
@@ -245,6 +268,31 @@ export default function InstructorStudents() {
             </select>
             <ChevronDown size={15} className="is-select-arrow" />
           </div>
+          <div className="is-select-wrapper">
+            <select
+              value={selectedGrade}
+              onChange={e => setSelectedGrade(e.target.value)}
+              className="is-select"
+            >
+              {grades.map(g => <option key={g} value={g}>{g === 'All Grades' ? g : `Grade ${g}`}</option>)}
+            </select>
+            <ChevronDown size={15} className="is-select-arrow" />
+          </div>
+          
+          <div className="is-select-wrapper">
+            <select
+               value={selectedSubmissionStatus} //  Updated from selectedSubmission
+                   onChange={e => setSelectedSubmissionStatus(e.target.value)} //  Updated from setSelectedSubmission
+                  className="is-select"
+                >
+               {/* ✅ Loops over the correct array name */}
+                  {submissionStatuses.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                 ))}
+                </select>
+             <ChevronDown size={15} className="is-select-arrow" />
+          </div>
+
         </div>
         <span className="is-result-count">{filtered.length} student{filtered.length !== 1 ? 's' : ''} found</span>
       </div>

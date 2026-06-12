@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, Edit, Users, Clock, BookOpen, TrendingUp, Award, Search, LayoutGrid, List, CheckCircle, AlertCircle } from 'lucide-react';
+import { Eye, Edit, Users, Clock, BookOpen, TrendingUp, Award, Search, LayoutGrid, List, CheckCircle, AlertCircle, Star } from 'lucide-react';
 import Modal from '../../components/common/Modal';
 import coursesData from '../courses/coursesData';
 import '../../styles/instructor/InstructorMyCourses.css';
@@ -54,9 +54,27 @@ export default function InstructorMyCourses() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const filtered = instructorCourseData.filter(c =>
-    c.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const [bookmarkedCourses, setBookmarkedCourses] = useState([]);
+
+  // Toggle function for pinning/unpinning a course
+  const toggleBookmark = (courseId, e) => {
+    e.stopPropagation(); // 🌟 Stops the whole card view click from triggering when pinning!
+    setBookmarkedCourses(prev =>
+      prev.includes(courseId)
+        ? prev.filter(id => id !== courseId) // Unpin
+        : [...prev, courseId]                // Pin
+    );
+  };
+
+  const filtered = instructorCourseData
+    .filter(c => c.title.toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) => {
+      const aPinned = bookmarkedCourses.includes(a.id);
+      const bPinned = bookmarkedCourses.includes(b.id);
+      if (aPinned && !bPinned) return -1; 
+      if (!aPinned && bPinned) return 1;  
+      return 0;                          
+    });
 
   const totalStudents = instructorCourseData.reduce((s, c) => s + c.studentsEnrolled, 0);
   const avgCompletion = Math.round(
@@ -151,6 +169,16 @@ export default function InstructorMyCourses() {
           >
             {/* Image */}
             <div className="ic-card-image-wrapper">
+            
+              <button 
+                className={`card-bookmark-btn ${bookmarkedCourses.includes(course.id) ? 'active' : ''}`}
+                title={bookmarkedCourses.includes(course.id) ? "Unpin Course" : "Pin Course to Top"}
+                onClick={(e) => toggleBookmark(course.id, e)}
+              >
+                <Star size={16} fill={bookmarkedCourses.includes(course.id) ? "#f1c40f" : "none"} />
+              </button>
+
+              <img src={course.image} alt={course.title} className="ic-card-image" />
               <img src={course.image} alt={course.title} className="ic-card-image" />
               <div className="ic-card-overlay">
                 <button className="ic-quick-view-btn" onClick={() => handleView(course)}>

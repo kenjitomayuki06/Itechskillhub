@@ -34,6 +34,7 @@ import InstructorMyCourses from "./pages/instructor/InstructorMyCourses";
 import InstructorStudents from "./pages/instructor/InstructorStudents";
 import InstructorAssignments from "./pages/instructor/InstructorAssignments";
 import InstructorReports from "./pages/instructor/InstructorReports";
+import InstructorAnnouncements from "./pages/instructor/InstructorAnnouncements.jsx";
 
 // Student Pages
 import StudentDashboard     from "./pages/student/StudentDashboard";
@@ -142,6 +143,7 @@ function App() {
           <Route path="students"    element={<InstructorStudents />} />
           <Route path="assignments" element={<InstructorAssignments />} />
           <Route path="reports"     element={<InstructorReports />} />
+          <Route path="announcements" element={<InstructorAnnouncements />} />
         </Route>
 
         {/* STUDENT DASHBOARD ROUTES — protected */}

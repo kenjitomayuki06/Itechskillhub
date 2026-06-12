@@ -732,6 +732,48 @@
   transform: translateY(-2px);
 }
 
+/* ── Floating Card Bookmark Pin ──────────────── */
+.course-card-wrapper {
+  position: relative; /* 🌟 Crucial so we can absolutely position the star inside the card */
+}
+
+.card-bookmark-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10; /* Ensures it floats cleanly above the course image banner */
+  background: rgba(255, 255, 255, 0.85);
+  border: none;
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #b2bec3;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.card-bookmark-btn:hover {
+  transform: scale(1.1);
+  color: #f1c40f;
+  background: white;
+}
+
+.card-bookmark-btn.active {
+  color: #f1c40f;
+  background: white;
+  animation: cardPopScale 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes cardPopScale {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
   .ic-courses-container.grid {

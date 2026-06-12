@@ -362,6 +362,38 @@
   opacity: 0.88;
 }
 
+  /* ── Student List Roster Bookmark Star ──────────────── */
+.student-row-star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #c8d6e5; /* Clean light silver outline when unpinned */
+  transition: all 0.2s ease-in-out;
+  margin-right: 4px; /* Creates breathing room before the category icon */
+  border-radius: 6px;
+}
+
+.student-row-star-btn:hover {
+  transform: scale(1.18);
+  color: #f1c40f;
+  background: rgba(241, 196, 15, 0.08);
+}
+
+.student-row-star-btn.active {
+  color: #f1c40f; /* High-visibility gold fill */
+  animation: listPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes listPop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
 /* ── Expanded Details ── */
 .sc-card-expanded {
   padding: 0 24px 22px;

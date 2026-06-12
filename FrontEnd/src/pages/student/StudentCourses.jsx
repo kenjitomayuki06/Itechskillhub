@@ -78,6 +78,17 @@ export default function StudentCourses() {
   const [activeFilter, setActiveFilter] = useState('All');
   const [expandedId, setExpandedId] = useState(null);
 
+  const [bookmarkedCourses, setBookmarkedCourses] = useState([]);
+
+  const toggleBookmark = (courseId, e) => {
+    e.stopPropagation(); // Prevents clicking the star from accidentally opening the course page
+    setBookmarkedCourses(prev => 
+      prev.includes(courseId)
+        ? prev.filter(id => id !== courseId) // Unpin
+        : [...prev, courseId]                // Pin
+    );
+  };
+
   const filtered = MOCK_COURSES.filter((c) => {
     const matchSearch = c.title.toLowerCase().includes(search.toLowerCase());
     const matchFilter =
@@ -86,7 +97,14 @@ export default function StudentCourses() {
       (activeFilter === 'Completed'    && c.status === 'completed')     ||
       (activeFilter === 'Not Started'  && c.status === 'not-started');
     return matchSearch && matchFilter;
+  }).sort((a, b) => {
+    const aPinned = bookmarkedCourses.includes(a.id);
+    const bPinned = bookmarkedCourses.includes(b.id);
+    if (aPinned && !bPinned) return -1;
+    if (!aPinned && bPinned) return 1;
+    return 0;
   });
+
 
   const inProgress  = MOCK_COURSES.filter((c) => c.status === 'in-progress').length;
   const completed   = MOCK_COURSES.filter((c) => c.status === 'completed').length;
@@ -183,13 +201,21 @@ export default function StudentCourses() {
               >
                 <div className="sc-card-main">
                   {/* Icon */}
+                 <button 
+                    className={`student-row-star-btn ${bookmarkedCourses.includes(course.id) ? 'active' : ''}`}
+                    title={bookmarkedCourses.includes(course.id) ? "Unpin Course" : "Pin Course to Top"}
+                    onClick={(e) => toggleBookmark(course.id, e)}
+                  >
+                    <Star size={16} fill={bookmarkedCourses.includes(course.id) ? "#f1c40f" : "none"} />
+                  </button>
+
+                  {/* Your original course icon template is right here */}
                   <div
                     className="sc-course-icon"
                     style={{ background: course.color + '20', color: course.color }}
                   >
                     {course.icon}
                   </div>
-
                   {/* Info */}
                   <div className="sc-course-info">
                     <div className="sc-course-title-row">
