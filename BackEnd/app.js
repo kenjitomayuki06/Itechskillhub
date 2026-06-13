@@ -5,7 +5,7 @@ import loginRouter from "./routes/loginRoute.js";
 import registerRouter from "./routes/accountRoute.js";
 import courseRouter from "./routes/courseRoute.js";
 import assignmentRouter from "./routes/assignmentRoute.js";
-import rateLimit from "express-rate-Limit";
+import rateLimit from 'express-rate-limit'
 import adminRouter from "./routes/adminRoutes.js";
 import instructorRouter from "./routes/instructorRoute.js";
 import certificateRouter from "./routes/certificateRoute.js";
