@@ -64,7 +64,7 @@ const LandingPage1 = () => {
           <div className="landing-buttons">
             <button
               className="btn-google"
-              onClick={() => window.open("/auth", "_blank")}
+              onClick={() => navigate("/auth")}
               type="button"
               aria-label="Get started using Google account"
             >
