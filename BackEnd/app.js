@@ -10,6 +10,7 @@ import adminRouter from "./routes/adminRoutes.js";
 import instructorRouter from "./routes/instructorRoute.js";
 import certificateRouter from "./routes/certificateRoute.js";
 import googleAuthRouter from "./routes/googleAuthRoute.js";
+import studentRouter from "./routes/studentRoute.js";
 
 const app = express();
 
@@ -56,5 +57,5 @@ app.use("/api", registerRouter);
 app.use("/api/courses", courseRouter);
 app.use("/api", assignmentRouter);
 app.use("/api", certificateRouter);
-
+app.use("/api", studentRouter);
 export default app;
