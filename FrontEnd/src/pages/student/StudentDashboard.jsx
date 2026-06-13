@@ -93,9 +93,9 @@ const MOCK_DATA = {
 };
 
 async function fetchStudentDashboard() {
-  // Simulates network delay — remove when backend is ready
-  await new Promise(r => setTimeout(r, 900));
-  return MOCK_DATA;
+  const { apiFetch } = await import('../../services/authService.js');
+  const data = await apiFetch('/api/student/dashboard');
+  return data.dashboardData;
 }
 
 /* ── Helpers ── */
