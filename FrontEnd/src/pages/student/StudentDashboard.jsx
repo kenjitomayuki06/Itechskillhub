@@ -163,12 +163,12 @@ export default function StudentDashboard() {
     </div>
   );
 
-  const { enrolledCourses, deadlines, activityFeed, weeklyProgress } = dashboard;
+  const { enrolledCourses = [], deadlines = [], activityFeed = [], weeklyProgress = [] } = dashboard;
 
   const completedCourses       = enrolledCourses.filter(c => c.modulesCompleted === c.modulesTotal).length;
   const totalLessonsCompleted  = enrolledCourses.reduce((s, c) => s + c.modulesCompleted, 0);
   const totalLessons           = enrolledCourses.reduce((s, c) => s + c.modulesTotal, 0);
-  const overallProgress        = Math.round((totalLessonsCompleted / totalLessons) * 100);
+  const overallProgress = totalLessons > 0 ? Math.round((totalLessonsCompleted / totalLessons) * 100) : 0;
   const firstName              = currentUser?.name?.split(' ')[0] || 'Student';
   const upcomingThisWeek       = deadlines.filter(d => Math.ceil((new Date(d.dueDate) - Date.now()) / 86400000) <= 7).length;
 
