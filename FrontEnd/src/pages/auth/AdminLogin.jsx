@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginWithEmail } from '../../services/authService';
+import { adminLogin } from '../../services/authService';
 import '../../styles/pages/auth/AdminLogin.css';
 import Logo from '../../assets/Logo1.svg';
+import Lottie from "lottie-react";
 
 function validateSignIn({ email, password }) {
   if (!email.trim())               return 'Email address is required.';
@@ -15,15 +16,21 @@ function validateSignIn({ email, password }) {
 const AdminLogin = () => {
   const navigate = useNavigate();
 
-  const [mounted, setMounted]           = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [animData, setAnimData] = useState(null);
   const [loading, setLoading]           = useState(false);
   const [error, setError]               = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember]         = useState(false);
-  const [signIn, setSignIn]             = useState({ email: '', password: '' });
+  const [signIn, setSignIn]             = useState({ email: '', password: '', secretCode: '' });
 
   useEffect(() => {
     setTimeout(() => setMounted(true), 50);
+
+    fetch('https://assets10.lottiefiles.com/packages/lf20_jcikwtux.json')
+    .then(r => r.json())
+    .then(setAnimData)
+    .catch(() => setAnimData(null));
 
     // If already logged in as admin, go straight to dashboard
     const token  = localStorage.getItem('authToken');
@@ -45,19 +52,24 @@ const AdminLogin = () => {
 
     setLoading(true);
     try {
-      const user = await loginWithEmail({
-        email:    signIn.email,
-        password: signIn.password,
+      const user = await adminLogin({
+        email:      signIn.email,
+        password:   signIn.password,
+        secretCode: signIn.secretCode,
       });
 
-      if (user.role !== 'admin') {
+      if (user.role !== 'admin' && user.role !== 'super_admin') {
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
         setError('Access denied. This portal is for administrators only.');
         return;
       }
 
+      if (user.role === 'super_admin') {
+      navigate('/super-admin/dashboard');
+      } else {
       navigate('/admin/dashboard');
+      }
     } catch (err) {
       setError(err.message || 'Invalid email or password. Please try again.');
     } finally {
@@ -93,18 +105,8 @@ const AdminLogin = () => {
         {/* Top — illustration + logo */}
         <div className="adm-card-top">
           <div className="adm-illustration">
-            <svg width="110" height="90" viewBox="0 0 110 90" fill="none">
-              <rect x="8" y="20" width="70" height="50" rx="6" fill="#e8eaf6" stroke="#c5cae9" strokeWidth="1.5"/>
-              <rect x="14" y="28" width="58" height="6" rx="3" fill="#9fa8da"/>
-              <rect x="14" y="38" width="42" height="4" rx="2" fill="#c5cae9"/>
-              <rect x="14" y="46" width="50" height="4" rx="2" fill="#c5cae9"/>
-              <rect x="14" y="54" width="36" height="4" rx="2" fill="#c5cae9"/>
-              <circle cx="85" cy="38" r="18" fill="#2f3660"/>
-              <path d="M79 38l4 4 8-8" stroke="#ff7a18" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <rect x="24" y="68" width="20" height="4" rx="2" fill="#9fa8da"/>
-              <rect x="48" y="68" width="14" height="4" rx="2" fill="#c5cae9"/>
-            </svg>
-          </div>
+  {animData && <Lottie animationData={animData} loop autoplay />}
+      </div>
           <div className="adm-card-logo">
             <img src={Logo} alt="ITechSkillsHub" className="adm-logo-img" />
             <div>
@@ -116,8 +118,8 @@ const AdminLogin = () => {
 
         {/* Heading */}
         <div className="adm-heading">
-          <h2>Welcome back, <span>Admin</span></h2>
-          <p>Sign in to manage your LMS system</p>
+          <h2>System Online.</h2>
+          <p>Access the admin control panel</p>
         </div>
 
         {/* Error */}
@@ -175,6 +177,23 @@ const AdminLogin = () => {
               <button type="button" className="adm-eye" onClick={() => setShowPassword(p => !p)}>
                 {showPassword ? <EyeOff /> : <EyeOpen />}
               </button>
+            </div>
+          </div>
+
+          <div className="adm-field">
+            <label>Secret Code</label>
+            <div className="adm-input-wrap">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="secretCode"
+                value={signIn.secretCode}
+                onChange={e => { setSignIn(p => ({ ...p, secretCode: e.target.value })); setError(''); }}
+                placeholder="Enter secret code"
+                disabled={loading}
+              />
+              <button type="button" className="adm-eye" onClick={() => setShowPassword(p => !p)}>
+              {showPassword ? <EyeOff /> : <EyeOpen />}
+            </button>
             </div>
           </div>
 

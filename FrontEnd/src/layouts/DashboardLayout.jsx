@@ -35,6 +35,7 @@ const BREADCRUMB_LABELS = {
   quiz:        'Quizzes & Assessments',
   progress:      'My Progress',
   certificates:  'My Certificates',
+    'audit-log': 'Audit Log', 
 };
 
 function buildBreadcrumbs(pathname) {
@@ -299,6 +300,7 @@ export default function DashboardLayout({ userRole = 'admin' }) {
         { icon: BookOpen,     label: 'Courses',      path: '/admin/courses',     badge: null  },
         { icon: FileText,     label: 'Assignments',  path: '/admin/assignments', badge: null  },
         { icon: BarChart3,    label: 'Analytics',    path: '/admin/analytics',   badge: null  },
+        { icon: ClipboardList, label: 'Audit Log',   path: '/admin/audit-log',   badge: null },
         { icon: Settings,     label: 'Settings',     path: '/admin/settings',    badge: null  },
       ];
     } else if (userRole === 'instructor') {

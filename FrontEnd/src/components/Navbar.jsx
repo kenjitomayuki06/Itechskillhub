@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { isAuthenticated } from "../services/authService";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import '../styles/components/navbar.css';
 import logo from "../assets/Logo1.svg";
@@ -15,6 +16,8 @@ const Navbar = () => {
   const isCourse  = location.pathname.startsWith("/course");
   const isGames   = location.pathname === "/games";
   const isBlog    = location.pathname === "/blog";
+  const isPrivacy = location.pathname === "/privacy";
+  const isTerms   = location.pathname === "/terms";
   const isResources = isGames || isBlog;
 
   useEffect(() => {
@@ -51,7 +54,9 @@ const Navbar = () => {
     else navigate("/about");
   };
 
-  const isTransparent = (isHome || isAbout || isCourse || isBlog || isGames) && !scrolled && !menuOpen;
+  const hideNavbar = isCourse && isAuthenticated();
+  if (hideNavbar) return null;
+  const isTransparent = (isHome || isAbout || isCourse || isBlog || isGames || isPrivacy || isTerms) && !scrolled && !menuOpen;
 
   const pageClass = isGames ? 'navbar-games' : isAbout ? 'navbar-about' : isBlog ? 'navbar-blog' : isCourse ? 'navbar-course' : 'navbar-home';
 

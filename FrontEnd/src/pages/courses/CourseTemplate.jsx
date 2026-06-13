@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { isAuthenticated } from '../../services/authService';
+import { isAuthenticated, getUser } from '../../services/authService';
 import '../../styles/courses/CourseCSSNCII.css';
+
 
 /* ── Icon set ── */
 const PlayIcon  = () => <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>;
@@ -81,6 +82,8 @@ const CourseTemplate = ({
   badgeLabel = 'TESDA NC II',
 }) => {
   const navigate = useNavigate();
+  const user = getUser();
+  const loggedIn = isAuthenticated();
   const [showLoginWall, setShowLoginWall] = useState(false);
   const [modules, setModules]             = useState(courseLessons.modules);
   const [currentLesson, setCurrentLesson] = useState(courseLessons.modules[0].lessons[0]);
@@ -159,6 +162,43 @@ const CourseTemplate = ({
 
   return (
     <div className="crs-page">
+      {loggedIn && user && (
+  <div style={{
+    background: 'var(--lms-nav)',
+    borderBottom: '1px solid rgba(255,255,255,0.08)',
+    padding: '14px 32px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    fontSize: '13px',
+    color: 'var(--lms-muted, #94a3b8)',
+  }}>
+    <button
+      onClick={() => navigate('/student/courses')}
+      style={{
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        color: 'var(--lms-purple, #7c3aed)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        fontSize: '13px',
+        fontWeight: '500',
+        padding: 0,
+      }}
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="14" height="14">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      Back to My Courses
+    </button>
+    <span>
+      Logged in as <strong style={{ color: 'var(--lms-text, #e2e8f0)' }}>{user.name}</strong>
+    </span>
+  </div>
+)}
 
       {/* ── HERO ── */}
       <div className="crs-hero">

@@ -399,6 +399,19 @@ html, body {
   cursor: pointer;
 }
 
+.auth-terms a,
+.auth-terms a:visited {
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.auth-terms a:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
 /* =========================
    FOOTER
    ========================= */
@@ -435,4 +448,11 @@ html, body {
   .auth-lottie {
     width: 110px;
   }
+}
+
+.auth-hint {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 5px;
+  line-height: 1.5;
 }

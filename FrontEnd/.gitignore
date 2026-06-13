@@ -23,4 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-*.zip
+*.zip  
+.env  
+.env.local 

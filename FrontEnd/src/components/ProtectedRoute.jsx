@@ -17,9 +17,10 @@ function isTokenExpired(token) {
 
 export default function ProtectedRoute({ role, children }) {
   const loginPath = {
-    admin:      '/admin/login',
-    instructor: '/instructor/login',
-    student:    '/auth',
+    admin:       '/sys_admin_ItechSkillsHubphpAccess2026_v2',
+    super_admin: '/sys_superadmin_ItechSkillsHubphpAccess2026_v2',
+    instructor:  '/instructor/login',
+    student:     '/auth',
   };
 
   const token  = localStorage.getItem('authToken');

@@ -278,3 +278,19 @@
   .reg-card { padding: 28px 18px 22px; }
   .reg-lottie-top { width: 100px; }
 }
+
+.reg-pw-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: 0.71rem;
+  color: #9ca3af;
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+.reg-pw-hint svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #9ca3af;
+}

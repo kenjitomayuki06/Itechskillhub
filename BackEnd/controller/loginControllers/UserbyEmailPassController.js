@@ -4,12 +4,8 @@ import jwt from 'jsonwebtoken';
 
 export async function getUserbyEmailPassController(req, res) {
     try {
-        // 1. Get credentials from body
         const { email, password } = req.body; 
-        console.log("Password typed in frontend:", password);
         const userData = await getUserbyEmailPass(email);
-
-        console.log("COMPLETE DATABASE USER PAYLOAD:", userData);
 
         if (!userData) {
             return res.status(401).json({
@@ -18,10 +14,6 @@ export async function getUserbyEmailPassController(req, res) {
             });
         }
 
-        // 4. Check if the password matches the hashed password in your database
-        // Replace 'userData.password_hash' with whatever your database password column is named!
-        console.log("Password typed in frontend:", password);
-        console.log("Hash fetched from database:", userData.passwordhashed);
         const isPasswordValid = await bcrypt.compare(password, userData.password_hash);
 
         if (!isPasswordValid) {
@@ -31,26 +23,22 @@ export async function getUserbyEmailPassController(req, res) {
             });
         }
 
-        // 3. Generate the token
-        // Note: Using userData.user_id to match your phpMyAdmin screenshot
         const token = jwt.sign(
             { id: userData.user_id, role: userData.role },
             process.env.JWT_SECRET || 'your_secret_key',
             { expiresIn: '1d' }
         );
 
-       // BackEnd/controller/loginControllers/UserbyEmailPassController.js
-
         return res.status(200).json({
-        success: true,
-        token: token, 
-        user: {  // <--- THIS IS THE "RESPONSE KEY". It must be "user"
-        id: userData.user_id,          
-        email: userData.email_address, 
-        role: userData.role,    
-        fullname: userData.fullname            
-    }
-});
+            success: true,
+            token: token, 
+            user: {
+                id: userData.user_id,          
+                email: userData.email_address, 
+                role: userData.role,    
+                fullname: userData.fullname            
+            }
+        });
 
     } catch (error) {
         console.error("Error in login controller:", error);

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Lottie from 'lottie-react';
 import { registerUser } from '../../services/authService';
-import '../../styles/pages/auth/InstructorRegister.css';
+import '../../styles/instructor/InstructorPending.css';
 import Logo from '../../assets/Logo1.svg';
 
 function validate({ name, email, password, confirmPassword, inviteCode }) {

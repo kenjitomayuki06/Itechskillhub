@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Lottie from 'lottie-react';
-import { loginWithEmail, loginWithGoogle, registerUser } from '../../services/authService';
+import { loginWithEmail, loginWithGoogle } from '../../services/authService';
 import '../../styles/pages/auth/InstructorLogin.css';
+import { useGoogleLogin } from '@react-oauth/google';
 import Logo from '../../assets/Logo1.svg';
 
 function validateLogin({ email, password }) {
@@ -13,39 +14,14 @@ function validateLogin({ email, password }) {
   return null;
 }
 
-function validateRegister({ name, email, password, confirmPassword }) {
-  if (!name.trim())                      return 'Full name is required.';
-  if (!email.trim())                     return 'Email address is required.';
-  if (!/\S+@\S+\.\S+/.test(email))       return 'Please enter a valid email address.';
-  if (!password)                         return 'Password is required.';
-  if (password.length < 8)               return 'Password must be at least 8 characters.';
-  if (!/[A-Z]/.test(password))           return 'Password must contain at least one uppercase letter.';
-  if (!/[0-9]/.test(password))           return 'Password must contain at least one number.';
-  if (password !== confirmPassword)      return 'Passwords do not match.';
-  return null;
-}
-
-const passwordStrength = (pw) => {
-  let score = 0;
-  if (pw.length >= 8)          score++;
-  if (/[A-Z]/.test(pw))        score++;
-  if (/[0-9]/.test(pw))        score++;
-  if (/[^A-Za-z0-9]/.test(pw)) score++;
-  return score;
-};
-
 const InstructorLogin = () => {
   const navigate = useNavigate();
-  const [isSignUp, setIsSignUp]           = useState(false);
-  const [formData, setFormData]           = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const [formData, setFormData]           = useState({ email: '', password: '' });
   const [error, setError]                 = useState('');
   const [loading, setLoading]             = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword]   = useState(false);
-  const [showConfirm, setShowConfirm]     = useState(false);
-  const [agreed, setAgreed]               = useState(false);
   const [animData, setAnimData]           = useState(null);
-  const [animKey, setAnimKey]             = useState(0);
 
   useEffect(() => {
     fetch('https://assets10.lottiefiles.com/packages/lf20_jcikwtux.json')
@@ -54,127 +30,80 @@ const InstructorLogin = () => {
       .catch(() => setAnimData(null));
   }, []);
 
-  useEffect(() => {
-    setAnimKey(prev => prev + 1);
-    setError('');
-    setFormData({ name: '', email: '', password: '', confirmPassword: '' });
-  }, [isSignUp]);
-
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     setError('');
   };
 
-  const pwStrength    = passwordStrength(formData.password);
-  const strengthLabel = ['', 'Weak', 'Fair', 'Good', 'Strong'][pwStrength];
-  const strengthClass = ['', 'str-weak', 'str-fair', 'str-good', 'str-strong'][pwStrength];
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (isSignUp) {
-      if (!agreed) { setError('Please agree to the Terms and Privacy Policy.'); return; }
-      const err = validateRegister(formData);
-      if (err) { setError(err); return; }
-      setLoading(true);
-      try {
-        await registerUser({
-          name: formData.name.trim(),
-          email: formData.email.trim().toLowerCase(),
-          password: formData.password,
-          role: 'instructor',
-        });
+    const err = validateLogin(formData);
+    if (err) { setError(err); return; }
+    setLoading(true);
+    try {
+      const user = await loginWithEmail({
+        email: formData.email.trim().toLowerCase(),
+        password: formData.password,
+      });
+      if (user.role === 'instructor') {
         navigate('/instructor/dashboard');
-      } catch (err) {
-        setError(err.message || 'Registration failed. Please try again.');
-      } finally {
-        setLoading(false);
+      } else {
+        setError('Access denied. This portal is for instructors only.');
       }
-    } else {
-      const err = validateLogin(formData);
-      if (err) { setError(err); return; }
-      setLoading(true);
-      try {
-        const user = await loginWithEmail({
-          email: formData.email.trim().toLowerCase(),
-          password: formData.password,
-        });
+    } catch (err) {
+      setError(err.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        if (user.role === 'instructor') {
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setGoogleLoading(true);
+      setError('');
+      try {
+        const user = await loginWithGoogle(tokenResponse.access_token);
+        if (user.status === 'pending') {
+          navigate('/instructor/pending');
+        } else if (user.role === 'instructor') {
           navigate('/instructor/dashboard');
         } else {
           setError('Access denied. This portal is for instructors only.');
         }
       } catch (err) {
-        setError(err.message || 'Login failed. Please check your credentials.');
+        setError(err.message || 'Google login failed. Please try again.');
       } finally {
-        setLoading(false);
+        setGoogleLoading(false);
       }
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    setGoogleLoading(true);
-    setError('');
-    try {
-      throw new Error('Google login coming soon. Please use email login for now.');
-    } catch (err) {
-      setError(err.message);
-    } finally {
+    },
+    onError: () => {
+      setError('Google login failed. Please try again.');
       setGoogleLoading(false);
-    }
-  };
+    },
+  });
 
   return (
     <div className="ins-page">
-
       <div className="ins-card">
 
-        {/* Lottie on top */}
         <div className="ins-lottie-wrap">
           {animData && <Lottie animationData={animData} loop autoplay />}
         </div>
 
-        {/* Brand */}
         <Link to="/" className="ins-brand">
-          <img
-            src={Logo}
-            alt="ITechSkillsHub"
-            className="ins-brand-logo"
-          />
+          <img src={Logo} alt="ITechSkillsHub" className="ins-brand-logo" />
           <div className="ins-brand-text">
             <span className="ins-brand-name">ITechSkillsHub</span>
             <span className="ins-brand-sub">Instructor Portal</span>
           </div>
         </Link>
 
-        {/* Tabs */}
-        <div className="ins-tabs">
-          <button
-            className={`ins-tab ${!isSignUp ? 'active' : ''}`}
-            onClick={() => setIsSignUp(false)}
-          >
-            Sign In
-          </button>
-          <button
-            className={`ins-tab ${isSignUp ? 'active' : ''}`}
-            onClick={() => setIsSignUp(true)}
-          >
-            Sign Up
-          </button>
-          <div className={`ins-tab-indicator ${isSignUp ? 'right' : 'left'}`} />
-        </div>
-
-        {/* Heading */}
         <div className="ins-header">
-          <h2>
-            {isSignUp ? <>Create <em>account</em></> : <>Welcome back, <em>Instructor</em></>}
-          </h2>
-          <p>{isSignUp ? 'Start teaching thousands of students today' : 'Sign in to manage your courses and students'}</p>
+          <h2>Your Classroom Awaits</h2>
+          <p>Sign in to your instructor portal</p>
         </div>
 
-        {/* Error */}
         {error && (
           <div className="ins-error">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -186,23 +115,7 @@ const InstructorLogin = () => {
           </div>
         )}
 
-        {/* Form */}
-        <form className="ins-form" key={animKey} noValidate onSubmit={handleSubmit}>
-
-          {isSignUp && (
-            <div className="ins-field">
-              <label htmlFor="ins-name">Full Name</label>
-              <div className="ins-input-wrap">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                  <circle cx="12" cy="7" r="4"/>
-                </svg>
-                <input id="ins-name" type="text" name="name"
-                  value={formData.name} onChange={handleChange}
-                  placeholder="Prof. Maria Santos" autoComplete="name" />
-              </div>
-            </div>
-          )}
+        <form className="ins-form" noValidate onSubmit={handleSubmit}>
 
           <div className="ins-field">
             <label htmlFor="ins-email">Email address</label>
@@ -228,8 +141,8 @@ const InstructorLogin = () => {
               </svg>
               <input id="ins-password" type={showPassword ? 'text' : 'password'} name="password"
                 value={formData.password} onChange={handleChange}
-                placeholder={isSignUp ? 'Min. 8 characters' : '••••••••'}
-                autoComplete={isSignUp ? 'new-password' : 'current-password'} />
+                placeholder="••••••••"
+                autoComplete="current-password" />
               <button type="button" className="ins-eye" onClick={() => setShowPassword(p => !p)}>
                 {showPassword
                   ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -237,71 +150,25 @@ const InstructorLogin = () => {
                 }
               </button>
             </div>
-            {isSignUp && formData.password && (
-              <div className="ins-pw-strength">
-                <div className="ins-pw-bars">
-                  {[1,2,3,4].map(i => (
-                    <div key={i} className={`ins-pw-bar ${i <= pwStrength ? strengthClass : ''}`} />
-                  ))}
-                </div>
-                <span className={`ins-pw-label ${strengthClass}`}>{strengthLabel}</span>
-              </div>
-            )}
           </div>
 
-          {isSignUp && (
-            <div className="ins-field">
-              <label htmlFor="ins-confirm">Confirm Password</label>
-              <div className="ins-input-wrap">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-                <input id="ins-confirm" type={showConfirm ? 'text' : 'password'} name="confirmPassword"
-                  value={formData.confirmPassword} onChange={handleChange}
-                  placeholder="Re-enter your password" autoComplete="new-password" />
-                <button type="button" className="ins-eye" onClick={() => setShowConfirm(p => !p)}>
-                  {showConfirm
-                    ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                    : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  }
-                </button>
-              </div>
-            </div>
-          )}
-
-          {!isSignUp && (
-            <div className="ins-row">
-              <label className="ins-remember">
-                <input type="checkbox" />
-                <span>Remember me</span>
-              </label>
-              <Link to="/instructor/forgot-password" className="ins-forgot-btn">Forgot password?</Link>
-            </div>
-          )}
-
-          {isSignUp && (
-            <label className="ins-terms">
-              <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} />
-              <span>
-                By signing up, you agree to our{' '}
-                <a href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a>
-                {' '}and{' '}
-                <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
-              </span>
+          <div className="ins-row">
+            <label className="ins-remember">
+              <input type="checkbox" />
+              <span>Remember me</span>
             </label>
-          )}
+            <Link to="/instructor/forgot-password" className="ins-forgot-btn">Forgot password?</Link>
+          </div>
 
           <button type="submit" className="ins-submit" disabled={loading}>
             {loading ? (
-              <><svg className="ins-spinner" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" strokeOpacity="0.25"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>{isSignUp ? 'Creating account...' : 'Signing in...'}</>
-            ) : (
-              isSignUp ? 'Create Account' : 'Sign In'
-            )}
+              <><svg className="ins-spinner" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" strokeOpacity="0.25"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Signing in...</>
+            ) : 'Sign In'}
           </button>
 
           <div className="ins-divider"><span>or continue with</span></div>
 
-          <button type="button" onClick={handleGoogleLogin} className="ins-google-btn" disabled={googleLoading}>
+          <button type="button" onClick={() => handleGoogleLogin()} className="ins-google-btn" disabled={googleLoading}>
             {googleLoading ? (
               <><svg className="ins-spinner" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" strokeOpacity="0.25"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Connecting...</>
             ) : (
@@ -315,10 +182,8 @@ const InstructorLogin = () => {
           </button>
 
           <p className="ins-switch">
-            {isSignUp
-              ? <>Already have an account?{' '}<span onClick={() => setIsSignUp(false)}>Sign in</span></>
-              : <>Don't have an account?{' '}<span onClick={() => setIsSignUp(true)}>Sign up free</span></>
-            }
+            Don't have an account?{' '}
+            <Link to="/instructor/register">Sign Up</Link>
           </p>
 
         </form>

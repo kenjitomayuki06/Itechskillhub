@@ -10,6 +10,8 @@ import LandingPage2 from "./pages/home/LandingPage2";
 import LandingPage3 from "./pages/home/LandingPage3";
 
 import StudentLogin from "./pages/auth/StudentLogin";
+import StudentForgotPassword from "./pages/auth/StudentForgotPassword";
+import StudentResetPassword from "./pages/auth/StudentResetPassword";
 
 import Course from "./pages/courses/Course";
 
@@ -24,10 +26,12 @@ import AdminCourses from "./pages/admin/AdminCourses";
 import AdminAssignments from "./pages/admin/AdminAssignments";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminSettings from "./pages/admin/AdminSettings";
+import SuperAdminDashboard from "./pages/super-admin/SuperAdminDashboard";
 
 // Instructor Pages
 import InstructorLogin from "./pages/auth/InstructorLogin";
 import InstructorRegister from "./pages/auth/InstructorRegister";
+import InstructorForgotPassword from "./pages/auth/InstructorForgotPassword";
 import InstructorDashboard from "./pages/instructor/InstructorDashboard";
 import InstructorMyCourses from "./pages/instructor/InstructorMyCourses";
 import InstructorStudents from "./pages/instructor/InstructorStudents";
@@ -54,11 +58,20 @@ import Blog from "./pages/Blog";
 // 404 Page
 import NotFound from "./pages/NotFound";
 
+// Legal Pages
+import TermsOfService from "./pages/legal/TermsOfService";
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
+
+//instructor pending page
+import InstructorPending from "./pages/instructor/InstructorPending";
+import StudentVerifyEmail from './pages/auth/StudentVerifyEmail';
+
+
 function App() {
   const location = useLocation();
 
   // Routes that use their own full-screen layout (no shared Navbar/Footer)
-  const HIDE_LAYOUT_PREFIXES = ['/auth', '/admin', '/instructor', '/student', '/sys_admin_ItechSkillsHubphpAccess2026_v2'];
+  const HIDE_LAYOUT_PREFIXES = ['/auth', '/admin', '/instructor', '/student', '/sys_admin_ItechSkillsHubphpAccess2026_v2', '/sys_superadmin_ItechSkillsHubphpAccess2026_v2', '/super-admin'];
   const hideLayout = HIDE_LAYOUT_PREFIXES.some(prefix =>
     location.pathname === prefix || location.pathname.startsWith(prefix + '/')
   );
@@ -87,6 +100,9 @@ function App() {
 
         {/* STUDENT AUTH */}
         <Route path="/auth" element={<StudentLogin />} />
+        <Route path="/auth/reset-password" element={<StudentResetPassword />} />
+        <Route path="/auth/forgot-password" element={<StudentForgotPassword />} />
+        <Route path="/auth/verify-email" element={<StudentVerifyEmail />} />  {/* ← IDAGDAG */}
 
         {/* COURSES — public (login wall only on interactive actions inside) */}
         <Route path="/course/*" element={<Course />} />
@@ -97,7 +113,23 @@ function App() {
 
         {/* ADMIN LOGIN - SECRET URL */}
         <Route path="/sys_admin_ItechSkillsHubphpAccess2026_v2" element={<AdminLogin />} />
+        <Route path="/sys_superadmin_ItechSkillsHubphpAccess2026_v2" element={<AdminLogin />} />
         <Route path="/admin/login" element={<NotFound />} />
+
+        {/* SUPER ADMIN DASHBOARD ROUTES — protected */}
+<Route
+  path="/super-admin"
+  element={
+    <ProtectedRoute role="super_admin">
+      <ErrorBoundary>
+        <DashboardLayout userRole="super_admin" />
+      </ErrorBoundary>
+    </ProtectedRoute>
+  }
+>
+  <Route index element={<Navigate to="dashboard" replace />} />
+  <Route path="dashboard" element={<SuperAdminDashboard />} />
+</Route>
 
         {/* ADMIN DASHBOARD ROUTES — protected */}
         <Route
@@ -120,8 +152,10 @@ function App() {
         </Route>
 
         {/* INSTRUCTOR AUTH */}
-        <Route path="/instructor/login"    element={<InstructorLogin />} />
-        <Route path="/instructor/register" element={<InstructorRegister />} />
+       <Route path="/instructor/login"           element={<InstructorLogin />} />
+       <Route path="/instructor/register"        element={<InstructorRegister />} />
+       <Route path="/instructor/forgot-password" element={<InstructorForgotPassword />} />
+       <Route path="/instructor/pending"         element={<InstructorPending />} /> {/* ← DITO */}
 
         {/* INSTRUCTOR DASHBOARD ROUTES — protected */}
         <Route
@@ -163,6 +197,10 @@ function App() {
           <Route path="profile"       element={<StudentProfile />} />
           <Route path="notifications" element={<StudentNotifications />} />
         </Route>
+        
+        {/* LEGAL PAGES */}
+        <Route path="/terms"   element={<TermsOfService />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
 
         {/* 404 CATCH-ALL */}
         <Route path="*" element={<NotFound />} />

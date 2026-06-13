@@ -5,7 +5,7 @@
    Backend Endpoints Required:
      POST /api/auth/login             → { email, password }          → { token, user }
      POST /api/auth/register          → { name, email, password, role } → { token, user }
-     POST /api/auth/google            → { tokenId }                  → { token, user }
+     POST /api/auth/google            → { tokenId }                  → { token, ucd ser }
      POST /api/auth/forgot-password   → { email }                    → { message }
      GET  /api/auth/me                → Authorization: Bearer <token> → { user }
 
@@ -83,10 +83,10 @@ export const loginWithEmail = async (credentials) => {
 };
 
 /* ── Register (instructors and students only) ── */
-export async function registerUser({ name, email, password, role = 'student' }) {
+export async function registerUser({ name, email, password, role = 'student', gender, age, contact_number, invite_code }) {
   const data = await apiFetch('/api/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ name, email, password, role }),
+    body: JSON.stringify({ name, email, password, role, gender, age, contact_number, invite_code }),
   });
 
   const user = normalizeUser(data.user);
@@ -97,10 +97,10 @@ export async function registerUser({ name, email, password, role = 'student' }) 
 }
 
 /* ── Google OAuth ── */
-export async function loginWithGoogle(googleTokenId) {
+export async function loginWithGoogle(accessToken) {
   const data = await apiFetch('/api/auth/google', {
     method: 'POST',
-    body: JSON.stringify({ tokenId: googleTokenId }),
+    body: JSON.stringify({ credential: accessToken }),
   });
   const user = normalizeUser(data.user);
   if (data.token) setToken(data.token);
@@ -126,3 +126,20 @@ export function logout() {
   removeToken();
   removeUser();
 }
+
+/* ── Admin Login ── */
+export const adminLogin = async (credentials) => {
+  const data = await apiFetch('/api/admin/login', {
+    method: 'POST',
+    body: JSON.stringify({
+      email:      credentials.email,
+      password:   credentials.password,
+      secretCode: credentials.secretCode,
+    }),
+  });
+
+  const admin = data.admin;
+  if (data.token) setToken(data.token);
+  if (admin)      setUser(admin);
+  return admin;
+};
