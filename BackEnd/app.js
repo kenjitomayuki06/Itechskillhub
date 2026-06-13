@@ -15,7 +15,12 @@ const app = express();
 
 // Configure CORS — must be FIRST before all routes
 const corsOptions = {
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: [
+        'http://localhost:5173', 
+        'http://localhost:5174',
+        'https://itechskillshub.me',
+        'https://www.itechskillshub.me'
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
