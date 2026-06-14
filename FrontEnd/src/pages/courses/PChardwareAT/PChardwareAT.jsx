@@ -9,6 +9,7 @@ export default function PChardwareAT() {
       assignmentsData={assignmentsData}
       breadcrumbLabel="PC Hardware Assembly & Troubleshooting"
       badgeLabel="TESDA NC II"
+      courseId={3}
     />
   );
 }

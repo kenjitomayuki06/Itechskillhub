@@ -9,6 +9,7 @@ export default function OSIC() {
       assignmentsData={assignmentsData}
       breadcrumbLabel="OS Installation & Configuration"
       badgeLabel="TESDA NC II"
+      courseId={4}
     />
   );
 }

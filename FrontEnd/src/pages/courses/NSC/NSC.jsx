@@ -9,6 +9,7 @@ export default function NSC() {
       assignmentsData={assignmentsData}
       breadcrumbLabel="Network Setup & Configuration"
       badgeLabel="TESDA NC II"
+      courseId={2}
     />
   );
 }
