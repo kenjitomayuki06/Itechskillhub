@@ -1,18 +1,19 @@
 import {
     getAllQuizzesQuery,
+    getQuizByIdQuery,
     getQuizAnswersQuery,
     saveQuizSubmissionQuery
-} from '../../database/quizQueries/quizQuery,js';
+} from '../../database/quizQueries/quizQuery.js';
 
-// Get Handler: load the master list of quizzes for the student
-export async function getAllQuizzes(res, req) {
+// GET Handler: load the master list of quizzes for the student
+export async function getAllQuizzes(req, res) {
     try {
         const quizzes = await getAllQuizzesQuery();
         return res.status(200).json({
             success: true,
             quizzes
         });
-    } catch (error){
+    } catch (error) {
         console.error("Error fetching quizzes list:", error);
         return res.status(500).json({
             success: false,
@@ -21,12 +22,36 @@ export async function getAllQuizzes(res, req) {
     }
 }
 
+// GET Handler: load a single quiz with its questions
+export async function getQuizById(req, res) {
+    try {
+        const quizId = req.params.id;
+        const quiz = await getQuizByIdQuery(quizId);
+        if (!quiz) {
+            return res.status(404).json({
+                success: false,
+                message: "Quiz not found."
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            quiz
+        });
+    } catch (error) {
+        console.error("Error fetching quiz:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to load quiz."
+        });
+    }
+}
+
 // POST Handler: Grade the submitted choices securely against database answer key
-export async function submitQuiz(res, req) {
+export async function submitQuiz(req, res) {
     try {
         const studentId = req.user.user_id;
         const quizId = req.params.id;
-        const { studentAnswers, topic, difficulty} = req.body;
+        const { studentAnswers, topic, difficulty } = req.body;
 
         const correctAnswers = await getQuizAnswersQuery(quizId);
 
@@ -35,10 +60,11 @@ export async function submitQuiz(res, req) {
                 success: false,
                 message: "Quiz structure or answer sheet keys not found."
             });
-        } 
+        }
+
         let calculatedScore = 0;
 
-        //to secure evaluation loop
+        // Secure evaluation loop
         correctAnswers.forEach((item) => {
             const studentChoice = studentAnswers[item.question_id];
             if (studentChoice && studentChoice === item.correct_option.toUpperCase()) {
