@@ -36,6 +36,7 @@ export default function StudentCourses() {
       const mapped = await Promise.all(courseList.map(async (c) => {
         const meta = COURSE_META[c.course_Id] || {};
         let modulesCompleted = 0;
+        let modulesTotal = 16;
         let status = 'not-started';
         let lastActivity = 'Not started';
 
@@ -47,8 +48,9 @@ export default function StudentCourses() {
             if (progressData.success && progressData.data) {
               const p = progressData.data;
               const done = parseInt(p.lessonsDone?.split('/')[0]) || 0;
-              const total = parseInt(p.lessonsDone?.split('/')[1]) || 4;
+              const total = parseInt(p.lessonsDone?.split('/')[1]) || 16;
               modulesCompleted = done;
+              modulesTotal = total;
               const pct = parseInt(p.courseCompletion) || 0;
               status = pct === 100 ? 'completed' : pct > 0 ? 'in-progress' : 'not-started';
               lastActivity = pct > 0 ? `${pct}% complete` : 'Not started';
@@ -64,7 +66,7 @@ export default function StudentCourses() {
           description: c.description || '',
           category: 'TESDA',
           difficulty: c.difficulty || 'Beginner',
-          modulesTotal: 4,
+          modulesTotal: modulesTotal,
           modulesCompleted,
           lastActivity,
           color: meta.color || '#5B4A9E',
