@@ -642,9 +642,13 @@ export default function DashboardLayout({ userRole = 'admin' }) {
             <div className="notification-wrapper">
               <button
                 className="premium-notification-btn ripple-effect"
-                  onClick={() => {
-                  setShowNotifications(p => !p);
-                  setShowProfileMenu(false);
+                onClick={() => {
+                  if (userRole === 'student') {
+                    navigate('/student/notifications');
+                  } else {
+                    setShowNotifications(p => !p);
+                    setShowProfileMenu(false);
+                  }
                 }}
                 aria-label={`Notifications — ${unreadCount} unread`}
                 aria-expanded={showNotifications}
