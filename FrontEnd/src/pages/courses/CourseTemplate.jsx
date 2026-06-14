@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { isAuthenticated, getUser, apiFetch } from '../../services/authService';
 import '../../styles/courses/CourseCSSNCII.css';
@@ -100,6 +100,31 @@ const CourseTemplate = ({
   const [hoverRating, setHoverRating]     = useState(0);
   const [ratingComment, setRatingComment] = useState('');
   const [hasRated, setHasRated]           = useState(false);
+
+useEffect(() => {
+  if (!user) return;
+  const studentId = user?.id || user?.user_id;
+
+  apiFetch(`/api/courses/courseProgress/getProgress/${studentId}/${courseId}`)
+    .then(data => {
+      if (data.success && data.data) {
+        const completed = parseInt(data.data.lessonsDone?.split('/')[0]) || 0;
+        
+        let count = 0;
+        setModules(prev => prev.map(m => ({
+          ...m,
+          lessons: m.lessons.map(l => {
+            if (count < completed) {
+              count++;
+              return { ...l, completed: true };
+            }
+            return l;
+          })
+        })));
+      }
+    })
+    .catch(() => {});
+}, [courseId]);
 
   /* ── Auth gate — shows login wall for actions that require login ── */
   const requireLogin = (action) => {
