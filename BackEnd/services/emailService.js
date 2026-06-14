@@ -4,7 +4,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendVerificationEmail(email, code) {
   await resend.emails.send({
-    from: 'ITechSkillsHub <onboarding@resend.dev>',
+    from: 'ITechSkillsHub <noreply@itechskillshub.me>',
     to: email,
     subject: 'Verify your ITechSkillsHub account',
     html: `

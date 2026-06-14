@@ -13,6 +13,7 @@ import googleAuthRouter from "./routes/googleAuthRoute.js";
 import studentRouter from "./routes/studentRoute.js";
 import quizRouter from "./routes/quizRoute.js";
 import notificationRouter from "./routes/notificationRoute.js";
+import superAdminRouter from "./routes/superAdminRoute.js";
 
 const app = express();
 
@@ -62,5 +63,6 @@ app.use("/api", certificateRouter);
 app.use("/api", studentRouter);
 app.use("/api", quizRouter);
 app.use("/api", notificationRouter);
+app.use("/api", superAdminRouter);
 
 export default app;
