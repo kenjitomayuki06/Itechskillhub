@@ -7,7 +7,7 @@ import {
   Settings, LogOut, Bell, Menu, X, User, Search,
   ChevronDown, ChevronRight, Clock, Calendar,
   Star, HelpCircle, Sun, Moon, Plus,
-  GraduationCap, Award, ClipboardList
+  GraduationCap, Award, ClipboardList, ShieldCheck
 } from 'lucide-react';
 import '../styles/layouts/DashboardLayout.css';
 import Logo from '../assets/Logo1.svg';
@@ -22,6 +22,8 @@ const BREADCRUMB_LABELS = {
   admin:       'Admin',
   instructor:  'Instructor',
   student:     'Student',
+  'super-admin': 'Super Admin',
+  admins:      'Manage Admins',
   dashboard:   'Dashboard',
   users:       'Users',
   courses:     'Courses',
@@ -293,7 +295,13 @@ export default function DashboardLayout({ userRole = 'admin' }) {
 
   /* ── nav items ── */
   const getNavigationItems = () => {
-    if (userRole === 'admin') {
+    if (userRole === 'super_admin') {
+      return [
+        { icon: Home,         label: 'Dashboard',      path: '/super-admin/dashboard', badge: null },
+        { icon: ShieldCheck,  label: 'Manage Admins',  path: '/super-admin/admins',    badge: null },
+        { icon: Users,        label: 'Manage Users',   path: '/super-admin/users',     badge: null },
+      ];
+    } else if (userRole === 'admin') {
       return [
         { icon: Home,         label: 'Dashboard',   path: '/admin/dashboard',   badge: null  },
         { icon: Users,        label: 'Users',        path: '/admin/users',       badge: null  },
@@ -333,6 +341,8 @@ export default function DashboardLayout({ userRole = 'admin' }) {
       navigate('/instructor/login');
     } else if (userRole === 'student') {
       navigate('/auth');
+    } else if (userRole === 'super_admin') {
+      navigate('/sys_superadmin_ItechSkillsHubphpAccess2026_v2');
     } else {
       navigate('/admin/login');
     }
@@ -724,6 +734,7 @@ export default function DashboardLayout({ userRole = 'admin' }) {
                         setShowProfileMenu(false);
                         if (userRole === 'student') navigate('/student/profile');
                         else if (userRole === 'instructor') toast('Instructor profile page coming soon!', { icon: '👤' });
+                        else if (userRole === 'super_admin') navigate('/super-admin/dashboard');
                         else if (userRole === 'admin') navigate('/admin/settings');
                       }}
                     >

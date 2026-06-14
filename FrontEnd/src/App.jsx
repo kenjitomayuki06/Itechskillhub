@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { apiFetch, getUser } from "./services/authService";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -27,6 +29,9 @@ import AdminAssignments from "./pages/admin/AdminAssignments";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminSettings from "./pages/admin/AdminSettings";
 import SuperAdminDashboard from "./pages/super-admin/SuperAdminDashboard";
+import SuperAdminAdmins from "./pages/super-admin/SuperAdminAdmins";
+import SuperAdminUsers from "./pages/super-admin/SuperAdminUsers";
+import MaintenancePage from "./pages/MaintenancePage";
 
 // Instructor Pages
 import InstructorLogin from "./pages/auth/InstructorLogin";
@@ -69,6 +74,37 @@ import StudentVerifyEmail from './pages/auth/StudentVerifyEmail';
 
 function App() {
   const location = useLocation();
+
+  /* ── Maintenance Mode check ── */
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [maintenanceChecked, setMaintenanceChecked] = useState(false);
+
+  useEffect(() => {
+    const checkMaintenance = async () => {
+      try {
+        const res = await apiFetch('/api/system/maintenance-status');
+        setMaintenanceMode(!!res?.maintenanceMode);
+      } catch (err) {
+        // Fail open — don't lock everyone out if the check itself fails
+        setMaintenanceMode(false);
+      } finally {
+        setMaintenanceChecked(true);
+      }
+    };
+    checkMaintenance();
+  }, []);
+
+  // Super admins can always access the system, even during maintenance
+  const currentUser = getUser();
+  const isSuperAdmin = currentUser?.role === 'super_admin';
+  const isSuperAdminRoute =
+    location.pathname.startsWith('/super-admin') ||
+    location.pathname === '/sys_superadmin_ItechSkillsHubphpAccess2026_v2';
+
+  if (maintenanceChecked && maintenanceMode && !isSuperAdmin && !isSuperAdminRoute) {
+    return <MaintenancePage />;
+  }
+
 
   // Routes that use their own full-screen layout (no shared Navbar/Footer)
   const HIDE_LAYOUT_PREFIXES = ['/auth', '/admin', '/instructor', '/student', '/sys_admin_ItechSkillsHubphpAccess2026_v2', '/sys_superadmin_ItechSkillsHubphpAccess2026_v2', '/super-admin'];
@@ -129,6 +165,8 @@ function App() {
 >
   <Route index element={<Navigate to="dashboard" replace />} />
   <Route path="dashboard" element={<SuperAdminDashboard />} />
+  <Route path="admins" element={<SuperAdminAdmins />} />
+  <Route path="users" element={<SuperAdminUsers />} />
 </Route>
 
         {/* ADMIN DASHBOARD ROUTES — protected */}
