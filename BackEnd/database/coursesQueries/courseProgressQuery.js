@@ -2,7 +2,6 @@ import { pool } from "../../config/db.js";
 
 export async function getCourseProgressQuery(student_id, course_id) {
     try {
-        // Fetches the student's progress AND the course totals needed for the UI
         const [result] = await pool.query(
             `SELECT 
                 p.prog_id, 
@@ -12,12 +11,8 @@ export async function getCourseProgressQuery(student_id, course_id) {
                 p.current_lesson_id, 
                 p.certificate_earned, 
                 p.certificate_date, 
-                p.created_at,
-                c.total_lessons, 
-                c.total_modules, 
-                c.duration_minutes 
+                p.created_at
             FROM course_progress p
-            JOIN courses c ON p.course_id = c.course_id
             WHERE p.student_id = ? AND p.course_id = ?`,
             [student_id, course_id]
         );
