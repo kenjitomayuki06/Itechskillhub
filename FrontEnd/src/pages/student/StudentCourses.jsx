@@ -4,7 +4,7 @@ import {
   BookOpen, Play, Star, Clock, CheckCircle,
   Search, Filter, ChevronRight, Lock
 } from 'lucide-react';
-import { apiFetch } from '../../services/authService';
+import { apiFetch, getUser } from '../../services/authService';
 import '../../styles/pages/student/StudentCourses.css';
 
 const FILTER_OPTIONS = ['All', 'In Progress', 'Completed', 'Not Started'];
@@ -26,33 +26,62 @@ export default function StudentCourses() {
   const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
-    apiFetch('/api/courses/getAllCourses')
-      .then(data => {
-        const mapped = (data.courses || data || []).map(c => {
-          const meta = COURSE_META[c.course_Id] || {};
-          return {
-            id: c.course_Id,
-            title: c.title,
-            description: c.description || '',
-            category: 'TESDA',
-            difficulty: c.difficulty || 'Beginner',
-            modulesTotal: 4,
-            modulesCompleted: 0,
-            lastActivity: 'Not started',
-            color: meta.color || '#5B4A9E',
-            icon: meta.icon || '📚',
-            path: meta.path || '/course',
-            status: 'not-started',
-          };
-        });
-        setCourses(mapped);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
+  const user = getUser(); // import getUser from authService
+  const studentId = user?.id || user?.user_id;
+
+  apiFetch('/api/courses/getAllCourses')
+    .then(async (data) => {
+      const courseList = data.courses || data || [];
+
+      const mapped = await Promise.all(courseList.map(async (c) => {
+        const meta = COURSE_META[c.course_Id] || {};
+        let modulesCompleted = 0;
+        let status = 'not-started';
+        let lastActivity = 'Not started';
+
+        if (studentId) {
+          try {
+            const progressData = await apiFetch(
+              `/api/courses/courseProgress/getProgress/${studentId}/${c.course_Id}`
+            );
+            if (progressData.success && progressData.data) {
+              const p = progressData.data;
+              const done = parseInt(p.lessonsDone?.split('/')[0]) || 0;
+              const total = parseInt(p.lessonsDone?.split('/')[1]) || 4;
+              modulesCompleted = done;
+              const pct = parseInt(p.courseCompletion) || 0;
+              status = pct === 100 ? 'completed' : pct > 0 ? 'in-progress' : 'not-started';
+              lastActivity = pct > 0 ? `${pct}% complete` : 'Not started';
+            }
+          } catch {
+            // No progress yet — default values na lang
+          }
+        }
+
+        return {
+          id: c.course_Id,
+          title: c.title,
+          description: c.description || '',
+          category: 'TESDA',
+          difficulty: c.difficulty || 'Beginner',
+          modulesTotal: 4,
+          modulesCompleted,
+          lastActivity,
+          color: meta.color || '#5B4A9E',
+          icon: meta.icon || '📚',
+          path: meta.path || '/course',
+          status,
+        };
+      }));
+
+      setCourses(mapped);
+      setLoading(false);
+    })
+    .catch(err => {
+      setError(err.message);
+      setLoading(false);
+    });
+}, []);
 
   if (loading) return <div className="sc-page"><p style={{padding:'2rem'}}>Loading courses...</p></div>;
   if (error) return <div className="sc-page"><p style={{padding:'2rem'}}>⚠️ {error}</p></div>;

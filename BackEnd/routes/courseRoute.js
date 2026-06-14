@@ -1,9 +1,10 @@
-import {Router} from 'express';
-// import { courseProgressController } from '../controller/CourseController/courseProgressController.js';
-import {getAllCoursesController} from '../controller/QueryController/Query.js';
+import { Router } from 'express';
+import { getAllCoursesController } from '../controller/QueryController/Query.js';
+import { getCourseProgressController } from '../controller/coursesController/courseProgressController.js';
 
 const courseRouter = Router();
 
-// courseRouter.get('/courseProgress/getProgress/:student_id/:course_id', courseProgressController)
-courseRouter.get('/getAllCourses', getAllCoursesController)
+courseRouter.get('/getAllCourses', getAllCoursesController);
+courseRouter.get('/courseProgress/getProgress/:student_id/:course_id', getCourseProgressController);
+
 export default courseRouter;
