@@ -1,352 +1,209 @@
-/* ================================================================
-   StudentNotifications.css — ITechSkillsHub
-   Styles for the Student Notifications page
-================================================================ */
-
 .sn-page {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 4px 0 40px;
-  max-width: 780px;
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 /* ── Header ── */
 .sn-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .sn-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #1e1b4b;
-  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
 }
 
 .sn-subtitle {
-  font-size: 13.5px;
-  color: #94a3b8;
+  color: #6b7280;
+  font-size: 14px;
+  margin: 6px 0 0 0;
 }
 
-.sn-header-actions {
+/* ── Error Banner ── */
+.sn-error-banner {
   display: flex;
+  align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
-}
-
-.sn-mark-all-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
   border-radius: 10px;
-  border: 1px solid #e8e4f8;
-  background: #fff;
-  color: #5B4A9E;
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.18s;
-}
-
-.sn-mark-all-btn:hover { background: #f0eef9; }
-
-.sn-clear-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 10px;
-  border: 1px solid #fee2e2;
-  background: #fff;
-  color: #ef4444;
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.18s;
-}
-
-.sn-clear-btn:hover { background: #fef2f2; }
-
-/* ── Stats Row ── */
-.sn-stats-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.sn-stat {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #fff;
-  border-radius: 14px;
-  padding: 14px 18px;
-  border: 1px solid #f0eef9;
-  box-shadow: 0 1px 6px rgba(91, 74, 158, 0.06);
-  flex: 1;
-  min-width: 100px;
-  cursor: pointer;
-  transition: box-shadow 0.18s, transform 0.15s;
-}
-
-.sn-stat:hover {
-  box-shadow: 0 4px 16px rgba(91, 74, 158, 0.12);
-  transform: translateY(-1px);
-}
-
-.sn-stat-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.sn-stat-val {
-  font-size: 20px;
-  font-weight: 800;
-  color: #1e1b4b;
-  line-height: 1;
-}
-
-.sn-stat-lbl {
-  font-size: 11px;
-  color: #94a3b8;
-  margin-top: 2px;
-  white-space: nowrap;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
 }
 
 /* ── Filters ── */
 .sn-filters {
   display: flex;
-  align-items: center;
   gap: 8px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
-.sn-filter-icon { color: #94a3b8; flex-shrink: 0; }
-
 .sn-filter-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 7px 14px;
-  border-radius: 20px;
-  border: 1px solid #e8e4f8;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
   background: #fff;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: #64748b;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.18s;
+  transition: all 0.2s ease;
 }
 
 .sn-filter-btn:hover {
-  border-color: #5B4A9E;
-  color: #5B4A9E;
+  background: #f3f4f6;
 }
 
 .sn-filter-active {
-  background: #5B4A9E !important;
-  color: #fff !important;
-  border-color: #5B4A9E !important;
-}
-
-.sn-filter-badge {
-  background: #ef4444;
+  background: #5B4A9E;
   color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 20px;
+  border-color: #5B4A9E;
 }
 
-/* ── Empty ── */
-.sn-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 60px 0;
-  color: #94a3b8;
-  text-align: center;
-}
-
-.sn-empty p {
-  font-size: 15px;
-  font-weight: 600;
-  margin: 0;
-}
-
-.sn-empty span { font-size: 13px; }
-
-/* ── Notifications List ── */
+/* ── List ── */
 .sn-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
-/* ── Notification Item ── */
 .sn-item {
-  position: relative;
   display: flex;
-  align-items: flex-start;
   gap: 14px;
   background: #fff;
+  border: 1px solid #f0f0f3;
   border-radius: 14px;
-  border: 1px solid #f0eef9;
-  padding: 16px 18px;
-  box-shadow: 0 1px 6px rgba(91, 74, 158, 0.05);
-  cursor: pointer;
-  transition: box-shadow 0.18s, background 0.15s;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
 }
 
 .sn-item:hover {
-  box-shadow: 0 4px 18px rgba(91, 74, 158, 0.1);
-  background: #fdfcff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
 }
 
-.sn-item-unread {
-  background: #faf9ff;
-  border-color: #d8d3f0;
-}
-
-/* Unread dot */
-.sn-unread-dot {
-  position: absolute;
-  top: 18px;
-  left: 6px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #5B4A9E;
-  flex-shrink: 0;
-}
-
-/* Icon */
 .sn-item-icon {
+  flex-shrink: 0;
   width: 42px;
   height: 42px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  margin-top: 1px;
 }
 
-/* Content */
-.sn-item-content {
+.sn-item-body {
   flex: 1;
   min-width: 0;
 }
 
 .sn-item-top {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
-.sn-item-title {
-  font-size: 14px;
+.sn-item-type {
+  font-size: 12px;
   font-weight: 700;
-  color: #1e1b4b;
-}
-
-.sn-item-type-badge {
-  font-size: 10.5px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 20px;
-  white-space: nowrap;
-}
-
-.sn-item-message {
-  font-size: 13px;
-  color: #64748b;
-  line-height: 1.55;
-  margin: 0 0 8px;
-}
-
-.sn-item-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.sn-item-course {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: #5B4A9E;
-  background: #f0eef9;
-  padding: 2px 8px;
-  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .sn-item-time {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 11.5px;
-  color: #94a3b8;
-}
-
-/* ── Item Actions ── */
-.sn-item-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 12px;
+  color: #9ca3af;
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
-.sn-read-btn,
-.sn-delete-btn {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  border: 1px solid #e8e4f8;
-  background: #fff;
-  cursor: pointer;
+.sn-item-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 4px 0;
+}
+
+.sn-item-message {
+  font-size: 13.5px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Loading ── */
+.sn-loading {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
+  gap: 12px;
+  padding: 60px 0;
+  color: #6b7280;
 }
 
-.sn-read-btn { color: #5B4A9E; }
-.sn-read-btn:hover { background: #f0eef9; border-color: #5B4A9E; }
+.sn-spinner-icon {
+  animation: sn-spin 1s linear infinite;
+  color: #5B4A9E;
+}
 
-.sn-delete-btn { color: #94a3b8; }
-.sn-delete-btn:hover { background: #fef2f2; border-color: #fecaca; color: #ef4444; }
+@keyframes sn-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Empty State ── */
+.sn-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 70px 20px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.sn-empty p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b5563;
+  margin: 4px 0 0 0;
+}
+
+.sn-empty-sub {
+  font-size: 13px;
+  max-width: 320px;
+}
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
-  .sn-stats-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+  .sn-page {
+    padding: 16px;
+  }
+
+  .sn-title {
+    font-size: 22px;
   }
 
   .sn-item {
-    flex-wrap: wrap;
+    flex-direction: column;
   }
 
-  .sn-item-actions {
-    width: 100%;
-    justify-content: flex-end;
+  .sn-item-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
 }
