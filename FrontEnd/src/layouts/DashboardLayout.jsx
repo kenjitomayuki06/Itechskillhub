@@ -622,15 +622,6 @@ export default function DashboardLayout({ userRole = 'admin' }) {
               >
                 <HelpCircle size={20} />
               </button>
-              <button
-                className="action-btn ripple-effect"
-                onClick={toggleDarkMode}
-                title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-                aria-label={darkMode ? 'Enable light mode' : 'Enable dark mode'}
-                aria-pressed={darkMode}
-              >
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
             </div>
 
             <div className="datetime-display" aria-live="polite" aria-atomic="true">
