@@ -6,7 +6,7 @@ import {
   Home, Users, BookOpen, FileText, BarChart3,
   Settings, LogOut, Bell, Menu, X, User, Search,
   ChevronDown, ChevronRight, Clock, Calendar,
-  Star, HelpCircle, Sun, Moon, Plus,
+  Star, HelpCircle, Plus,
   GraduationCap, Award, ClipboardList, ShieldCheck
 } from 'lucide-react';
 import '../styles/layouts/DashboardLayout.css';
@@ -204,12 +204,6 @@ export default function DashboardLayout({ userRole = 'admin' }) {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [mobileOpen, setMobileOpen]           = useState(false);
   const [isMobile, setIsMobile]               = useState(false);
-
-  const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem('darkMode');
-    if (saved !== null) return saved === 'true';
-    return false;
-  });
   const [showSearch, setShowSearch]                       = useState(false);
   const [searchQuery, setSearchQuery]                     = useState('');
   const [showNotifications, setShowNotifications]         = useState(false);
@@ -219,19 +213,14 @@ export default function DashboardLayout({ userRole = 'admin' }) {
   const [pinnedItems]                                     = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [currentUser, setCurrentUser] = useState(null);
 
-  /* ── apply saved dark mode on mount ── */
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark-mode', darkMode);
-  }, []);
 
   /* ── load logged-in user from localStorage ── */
-  useEffect(() => {
+  const [currentUser] = useState(() => {
     const stored = localStorage.getItem('user');
-    try { setCurrentUser(stored ? JSON.parse(stored) : null); }
-    catch { setCurrentUser(null); }
-  }, []);
+    try { return stored ? JSON.parse(stored) : null; }
+    catch { return null; }
+});
 
   const navigate       = useNavigate();
   const location       = useLocation();
@@ -346,15 +335,6 @@ export default function DashboardLayout({ userRole = 'admin' }) {
   const toggleSubMenu = (label) =>
     setExpandedMenus(prev => ({ ...prev, [label]: !prev[label] }));
 
-  const toggleDarkMode = () => {
-    setDarkMode(p => {
-      const next = !p;
-      localStorage.setItem('darkMode', String(next));
-      document.documentElement.classList.toggle('dark-mode', next);
-      return next;
-    });
-  };
-
   const formatTime = (d) => d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
   const formatDate = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
@@ -380,7 +360,7 @@ export default function DashboardLayout({ userRole = 'admin' }) {
     setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
 
   return (
-    <div className={`premium-dashboard-layout ${darkMode ? 'dark-mode' : ''}`}>
+    <div className="premium-dashboard-layout">
 
       {/* Global Search Modal */}
       {showSearch && (
