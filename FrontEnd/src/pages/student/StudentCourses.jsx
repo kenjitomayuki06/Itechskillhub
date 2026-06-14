@@ -1,101 +1,78 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   BookOpen, Play, Star, Clock, CheckCircle,
   Search, Filter, ChevronRight, Lock
 } from 'lucide-react';
+import { apiFetch } from '../../services/authService';
 import '../../styles/pages/student/StudentCourses.css';
-
-/* ── Mock data — replace with real API calls when backend is ready ── */
-const MOCK_COURSES = [
-  {
-    id: 1,
-    title: 'CSS NC II — Computer Systems Servicing',
-    category: 'TESDA',
-    modulesTotal: 5,
-    modulesCompleted: 3,
-    lastActivity: '2 hours ago',
-    color: '#5B4A9E',
-    icon: '🖥️',
-    path: '/course/css-ncii',
-    status: 'in-progress',
-    description: 'Learn computer systems servicing, hardware installation, and troubleshooting techniques aligned with TESDA CSS NC II standards.',
-    instructor: 'Juan dela Cruz',
-    estimatedHours: 40,
-  },
-  {
-    id: 2,
-    title: 'Network Systems Cabling (NSC)',
-    category: 'TESDA',
-    modulesTotal: 4,
-    modulesCompleted: 1,
-    lastActivity: '3 days ago',
-    color: '#3b82f6',
-    icon: '🔌',
-    path: '/course/network-setup',
-    status: 'in-progress',
-    description: 'Master structured cabling systems, LAN installation, and network troubleshooting for TESDA NSC certification.',
-    instructor: 'Maria Santos',
-    estimatedHours: 30,
-  },
-  {
-    id: 3,
-    title: 'PC Hardware Assembly & Troubleshooting',
-    category: 'TESDA',
-    modulesTotal: 6,
-    modulesCompleted: 6,
-    lastActivity: 'Completed',
-    color: '#10b981',
-    icon: '⚙️',
-    path: '/course/pc-hardware',
-    status: 'completed',
-    description: 'Build and troubleshoot personal computers from scratch — covering components, assembly, BIOS setup, and OS installation.',
-    instructor: 'Pedro Reyes',
-    estimatedHours: 35,
-  },
-  {
-    id: 4,
-    title: 'OS Installation & Configuration (OSIC)',
-    category: 'TESDA',
-    modulesTotal: 5,
-    modulesCompleted: 0,
-    lastActivity: 'Not started',
-    color: '#f59e0b',
-    icon: '💿',
-    path: '/course/os-installation',
-    status: 'not-started',
-    description: 'Install, configure, and maintain operating systems including Windows and Linux environments.',
-    instructor: 'Ana Flores',
-    estimatedHours: 25,
-  },
-];
 
 const FILTER_OPTIONS = ['All', 'In Progress', 'Completed', 'Not Started'];
 
+const COURSE_META = {
+  1: { color: '#5B4A9E', icon: '🖥️', path: '/course/css-ncii' },
+  2: { color: '#3b82f6', icon: '🔌', path: '/course/network-setup' },
+  3: { color: '#10b981', icon: '⚙️', path: '/course/pc-hardware' },
+  4: { color: '#f59e0b', icon: '💿', path: '/course/os-installation' },
+};
+
 export default function StudentCourses() {
   const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [expandedId, setExpandedId] = useState(null);
 
-  const filtered = MOCK_COURSES.filter((c) => {
+  useEffect(() => {
+    apiFetch('/api/courses/getAllCourses')
+      .then(data => {
+        const mapped = (data.courses || data || []).map(c => {
+          const meta = COURSE_META[c.course_Id] || {};
+          return {
+            id: c.course_Id,
+            title: c.title,
+            description: c.description || '',
+            category: 'TESDA',
+            difficulty: c.difficulty || 'Beginner',
+            modulesTotal: 4,
+            modulesCompleted: 0,
+            lastActivity: 'Not started',
+            color: meta.color || '#5B4A9E',
+            icon: meta.icon || '📚',
+            path: meta.path || '/course',
+            status: 'not-started',
+          };
+        });
+        setCourses(mapped);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div className="sc-page"><p style={{padding:'2rem'}}>Loading courses...</p></div>;
+  if (error) return <div className="sc-page"><p style={{padding:'2rem'}}>⚠️ {error}</p></div>;
+
+  const filtered = courses.filter((c) => {
     const matchSearch = c.title.toLowerCase().includes(search.toLowerCase());
     const matchFilter =
       activeFilter === 'All' ||
-      (activeFilter === 'In Progress'  && c.status === 'in-progress')  ||
-      (activeFilter === 'Completed'    && c.status === 'completed')     ||
-      (activeFilter === 'Not Started'  && c.status === 'not-started');
+      (activeFilter === 'In Progress' && c.status === 'in-progress') ||
+      (activeFilter === 'Completed' && c.status === 'completed') ||
+      (activeFilter === 'Not Started' && c.status === 'not-started');
     return matchSearch && matchFilter;
   });
 
-  const inProgress  = MOCK_COURSES.filter((c) => c.status === 'in-progress').length;
-  const completed   = MOCK_COURSES.filter((c) => c.status === 'completed').length;
-  const notStarted  = MOCK_COURSES.filter((c) => c.status === 'not-started').length;
+  const inProgress = courses.filter(c => c.status === 'in-progress').length;
+  const completed = courses.filter(c => c.status === 'completed').length;
+  const notStarted = courses.filter(c => c.status === 'not-started').length;
 
   return (
     <div className="sc-page">
-
-      {/* ── Header ── */}
       <div className="sc-header">
         <div>
           <h1 className="sc-title">My Courses</h1>
@@ -106,12 +83,11 @@ export default function StudentCourses() {
         </button>
       </div>
 
-      {/* ── Summary Stats ── */}
       <div className="sc-stats-row">
         <div className="sc-stat sc-stat-blue">
           <BookOpen size={18} />
           <div>
-            <div className="sc-stat-val">{MOCK_COURSES.length}</div>
+            <div className="sc-stat-val">{courses.length}</div>
             <div className="sc-stat-lbl">Total Enrolled</div>
           </div>
         </div>
@@ -138,7 +114,6 @@ export default function StudentCourses() {
         </div>
       </div>
 
-      {/* ── Search & Filter ── */}
       <div className="sc-controls">
         <div className="sc-search">
           <Search size={15} className="sc-search-icon" />
@@ -164,7 +139,6 @@ export default function StudentCourses() {
         </div>
       </div>
 
-      {/* ── Course List ── */}
       {filtered.length === 0 ? (
         <div className="sc-empty">
           <BookOpen size={40} />
@@ -173,7 +147,9 @@ export default function StudentCourses() {
       ) : (
         <div className="sc-list">
           {filtered.map((course) => {
-            const progress = Math.round((course.modulesCompleted / course.modulesTotal) * 100);
+            const progress = course.modulesTotal > 0
+              ? Math.round((course.modulesCompleted / course.modulesTotal) * 100)
+              : 0;
             const isExpanded = expandedId === course.id;
 
             return (
@@ -182,89 +158,50 @@ export default function StudentCourses() {
                 className={`sc-card ${course.status === 'completed' ? 'sc-card-done' : ''}`}
               >
                 <div className="sc-card-main">
-                  {/* Icon */}
-                  <div
-                    className="sc-course-icon"
-                    style={{ background: course.color + '20', color: course.color }}
-                  >
+                  <div className="sc-course-icon" style={{ background: course.color + '20', color: course.color }}>
                     {course.icon}
                   </div>
-
-                  {/* Info */}
                   <div className="sc-course-info">
                     <div className="sc-course-title-row">
                       <h3 className="sc-course-title">{course.title}</h3>
                       <span className={`sc-status-badge sc-status-${course.status}`}>
-                        {course.status === 'in-progress'  && '● In Progress'}
-                        {course.status === 'completed'    && '✓ Completed'}
-                        {course.status === 'not-started'  && '○ Not Started'}
+                        {course.status === 'in-progress' && '● In Progress'}
+                        {course.status === 'completed' && '✓ Completed'}
+                        {course.status === 'not-started' && '○ Not Started'}
                       </span>
                     </div>
-
                     <div className="sc-course-meta">
                       <span className="sc-category">{course.category}</span>
                       <span className="sc-dot">·</span>
-                      <span className="sc-instructor">👤 {course.instructor}</span>
+                      <span className="sc-hours">🎯 {course.difficulty}</span>
                       <span className="sc-dot">·</span>
-                      <span className="sc-hours">🕒 {course.estimatedHours}h</span>
-                      <span className="sc-dot">·</span>
-                      <span className="sc-last">
-                        <Clock size={11} /> {course.lastActivity}
-                      </span>
+                      <span className="sc-last"><Clock size={11} /> {course.lastActivity}</span>
                     </div>
-
                     <div className="sc-progress-row">
                       <div className="sc-progress-bar">
-                        <div
-                          className="sc-progress-fill"
-                          style={{ width: `${progress}%`, background: course.color }}
-                        />
+                        <div className="sc-progress-fill" style={{ width: `${progress}%`, background: course.color }} />
                       </div>
-                      <span className="sc-progress-text">
-                        {course.modulesCompleted}/{course.modulesTotal} modules · {progress}%
-                      </span>
+                      <span className="sc-progress-text">{course.modulesCompleted}/{course.modulesTotal} modules · {progress}%</span>
                     </div>
                   </div>
-
-                  {/* Actions */}
                   <div className="sc-card-actions">
-                    <button
-                      className="sc-expand-btn"
-                      onClick={() => setExpandedId(isExpanded ? null : course.id)}
-                      aria-label="Toggle details"
-                    >
+                    <button className="sc-expand-btn" onClick={() => setExpandedId(isExpanded ? null : course.id)}>
                       {isExpanded ? '▲' : '▼'}
                     </button>
-                    <button
-                      className="sc-continue-btn"
-                      style={{ background: course.color }}
-                      onClick={() => navigate(course.path)}
-                    >
-                      {course.status === 'completed' ? (
-                        <><Star size={14} /> Review</>
-                      ) : course.status === 'not-started' ? (
-                        <><Play size={14} /> Start</>
-                      ) : (
-                        <><Play size={14} /> Continue</>
-                      )}
+                    <button className="sc-continue-btn" style={{ background: course.color }} onClick={() => navigate(course.path)}>
+                      {course.status === 'completed' ? <><Star size={14} /> Review</> :
+                       course.status === 'not-started' ? <><Play size={14} /> Start</> :
+                       <><Play size={14} /> Continue</>}
                     </button>
                   </div>
                 </div>
-
-                {/* Expanded Details */}
                 {isExpanded && (
                   <div className="sc-card-expanded">
                     <p className="sc-description">{course.description}</p>
                     <div className="sc-modules-list">
                       {Array.from({ length: course.modulesTotal }, (_, i) => (
-                        <div
-                          key={i}
-                          className={`sc-module-item ${i < course.modulesCompleted ? 'sc-module-done' : ''}`}
-                        >
-                          {i < course.modulesCompleted
-                            ? <CheckCircle size={14} />
-                            : <div className="sc-module-num">{i + 1}</div>
-                          }
+                        <div key={i} className={`sc-module-item ${i < course.modulesCompleted ? 'sc-module-done' : ''}`}>
+                          {i < course.modulesCompleted ? <CheckCircle size={14} /> : <div className="sc-module-num">{i + 1}</div>}
                           <span>Module {i + 1}</span>
                         </div>
                       ))}

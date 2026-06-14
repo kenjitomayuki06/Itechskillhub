@@ -46,28 +46,28 @@ export async function submitQuiz(res, req) {
             }
         });
 
-        //determine if the student passed
+        // Determine if the student passed (for response only — DB computes its own is_passed)
         const passingScore = Math.ceil(correctAnswers.length * 0.5);
-        const isPassed = calculatedScore >= passingScore ? 1 : 0; 
+        const isPassed = calculatedScore >= passingScore;
 
-        // Persist the entry directly to quiz_scores using clean columns
-        await saveQuizSubmissionQuery (
+        // Persist to quiz_scores
+        await saveQuizSubmissionQuery(
             studentId,
             quizId,
             calculatedScore,
             correctAnswers.length,
             topic,
-            difficulty,
-            isPassed
-        ); 
+            difficulty
+        );
+
         return res.status(200).json({
             success: true,
-            message: "Quiz evaluated and logged successfuly.",
+            message: "Quiz evaluated and logged successfully.",
             result: {
-            totalQuestions: correctAnswers.length,
-            score: calculatedScore,
-            isPassed: isPassed === 1
-        }
+                totalQuestions: correctAnswers.length,
+                score: calculatedScore,
+                isPassed: isPassed
+            }
         });
     } catch (error) {
         console.error("Error evaluating quiz submission:", error);

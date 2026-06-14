@@ -1,102 +1,79 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   TrendingUp, BookOpen, CheckCircle, Clock,
-  Zap, Award, ChevronDown, ChevronUp, Calendar
+  Zap, Award, ChevronDown, ChevronUp
 } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, BarChart, Bar, Cell
 } from 'recharts';
+import { apiFetch } from '../../services/authService';
 import '../../styles/pages/student/StudentProgress.css';
 
-/* ── Mock data — replace with real API calls when backend is ready ── */
-const MOCK_COURSES = [
-  {
-    id: 1,
-    title: 'CSS NC II — Computer Systems Servicing',
-    icon: '🖥️',
-    color: '#5B4A9E',
-    modulesTotal: 5,
-    modulesCompleted: 3,
-    quizAvg: 88,
-    assignmentsSubmitted: 3,
-    assignmentsTotal: 4,
-    timeSpentHrs: 14,
-  },
-  {
-    id: 2,
-    title: 'Network Systems Cabling (NSC)',
-    icon: '🔌',
-    color: '#3b82f6',
-    modulesTotal: 4,
-    modulesCompleted: 1,
-    quizAvg: 75,
-    assignmentsSubmitted: 1,
-    assignmentsTotal: 3,
-    timeSpentHrs: 6,
-  },
-  {
-    id: 3,
-    title: 'PC Hardware Assembly & Troubleshooting',
-    icon: '⚙️',
-    color: '#10b981',
-    modulesTotal: 6,
-    modulesCompleted: 6,
-    quizAvg: 94,
-    assignmentsSubmitted: 5,
-    assignmentsTotal: 5,
-    timeSpentHrs: 22,
-  },
-];
+const COURSE_META = {
+  1: { icon: '🖥️', color: '#5B4A9E' },
+  2: { icon: '🔌', color: '#3b82f6' },
+  3: { icon: '⚙️', color: '#10b981' },
+  4: { icon: '💿', color: '#f59e0b' },
+};
 
-const MOCK_WEEKLY = [
-  { day: 'Mon', lessons: 2 },
-  { day: 'Tue', lessons: 1 },
-  { day: 'Wed', lessons: 3 },
+const EMPTY_WEEKLY = [
+  { day: 'Mon', lessons: 0 },
+  { day: 'Tue', lessons: 0 },
+  { day: 'Wed', lessons: 0 },
   { day: 'Thu', lessons: 0 },
-  { day: 'Fri', lessons: 2 },
-  { day: 'Sat', lessons: 1 },
-  { day: 'Sun', lessons: 1 },
-];
-
-const MOCK_MONTHLY = [
-  { week: 'Week 1', lessons: 8 },
-  { week: 'Week 2', lessons: 12 },
-  { week: 'Week 3', lessons: 7 },
-  { week: 'Week 4', lessons: 10 },
-];
-
-const MOCK_GRADES = [
-  { label: 'Quiz: Cable Types',           course: 'NSC',          score: 88,  total: 100, date: 'May 18' },
-  { label: 'Assignment: OS Installation', course: 'CSS NC II',    score: 92,  total: 100, date: 'May 16' },
-  { label: 'Quiz: PC Components',         course: 'PC Hardware',  score: 95,  total: 100, date: 'May 14' },
-  { label: 'Lab Report: Assembly',        course: 'PC Hardware',  score: 89,  total: 100, date: 'May 12' },
-  { label: 'Quiz: OSI Layers',            course: 'NSC',          score: 76,  total: 100, date: 'May 10' },
+  { day: 'Fri', lessons: 0 },
+  { day: 'Sat', lessons: 0 },
+  { day: 'Sun', lessons: 0 },
 ];
 
 export default function StudentProgress() {
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [chartView, setChartView] = useState('weekly');
   const [expandedId, setExpandedId] = useState(null);
 
-  const totalModules    = MOCK_COURSES.reduce((s, c) => s + c.modulesTotal, 0);
-  const doneModules     = MOCK_COURSES.reduce((s, c) => s + c.modulesCompleted, 0);
-  const overallPct      = Math.round((doneModules / totalModules) * 100);
-  const totalHours      = MOCK_COURSES.reduce((s, c) => s + c.timeSpentHrs, 0);
-  const avgQuiz         = Math.round(MOCK_COURSES.reduce((s, c) => s + c.quizAvg, 0) / MOCK_COURSES.length);
+  useEffect(() => {
+    apiFetch('/api/student/dashboard')
+      .then(data => {
+        const enrolled = data.dashboardData?.enrolledCourses || [];
+        const mapped = enrolled.map(c => {
+          const meta = COURSE_META[c.id] || {};
+          const completed = c.completed_lesson ? JSON.parse(c.completed_lesson || '[]').length : 0;
+          return {
+            id: c.id,
+            title: c.title,
+            icon: meta.icon || '📚',
+            color: meta.color || '#5B4A9E',
+            modulesTotal: 4,
+            modulesCompleted: completed,
+            quizAvg: 0,
+            assignmentsSubmitted: 0,
+            assignmentsTotal: 0,
+            timeSpentHrs: 0,
+          };
+        });
+        setCourses(mapped);
+        setLoading(false);
+      })
+      .catch(() => {
+        setCourses([]);
+        setLoading(false);
+      });
+  }, []);
 
-  const chartData = chartView === 'weekly' ? MOCK_WEEKLY : MOCK_MONTHLY;
-  const chartKey  = chartView === 'weekly' ? 'day' : 'week';
+  if (loading) return <div className="sp-page"><p style={{padding:'2rem'}}>Loading progress...</p></div>;
 
-  function getScoreColor(score) {
-    if (score >= 90) return '#10b981';
-    if (score >= 75) return '#f59e0b';
-    return '#ef4444';
-  }
+  const totalModules    = courses.reduce((s, c) => s + c.modulesTotal, 0);
+  const doneModules     = courses.reduce((s, c) => s + c.modulesCompleted, 0);
+  const overallProgress = totalModules > 0 ? Math.round((doneModules / totalModules) * 100) : 0;
+  const completedCourses = courses.filter(c => c.modulesCompleted >= c.modulesTotal && c.modulesTotal > 0).length;
+  const totalHours      = courses.reduce((s, c) => s + c.timeSpentHrs, 0);
+  const allGrades       = courses.flatMap(c => []);
+  const avgGrade        = allGrades.length ? Math.round(allGrades.reduce((s, g) => s + g, 0) / allGrades.length) : 0;
 
   return (
     <div className="sp-page">
-
-      {/* ── Header ── */}
       <div className="sp-header">
         <div>
           <h1 className="sp-title">My Progress</h1>
@@ -104,208 +81,90 @@ export default function StudentProgress() {
         </div>
       </div>
 
-      {/* ── Summary Stats ── */}
       <div className="sp-stats-grid">
         <div className="sp-stat sp-stat-purple">
-          <div className="sp-stat-icon"><TrendingUp size={20} /></div>
-          <div>
-            <div className="sp-stat-val">{overallPct}%</div>
-            <div className="sp-stat-lbl">Overall Progress</div>
-          </div>
+          <div className="sp-stat-icon"><TrendingUp size={22} /></div>
+          <div><div className="sp-stat-val">{overallProgress}%</div><div className="sp-stat-lbl">Overall Progress</div></div>
         </div>
         <div className="sp-stat sp-stat-blue">
-          <div className="sp-stat-icon"><BookOpen size={20} /></div>
-          <div>
-            <div className="sp-stat-val">{doneModules}/{totalModules}</div>
-            <div className="sp-stat-lbl">Modules Done</div>
-          </div>
-        </div>
-        <div className="sp-stat sp-stat-orange">
-          <div className="sp-stat-icon"><Zap size={20} /></div>
-          <div>
-            <div className="sp-stat-val">{avgQuiz}%</div>
-            <div className="sp-stat-lbl">Avg. Quiz Score</div>
-          </div>
+          <div className="sp-stat-icon"><BookOpen size={22} /></div>
+          <div><div className="sp-stat-val">{courses.length}</div><div className="sp-stat-lbl">Enrolled Courses</div></div>
         </div>
         <div className="sp-stat sp-stat-green">
-          <div className="sp-stat-icon"><Clock size={20} /></div>
-          <div>
-            <div className="sp-stat-val">{totalHours}h</div>
-            <div className="sp-stat-lbl">Total Study Time</div>
-          </div>
+          <div className="sp-stat-icon"><CheckCircle size={22} /></div>
+          <div><div className="sp-stat-val">{completedCourses}</div><div className="sp-stat-lbl">Completed</div></div>
+        </div>
+        <div className="sp-stat sp-stat-orange">
+          <div className="sp-stat-icon"><Clock size={22} /></div>
+          <div><div className="sp-stat-val">{totalHours}h</div><div className="sp-stat-lbl">Study Hours</div></div>
         </div>
       </div>
 
-      {/* ── Main Grid ── */}
-      <div className="sp-main-grid">
-
-        {/* LEFT */}
-        <div className="sp-left">
-
-          {/* Overall Progress Bar */}
-          <div className="sp-card">
-            <div className="sp-card-header">
-              <h2><TrendingUp size={16} /> Overall Progress</h2>
-            </div>
-            <div className="sp-overall-wrap">
-              <div className="sp-overall-ring-wrap">
-                <svg viewBox="0 0 100 100" className="sp-ring">
-                  <circle cx="50" cy="50" r="40" className="sp-ring-bg" />
-                  <circle
-                    cx="50" cy="50" r="40"
-                    className="sp-ring-fill"
-                    strokeDasharray={`${overallPct * 2.51} 251`}
-                  />
-                </svg>
-                <div className="sp-ring-label">
-                  <span className="sp-ring-pct">{overallPct}%</span>
-                  <span className="sp-ring-sub">complete</span>
-                </div>
-              </div>
-              <div className="sp-course-bars">
-                {MOCK_COURSES.map((c) => {
-                  const pct = Math.round((c.modulesCompleted / c.modulesTotal) * 100);
-                  return (
-                    <div key={c.id} className="sp-course-bar-row">
-                      <div className="sp-course-bar-label">
-                        <span>{c.icon}</span>
-                        <span className="sp-course-bar-name">{c.title}</span>
-                        <span className="sp-course-bar-pct" style={{ color: c.color }}>{pct}%</span>
-                      </div>
-                      <div className="sp-bar">
-                        <div
-                          className="sp-bar-fill"
-                          style={{ width: `${pct}%`, background: c.color }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* Activity Chart */}
-          <div className="sp-card">
-            <div className="sp-card-header">
-              <h2><Calendar size={16} /> Learning Activity</h2>
-              <div className="sp-chart-toggle">
-                <button
-                  className={`sp-toggle-btn ${chartView === 'weekly' ? 'sp-toggle-active' : ''}`}
-                  onClick={() => setChartView('weekly')}
-                >
-                  Weekly
-                </button>
-                <button
-                  className={`sp-toggle-btn ${chartView === 'monthly' ? 'sp-toggle-active' : ''}`}
-                  onClick={() => setChartView('monthly')}
-                >
-                  Monthly
-                </button>
-              </div>
-            </div>
-            <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={chartData} barSize={28}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f5" vertical={false} />
-                <XAxis dataKey={chartKey} stroke="#94a3b8" style={{ fontSize: '11px' }} />
-                <YAxis stroke="#94a3b8" style={{ fontSize: '11px' }} allowDecimals={false} />
-                <Tooltip
-                  contentStyle={{ borderRadius: '10px', border: '1px solid #e8e4f8', fontSize: '12px' }}
-                  formatter={(v) => [`${v} lessons`, 'Completed']}
-                />
-                <Bar dataKey="lessons" radius={[6, 6, 0, 0]}>
-                  {chartData.map((_, i) => (
-                    <Cell key={i} fill={i % 2 === 0 ? '#5B4A9E' : '#8b7dd4'} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+      <div className="sp-chart-card">
+        <div className="sp-chart-header">
+          <h2><Zap size={18} /> Activity Overview</h2>
+          <div className="sp-chart-toggle">
+            <button className={chartView === 'weekly' ? 'sp-toggle-active' : ''} onClick={() => setChartView('weekly')}>Weekly</button>
+            <button className={chartView === 'monthly' ? 'sp-toggle-active' : ''} onClick={() => setChartView('monthly')}>Monthly</button>
           </div>
         </div>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={EMPTY_WEEKLY}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f5" />
+            <XAxis dataKey="day" stroke="#94a3b8" style={{ fontSize: '11px' }} />
+            <YAxis stroke="#94a3b8" style={{ fontSize: '11px' }} allowDecimals={false} />
+            <Tooltip contentStyle={{ borderRadius: '10px', fontSize: '12px' }} formatter={v => [`${v} lessons`, 'Completed']} />
+            <Line type="monotone" dataKey="lessons" stroke="#5B4A9E" strokeWidth={2.5} dot={{ fill: '#5B4A9E', r: 4 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
 
-        {/* RIGHT */}
-        <div className="sp-right">
-
-          {/* Per-Course Breakdown */}
-          <div className="sp-card">
-            <div className="sp-card-header">
-              <h2><BookOpen size={16} /> Course Breakdown</h2>
-            </div>
-            <div className="sp-breakdown-list">
-              {MOCK_COURSES.map((c) => {
-                const pct = Math.round((c.modulesCompleted / c.modulesTotal) * 100);
-                const isOpen = expandedId === c.id;
-                return (
-                  <div key={c.id} className="sp-breakdown-item">
-                    <div
-                      className="sp-breakdown-header"
-                      onClick={() => setExpandedId(isOpen ? null : c.id)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => e.key === 'Enter' && setExpandedId(isOpen ? null : c.id)}
-                    >
-                      <span className="sp-breakdown-icon" style={{ background: c.color + '20' }}>
-                        {c.icon}
-                      </span>
-                      <div className="sp-breakdown-info">
-                        <span className="sp-breakdown-name">{c.title}</span>
-                        <div className="sp-breakdown-bar">
-                          <div className="sp-breakdown-bar-fill" style={{ width: `${pct}%`, background: c.color }} />
+      <div className="sp-courses-section">
+        <h2 className="sp-section-title"><BookOpen size={18} /> Course Progress</h2>
+        {courses.length === 0 ? (
+          <div className="sp-empty"><p>No courses enrolled yet.</p></div>
+        ) : (
+          <div className="sp-course-list">
+            {courses.map(c => {
+              const progress = c.modulesTotal > 0 ? Math.round((c.modulesCompleted / c.modulesTotal) * 100) : 0;
+              const isExpanded = expandedId === c.id;
+              return (
+                <div key={c.id} className="sp-course-card">
+                  <div className="sp-course-main">
+                    <div className="sp-course-icon" style={{ background: c.color + '20', color: c.color }}>{c.icon}</div>
+                    <div className="sp-course-info">
+                      <h3 className="sp-course-title">{c.title}</h3>
+                      <div className="sp-progress-row">
+                        <div className="sp-progress-bar">
+                          <div className="sp-progress-fill" style={{ width: `${progress}%`, background: c.color }} />
                         </div>
+                        <span className="sp-progress-text">{progress}%</span>
                       </div>
-                      <span className="sp-breakdown-pct" style={{ color: c.color }}>{pct}%</span>
-                      {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      <div className="sp-course-stats">
+                        <span><CheckCircle size={11} /> {c.modulesCompleted}/{c.modulesTotal} modules</span>
+                      </div>
                     </div>
-                    {isOpen && (
-                      <div className="sp-breakdown-details">
-                        <div className="sp-detail-row">
-                          <span>Modules</span>
-                          <span>{c.modulesCompleted}/{c.modulesTotal}</span>
-                        </div>
-                        <div className="sp-detail-row">
-                          <span>Quiz Avg.</span>
-                          <span style={{ color: getScoreColor(c.quizAvg) }}>{c.quizAvg}%</span>
-                        </div>
-                        <div className="sp-detail-row">
-                          <span>Assignments</span>
-                          <span>{c.assignmentsSubmitted}/{c.assignmentsTotal}</span>
-                        </div>
-                        <div className="sp-detail-row">
-                          <span>Time Spent</span>
-                          <span>{c.timeSpentHrs}h</span>
-                        </div>
+                    <button className="sp-expand-btn" onClick={() => setExpandedId(isExpanded ? null : c.id)}>
+                      {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </button>
+                  </div>
+                  {isExpanded && (
+                    <div className="sp-course-expanded">
+                      <div className="sp-module-grid">
+                        {Array.from({ length: c.modulesTotal }, (_, i) => (
+                          <div key={i} className={`sp-module-item ${i < c.modulesCompleted ? 'sp-module-done' : ''}`}>
+                            {i < c.modulesCompleted ? <CheckCircle size={13} /> : <div className="sp-module-num">{i + 1}</div>}
+                            <span>Module {i + 1}</span>
+                          </div>
+                        ))}
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Recent Grades */}
-          <div className="sp-card">
-            <div className="sp-card-header">
-              <h2><Award size={16} /> Recent Grades</h2>
-            </div>
-            <div className="sp-grades-list">
-              {MOCK_GRADES.map((g, i) => (
-                <div key={i} className="sp-grade-row">
-                  <div className="sp-grade-info">
-                    <span className="sp-grade-label">{g.label}</span>
-                    <span className="sp-grade-course">{g.course} · {g.date}</span>
-                  </div>
-                  <div
-                    className="sp-grade-score"
-                    style={{ color: getScoreColor(g.score) }}
-                  >
-                    {g.score}<span className="sp-grade-total">/{g.total}</span>
-                  </div>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
-
-        </div>
+        )}
       </div>
     </div>
   );

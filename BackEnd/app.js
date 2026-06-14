@@ -5,24 +5,25 @@ import loginRouter from "./routes/loginRoute.js";
 import registerRouter from "./routes/accountRoute.js";
 import courseRouter from "./routes/courseRoute.js";
 import assignmentRouter from "./routes/assignmentRoute.js";
-import rateLimit from 'express-rate-limit'
+import rateLimit from 'express-rate-limit';
 import adminRouter from "./routes/adminRoutes.js";
 import instructorRouter from "./routes/instructorRoute.js";
 import certificateRouter from "./routes/certificateRoute.js";
 import googleAuthRouter from "./routes/googleAuthRoute.js";
 import studentRouter from "./routes/studentRoute.js";
+import quizRouter from "./routes/quizRoute.js";
 
 const app = express();
 
 // Configure CORS — must be FIRST before all routes
 const corsOptions = {
     origin: [
-        'http://localhost:5173', 
+        'http://localhost:5173',
         'http://localhost:5174',
         'https://itechskillshub.me',
         'https://www.itechskillshub.me'
     ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
     optionsSuccessStatus: 200
@@ -43,7 +44,7 @@ const loginLimiter = rateLimit({
     max: 5,
     message: {
         success: false,
-        message: "Too many login attempts from this device. please try again after 15 minutes."
+        message: "Too many login attempts from this device. Please try again after 15 minutes."
     }
 });
 
@@ -58,4 +59,6 @@ app.use("/api/courses", courseRouter);
 app.use("/api", assignmentRouter);
 app.use("/api", certificateRouter);
 app.use("/api", studentRouter);
+app.use("/api", quizRouter);
+
 export default app;

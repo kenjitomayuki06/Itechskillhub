@@ -5,26 +5,9 @@ import {
   BookOpen, Award, TrendingUp, Clock,
   CheckCircle, AlertCircle, Shield
 } from 'lucide-react';
-import { getUser, setUser, apiFetch, getToken } from '../../services/authService';
+import { getUser, setUser, apiFetch } from '../../services/authService';
 import toast from 'react-hot-toast';
 import '../../styles/pages/student/StudentProfile.css';
-
-
-/* ── Mock enrolled course stats — replace with real API call ── */
-const MOCK_STATS = {
-  enrolledCourses: 3,
-  completedCourses: 1,
-  certificates: 1,
-  avgProgress: 67,
-  totalStudyHours: 42,
-  avgGrade: 91,
-};
-
-const MOCK_RECENT_COURSES = [
-  { id: 1, title: 'CSS NC II — Computer Systems Servicing', icon: '🖥️', color: '#5B4A9E', progress: 60 },
-  { id: 2, title: 'Network Systems Cabling (NSC)',          icon: '🔌', color: '#3b82f6', progress: 25 },
-  { id: 3, title: 'PC Hardware Assembly & Troubleshooting', icon: '⚙️', color: '#10b981', progress: 100 },
-];
 
 export default function StudentProfile() {
   const [currentUser, setCurrentUser]     = useState(null);
@@ -35,6 +18,11 @@ export default function StudentProfile() {
   const [saveSuccess, setSaveSuccess]     = useState('');
   const [avatarPreview, setAvatarPreview] = useState(null);
   const avatarRef = useRef();
+
+  /* ── Stats & courses from API ── */
+  const [stats, setStats]               = useState(null);
+  const [recentCourses, setRecentCourses] = useState([]);
+  const [statsLoading, setStatsLoading]  = useState(true);
 
   /* ── Password fields ── */
   const [pwForm, setPwForm]       = useState({ current: '', newPw: '', confirm: '' });
@@ -61,6 +49,31 @@ export default function StudentProfile() {
         birthday: user.birthday || '',
       });
     }
+
+    // Fetch real stats from dashboard endpoint
+    const fetchStats = async () => {
+      try {
+        const dash = await apiFetch('/api/student/dashboard');
+        if (dash) {
+          setStats({
+            enrolledCourses:  dash.enrolledCourses  ?? 0,
+            completedCourses: dash.completedCourses ?? 0,
+            certificates:     dash.certificates     ?? 0,
+            avgProgress:      dash.avgProgress      ?? 0,
+            totalStudyHours:  dash.hoursLearned     ?? 0,
+            avgGrade:         dash.avgGrade         ?? 0,
+          });
+          setRecentCourses(dash.recentCourses ?? []);
+        }
+      } catch (err) {
+        console.error('Failed to fetch student stats:', err);
+        // Keep nulls — UI will show 0s gracefully
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    fetchStats();
   }, []);
 
   /* ── Avatar change ── */
@@ -79,9 +92,6 @@ export default function StudentProfile() {
     setSaveError('');
     setSaveSuccess('');
     try {
-      // TODO (backend): needs PATCH /api/auth/me
-      // Body: { name, email, phone, address, bio, birthday }
-      // Returns: updated user object
       const updated = await apiFetch('/api/auth/me', {
         method: 'PATCH',
         body: JSON.stringify({
@@ -131,9 +141,6 @@ export default function StudentProfile() {
     if (pwForm.newPw !== pwForm.confirm) { setPwError('Passwords do not match.'); return; }
     setPwSaving(true);
     try {
-      // TODO (backend): needs PATCH /api/auth/change-password
-      // Body: { currentPassword, newPassword }
-      // Returns: { message: 'Password changed successfully' }
       await apiFetch('/api/auth/change-password', {
         method: 'PATCH',
         body: JSON.stringify({
@@ -150,11 +157,18 @@ export default function StudentProfile() {
     }
   }
 
+  // Priority: manual preview > uploaded avatar > Google OAuth picture > ui-avatars fallback
   const avatarSrc =
     avatarPreview ||
     currentUser?.avatar ||
     currentUser?.picture ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.name || 'Student')}&background=5B4A9E&color=fff&size=128`;
+
+  // Shorthand for stats with 0 fallback
+  const s = stats || {
+    enrolledCourses: 0, completedCourses: 0, certificates: 0,
+    avgProgress: 0, totalStudyHours: 0, avgGrade: 0,
+  };
 
   return (
     <div className="sp2-page">
@@ -166,7 +180,12 @@ export default function StudentProfile() {
 
           {/* Avatar */}
           <div className="sp2-avatar-wrap">
-            <img src={avatarSrc} alt="Profile" className="sp2-avatar" />
+            <img
+              src={avatarSrc}
+              alt="Profile"
+              className="sp2-avatar"
+              referrerPolicy="no-referrer"
+            />
             {isEditing && (
               <button
                 className="sp2-avatar-change"
@@ -221,7 +240,9 @@ export default function StudentProfile() {
           <div className="sp2-strip-stat">
             <BookOpen size={16} />
             <div>
-              <span className="sp2-strip-val">{MOCK_STATS.enrolledCourses}</span>
+              <span className="sp2-strip-val">
+                {statsLoading ? '—' : s.enrolledCourses}
+              </span>
               <span className="sp2-strip-lbl">Courses</span>
             </div>
           </div>
@@ -229,7 +250,9 @@ export default function StudentProfile() {
           <div className="sp2-strip-stat">
             <Award size={16} />
             <div>
-              <span className="sp2-strip-val">{MOCK_STATS.certificates}</span>
+              <span className="sp2-strip-val">
+                {statsLoading ? '—' : s.certificates}
+              </span>
               <span className="sp2-strip-lbl">Certificates</span>
             </div>
           </div>
@@ -237,7 +260,9 @@ export default function StudentProfile() {
           <div className="sp2-strip-stat">
             <TrendingUp size={16} />
             <div>
-              <span className="sp2-strip-val">{MOCK_STATS.avgProgress}%</span>
+              <span className="sp2-strip-val">
+                {statsLoading ? '—' : `${s.avgProgress}%`}
+              </span>
               <span className="sp2-strip-lbl">Avg. Progress</span>
             </div>
           </div>
@@ -245,7 +270,9 @@ export default function StudentProfile() {
           <div className="sp2-strip-stat">
             <Clock size={16} />
             <div>
-              <span className="sp2-strip-val">{MOCK_STATS.totalStudyHours}h</span>
+              <span className="sp2-strip-val">
+                {statsLoading ? '—' : `${s.totalStudyHours}h`}
+              </span>
               <span className="sp2-strip-lbl">Study Time</span>
             </div>
           </div>
@@ -282,7 +309,6 @@ export default function StudentProfile() {
           )}
 
           <div className="sp2-form-grid">
-            {/* Full Name */}
             <div className="sp2-form-group">
               <label><User size={13} /> Full Name</label>
               {isEditing ? (
@@ -297,7 +323,6 @@ export default function StudentProfile() {
               )}
             </div>
 
-            {/* Email */}
             <div className="sp2-form-group">
               <label><Mail size={13} /> Email Address</label>
               {isEditing ? (
@@ -312,7 +337,6 @@ export default function StudentProfile() {
               )}
             </div>
 
-            {/* Phone */}
             <div className="sp2-form-group">
               <label><Phone size={13} /> Phone Number</label>
               {isEditing ? (
@@ -327,7 +351,6 @@ export default function StudentProfile() {
               )}
             </div>
 
-            {/* Birthday */}
             <div className="sp2-form-group">
               <label><Calendar size={13} /> Birthday</label>
               {isEditing ? (
@@ -345,7 +368,6 @@ export default function StudentProfile() {
               )}
             </div>
 
-            {/* Address — full width */}
             <div className="sp2-form-group sp2-form-full">
               <label><MapPin size={13} /> Address</label>
               {isEditing ? (
@@ -360,7 +382,6 @@ export default function StudentProfile() {
               )}
             </div>
 
-            {/* Bio — full width */}
             <div className="sp2-form-group sp2-form-full">
               <label><Edit3 size={13} /> Bio</label>
               {isEditing ? (
@@ -434,7 +455,6 @@ export default function StudentProfile() {
                   {showPw.newPw ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
-              {/* Password strength indicator */}
               {pwForm.newPw && (
                 <div className="sp2-pw-strength">
                   {['Weak', 'Fair', 'Strong', 'Very Strong'].map((label, i) => (
@@ -446,9 +466,9 @@ export default function StudentProfile() {
                     />
                   ))}
                   <span className="sp2-pw-strength-label">
-                    {pwForm.newPw.length < 6   ? 'Weak'
-                    : pwForm.newPw.length < 10  ? 'Fair'
-                    : pwForm.newPw.length < 14  ? 'Strong'
+                    {pwForm.newPw.length < 6  ? 'Weak'
+                    : pwForm.newPw.length < 10 ? 'Fair'
+                    : pwForm.newPw.length < 14 ? 'Strong'
                     : 'Very Strong'}
                   </span>
                 </div>
@@ -497,45 +517,53 @@ export default function StudentProfile() {
         <div className="sp2-section">
           <div className="sp2-courses-summary">
             <div className="sp2-cs-stat sp2-cs-purple">
-              <span className="sp2-cs-val">{MOCK_STATS.enrolledCourses}</span>
+              <span className="sp2-cs-val">{statsLoading ? '—' : s.enrolledCourses}</span>
               <span className="sp2-cs-lbl">Enrolled</span>
             </div>
             <div className="sp2-cs-stat sp2-cs-green">
-              <span className="sp2-cs-val">{MOCK_STATS.completedCourses}</span>
+              <span className="sp2-cs-val">{statsLoading ? '—' : s.completedCourses}</span>
               <span className="sp2-cs-lbl">Completed</span>
             </div>
             <div className="sp2-cs-stat sp2-cs-orange">
-              <span className="sp2-cs-val">{MOCK_STATS.avgGrade}%</span>
+              <span className="sp2-cs-val">{statsLoading ? '—' : `${s.avgGrade}%`}</span>
               <span className="sp2-cs-lbl">Avg. Grade</span>
             </div>
           </div>
 
           <div className="sp2-courses-list">
-            {MOCK_RECENT_COURSES.map((c) => (
-              <div key={c.id} className="sp2-course-row">
-                <div
-                  className="sp2-course-icon"
-                  style={{ background: c.color + '18', color: c.color }}
-                >
-                  {c.icon}
-                </div>
-                <div className="sp2-course-info">
-                  <div className="sp2-course-title">{c.title}</div>
-                  <div className="sp2-course-bar-wrap">
-                    <div className="sp2-course-bar">
-                      <div
-                        className="sp2-course-fill"
-                        style={{ width: `${c.progress}%`, background: c.color }}
-                      />
-                    </div>
-                    <span className="sp2-course-pct" style={{ color: c.color }}>{c.progress}%</span>
+            {statsLoading ? (
+              <p className="sp2-loading-text">Loading courses...</p>
+            ) : recentCourses.length === 0 ? (
+              <p className="sp2-empty-text">No courses enrolled yet.</p>
+            ) : (
+              recentCourses.map((c, i) => (
+                <div key={c.id ?? i} className="sp2-course-row">
+                  <div
+                    className="sp2-course-icon"
+                    style={{ background: (c.color || '#5B4A9E') + '18', color: c.color || '#5B4A9E' }}
+                  >
+                    {c.icon || '📚'}
                   </div>
+                  <div className="sp2-course-info">
+                    <div className="sp2-course-title">{c.title ?? c.name ?? 'Course'}</div>
+                    <div className="sp2-course-bar-wrap">
+                      <div className="sp2-course-bar">
+                        <div
+                          className="sp2-course-fill"
+                          style={{ width: `${c.progress ?? 0}%`, background: c.color || '#5B4A9E' }}
+                        />
+                      </div>
+                      <span className="sp2-course-pct" style={{ color: c.color || '#5B4A9E' }}>
+                        {c.progress ?? 0}%
+                      </span>
+                    </div>
+                  </div>
+                  {(c.progress ?? 0) === 100 && (
+                    <span className="sp2-course-done"><CheckCircle size={15} /> Done</span>
+                  )}
                 </div>
-                {c.progress === 100 && (
-                  <span className="sp2-course-done"><CheckCircle size={15} /> Done</span>
-                )}
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       )}
