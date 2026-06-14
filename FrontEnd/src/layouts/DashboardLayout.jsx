@@ -217,11 +217,7 @@ export default function DashboardLayout({ userRole = 'admin' }) {
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
   const [expandedMenus, setExpandedMenus]                 = useState({});
   const [pinnedItems]                                     = useState([]);
-  const [notifications, setNotifications]                 = useState([
-    { id: 1, title: 'New Assignment', message: 'John submitted homework',       time: '2 min ago',   unread: true  },
-    { id: 2, title: 'Course Update',  message: 'React course has been updated', time: '1 hour ago',  unread: true  },
-    { id: 3, title: 'System Alert',   message: 'Scheduled maintenance tonight', time: '3 hours ago', unread: false },
-  ]);
+  const [notifications, setNotifications] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentUser, setCurrentUser] = useState(null);
 
