@@ -2,13 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   BookOpen, CheckCircle, Award, Clock,
-  ChevronRight, AlertCircle, TrendingUp, Zap,
+  ChevronRight, AlertCircle, TrendingUp,
   Calendar, Star, Play
 } from 'lucide-react';
-import {
-  LineChart, Line, XAxis, YAxis,
-  CartesianGrid, Tooltip, ResponsiveContainer
-} from 'recharts';
 import { StudentDashboardSkeleton } from '../../components/common/SkeletonLoader';
 import '../../styles/pages/student/StudentDashboard.css';
 
@@ -163,7 +159,7 @@ export default function StudentDashboard() {
     </div>
   );
 
-  const { enrolledCourses = [], deadlines = [], activityFeed = [], weeklyProgress = [] } = dashboard;
+  const { enrolledCourses = [], deadlines = [], activityFeed = [] } = dashboard;
 
   const completedCourses       = enrolledCourses.filter(c => c.modulesCompleted === c.modulesTotal).length;
   const totalLessonsCompleted  = enrolledCourses.reduce((s, c) => s + c.modulesCompleted, 0);
@@ -296,34 +292,6 @@ export default function StudentDashboard() {
             </div>
           </div>
 
-          {/* Weekly Activity Chart */}
-          <div className="student-card">
-            <div className="student-card-header">
-              <h2><Zap size={18} /> This Week's Activity</h2>
-              <span className="student-card-badge">Last 7 days</span>
-            </div>
-            <ResponsiveContainer width="100%" height={180}>
-              <LineChart data={weeklyProgress}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f5" />
-                <XAxis dataKey="day" stroke="#94a3b8" style={{ fontSize: '11px' }} />
-                <YAxis stroke="#94a3b8" style={{ fontSize: '11px' }} allowDecimals={false} />
-                <Tooltip
-                  contentStyle={{ borderRadius: '10px', border: '1px solid #e8e4f8', fontSize: '12px' }}
-                  formatter={(v) => [`${v} lessons`, 'Completed']}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="lessons"
-                  stroke="var(--color-primary)"
-                  strokeWidth={2.5}
-                  dot={{ fill: 'var(--color-primary)', r: 4 }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
         {/* RIGHT COLUMN */}
         <div className="student-right-col">
 
@@ -380,7 +348,7 @@ export default function StudentDashboard() {
               Play Now <ChevronRight size={14} />
             </button>
           </div>
-
+        </div>
         </div>
       </div>
     </div>
