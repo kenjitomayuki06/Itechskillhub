@@ -9,6 +9,7 @@ export default function CourseCSSNCII() {
       assignmentsData={assignmentsData}
       breadcrumbLabel="Computer Systems Servicing NC II"
       badgeLabel="TESDA NC II"
+      courseId={1}
     />
   );
 }

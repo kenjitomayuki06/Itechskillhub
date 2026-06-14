@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { isAuthenticated, getUser } from '../../services/authService';
+import { isAuthenticated, getUser, apiFetch } from '../../services/authService';
 import '../../styles/courses/CourseCSSNCII.css';
 
 
@@ -80,6 +80,7 @@ const CourseTemplate = ({
   assignmentsData,
   breadcrumbLabel,
   badgeLabel = 'TESDA NC II',
+  courseId,
 }) => {
   const navigate = useNavigate();
   const user = getUser();
@@ -128,13 +129,28 @@ const CourseTemplate = ({
   const toggleMod = (id) =>
     setExpandedModules(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
 
-  const markDone = (id) => {
-    setModules(p => p.map(m => ({
-      ...m,
-      lessons: m.lessons.map(l => l.id === id ? { ...l, completed: true } : l)
-    })));
-    if (currentLesson.id === id) setCurrentLesson(p => ({ ...p, completed: true }));
-  };
+  const markDone = async (id) => {
+  const studentId = user?.id || user?.user_id;
+
+  try {
+    await apiFetch('/api/courses/courseProgress/updateProgress', {
+      method: 'POST',
+      body: JSON.stringify({
+        student_id: studentId,
+        course_id: courseId,
+        lesson_id: id,
+      }),
+    });
+  } catch (err) {
+    console.error('Failed to save progress:', err);
+  }
+
+  setModules(p => p.map(m => ({
+    ...m,
+    lessons: m.lessons.map(l => l.id === id ? { ...l, completed: true } : l)
+  })));
+  if (currentLesson.id === id) setCurrentLesson(p => ({ ...p, completed: true }));
+};
 
   const openAssign = (a) => {
     setSelAssign(a);
