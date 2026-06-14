@@ -323,7 +323,6 @@ export default function DashboardLayout({ userRole = 'admin' }) {
         { icon: ClipboardList,label: 'Quizzes',        path: '/student/quiz',          badge: null },
         { icon: GraduationCap,label: 'Progress',       path: '/student/progress',      badge: null },
         { icon: Award,        label: 'Certificates',   path: '/student/certificates',  badge: null },
-        { icon: Bell,         label: 'Notifications',  path: '/student/notifications', badge: null },
         { icon: User,         label: 'My Profile',     path: '/student/profile',       badge: null },
       ];
     }
