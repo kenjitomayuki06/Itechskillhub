@@ -30,7 +30,7 @@ export async function getSubmissionsQuery({ search, page, limit }) {
         sql += ` ORDER BY a.created_at DESC LIMIT ? OFFSET ?`;
         queryParams.push(limitNum, offset);
 
-        const [rows] = await pool.execute(sql, queryParams);
+        const [rows] = await pool.query(sql, queryParams);
 
         let countSql = `SELECT COUNT(*) as total FROM student_assignment a`;
         if (search) {
