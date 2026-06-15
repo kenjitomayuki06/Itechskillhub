@@ -3,7 +3,7 @@ import { updateAccountQuery } from "../../database/AccountQueries/updateAccountQ
 export async function updateAccountController(req, res) {
     try {
         const { user_Id } = req.params;
-        const { name, fullname, email, email_address, phone, address, bio, birthday } = req.body;
+        const { name, fullname, email, email_address, phone, address, birthday } = req.body;
 
         const finalName  = name || fullname;
         const finalEmail = email || email_address;
@@ -15,7 +15,7 @@ export async function updateAccountController(req, res) {
             return res.status(400).json({ message: "Full name and email address are required" });
         }
 
-        const result = await updateAccountQuery(user_Id, finalName, finalEmail, phone, address, bio, birthday);
+        const result = await updateAccountQuery(user_Id, finalName, finalEmail, phone, address, birthday);
         res.status(200).json({ message: "Account updated successfully", result });
     } catch (error) {
         console.error("Error in updateAccountController:", error);
