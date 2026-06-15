@@ -92,18 +92,19 @@ export default function StudentProfile() {
     setSaveError('');
     setSaveSuccess('');
     try {
-      const updated = await apiFetch('/api/auth/me', {
-        method: 'PATCH',
-        body: JSON.stringify({
-          name:     form.name,
-          email:    form.email,
-          phone:    form.phone,
-          address:  form.address,
-          bio:      form.bio,
-          birthday: form.birthday,
-          ...(avatarPreview ? { avatar: avatarPreview } : {}),
-        }),
-      });
+        const userId = currentUser?.id || currentUser?.user_id;
+        const updated = await apiFetch(`/api/auth/updateAccount/${userId}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            name:     form.name,
+            email:    form.email,
+            phone:    form.phone,
+            address:  form.address,
+            bio:      form.bio,
+            birthday: form.birthday,
+            ...(avatarPreview ? { avatar: avatarPreview } : {}),
+          }),
+        });
       const merged = { ...currentUser, ...form, ...(avatarPreview ? { avatar: avatarPreview } : {}), ...updated };
       setUser(merged);
       setCurrentUser(merged);
