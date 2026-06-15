@@ -2223,3 +2223,37 @@
     height: 18px;
   }
 }
+
+.games-user-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 24px;
+  background: #1a1a2e;
+  border-bottom: 1px solid #2a2a40;
+}
+
+.games-back-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f59e0b;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.games-back-link:hover {
+  text-decoration: underline;
+}
+
+.games-logged-in-as {
+  font-size: 13.5px;
+  color: #a0a0b8;
+}
+
+.games-logged-in-as strong {
+  color: #fff;
+}

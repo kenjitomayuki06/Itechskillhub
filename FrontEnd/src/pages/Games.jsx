@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { getUser } from '../services/authService';
 import '../styles/pages/Games.css';
 import hardwareImg     from '../assets/hardware_assembly.png';
 import osImg           from '../assets/os_installation.png';
@@ -816,6 +818,8 @@ const LeaderboardView = ({ leaderboard, onClear }) => {
    MAIN GAMES PAGE
 ═══════════════════════════════════════ */
 const Games = () => {
+  const currentUser = getUser();
+  const isStudent = currentUser?.role === 'student';
   const [activeTab,          setActiveTab]          = useState('play');
   const [selectedTopic,      setSelectedTopic]      = useState('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState('mixed');
@@ -858,6 +862,17 @@ const Games = () => {
 
   return (
     <div className="games-page">
+      {isStudent && (
+        <div className="games-user-banner">
+          <Link to="/student/quiz" className="games-back-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>
+            </svg>
+            Back to Dashboard
+          </Link>
+          <span className="games-logged-in-as">Logged in as <strong>{currentUser.name}</strong></span>
+        </div>
+      )}
 
       {/* Hero */}
       <div className="games-hero">

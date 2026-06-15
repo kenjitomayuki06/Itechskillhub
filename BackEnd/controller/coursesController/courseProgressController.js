@@ -15,10 +15,12 @@ export async function getCourseProgressController(req, res) {
         
         const data = rows[0];
         const completed = data.completed_lesson || 0;
+        const totalLessons = 16;
+        const completionPct = Math.round((completed / totalLessons) * 100);
 
         const responseData = {
-            courseCompletion: `${completed}%`,
-            lessonsDone: `${completed}/16`,
+            courseCompletion: `${completionPct}%`,
+            lessonsDone: `${completed}/${totalLessons}`,
             totalModules: 4,
             certificationStatus: data.certificate_earned === 1 ? "Earned" : "Not Earned",
         };

@@ -51,7 +51,7 @@ export default function StudentCourses() {
               const total = parseInt(p.lessonsDone?.split('/')[1]) || 16;
               modulesCompleted = done;
               modulesTotal = total;
-              const pct = parseInt(p.courseCompletion) || 0;
+              const pct = total > 0 ? Math.round((done / total) * 100) : 0;
               status = pct === 100 ? 'completed' : pct > 0 ? 'in-progress' : 'not-started';
               lastActivity = pct > 0 ? `${pct}% complete` : 'Not started';
             }
