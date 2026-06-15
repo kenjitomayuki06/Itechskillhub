@@ -15,14 +15,14 @@ export async function getSubmissionsQuery({ search, page, limit }) {
                 a.grade, 
                 a.created_at,
                 u.fullname,
-                m.module_name
+                m.title AS module_name
             FROM student_assignment a
             LEFT JOIN users u ON a.user_id = u.user_id
             LEFT JOIN modules m ON a.module_id = m.module_id
         `;
 
         if (search) {
-            sql += ` WHERE u.fullname LIKE ? OR a.assignment LIKE ? OR m.module_name LIKE ? `;
+            sql += ` WHERE u.fullname LIKE ? OR a.assignment LIKE ? OR m.title LIKE ? `;
             const searchTerm = `%${search}%`;
             queryParams.push(searchTerm, searchTerm, searchTerm);
         }
@@ -34,7 +34,7 @@ export async function getSubmissionsQuery({ search, page, limit }) {
 
         let countSql = `SELECT COUNT(*) as total FROM student_assignment a`;
         if (search) {
-            countSql += ` LEFT JOIN users u ON a.user_id = u.user_id LEFT JOIN modules m ON a.module_id = m.module_id WHERE u.full_name LIKE ? OR a.assignment LIKE ? OR m.module_name LIKE ?`;
+            countSql += ` LEFT JOIN users u ON a.user_id = u.user_id LEFT JOIN modules m ON a.module_id = m.module_id WHERE u.fullname LIKE ? OR a.assignment LIKE ? OR m.title LIKE ?`;
         }
         const countParams = search ? [`%${search}%`, `%${search}%`, `%${search}%`] : [];
         const [countResult] = await pool.execute(countSql, countParams);
