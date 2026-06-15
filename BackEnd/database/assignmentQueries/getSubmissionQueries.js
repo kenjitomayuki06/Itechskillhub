@@ -14,7 +14,7 @@ export async function getSubmissionsQuery({ search, page, limit }) {
                 a.assignment, 
                 a.grade, 
                 a.created_at,
-                u.full_name, 
+                u.fullname,
                 m.module_name
             FROM student_assignment a
             LEFT JOIN users u ON a.user_id = u.user_id
@@ -22,7 +22,7 @@ export async function getSubmissionsQuery({ search, page, limit }) {
         `;
 
         if (search) {
-            sql += ` WHERE u.full_name LIKE ? OR a.assignment LIKE ? OR m.module_name LIKE ? `;
+            sql += ` WHERE u.fullname LIKE ? OR a.assignment LIKE ? OR m.module_name LIKE ? `;
             const searchTerm = `%${search}%`;
             queryParams.push(searchTerm, searchTerm, searchTerm);
         }
